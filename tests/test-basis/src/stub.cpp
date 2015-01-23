@@ -8,54 +8,65 @@ extern "C" int wmain(int argc, wchar_t* argv[]);
 
 extern int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int);
 
+namespace {
+
+	void prolog()
+	{
+		TraceFunc();
+		crt::init_atexit();
+		TraceFunc();
+	}
+
+	int epilog(int errcode)
+	{
+		TraceFunc();
+		crt::invoke_atexit();
+
+		TraceFunc();
+		crt::check_default_heap();
+
+		TraceFunc();
+
+		::ExitProcess(errcode);
+		return errcode;
+	}
+
+}
+
 extern "C" {
+
 	int mainCRTStartup()
 	{
-		console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
-		crt::init_atexit();
+		TraceFunc();
+
+		prolog();
 
 		int argc = 0;
 		wchar_t ** argv = ::CommandLineToArgvW(::GetCommandLineW(), &argc);
 
-		int Result = wmain(argc, argv);
+		int ret = wmain(argc, argv);
 
 		::LocalFree(argv);
-		crt::invoke_atexit();
 
-		{
-			const memory::heap::Stat& stat = memory::heap::DefaultStat::get_stat();
-			console::printf(L"stat alloc: %I64u, %I64u \n", stat.allocations, stat.allocSize);
-			console::printf(L"stat free : %I64u, %I64u \n", stat.frees, stat.freeSize);
-			console::printf(L"stat diff : %I64d \n", stat.allocSize - stat.freeSize);
-		}
-		::ExitProcess(Result);
-		return Result;
+		TraceFunc();
+		return epilog(ret);
 	}
 
 	int	WinMainCRTStartup() // -mwindows
 	{
-		console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
-		crt::init_atexit();
+		TraceFunc();
 
-		int ret = 0;
+		prolog();
 
 		STARTUPINFOW startupInfo;
 		::RtlSecureZeroMemory(&startupInfo, sizeof(startupInfo));
 		startupInfo.cb = sizeof(startupInfo);
 		::GetStartupInfoW(&startupInfo);
 
-		ret = wWinMain(::GetModuleHandleW(nullptr), nullptr, ::GetCommandLineW(), startupInfo.dwFlags & STARTF_USESHOWWINDOW ? startupInfo.wShowWindow : SW_SHOWDEFAULT);
+		int ret = wWinMain(::GetModuleHandleW(nullptr), nullptr, ::GetCommandLineW(), startupInfo.dwFlags & STARTF_USESHOWWINDOW ? startupInfo.wShowWindow : SW_SHOWDEFAULT);
 
-		crt::invoke_atexit();
-
-		{
-			const memory::heap::Stat& stat = memory::heap::DefaultStat::get_stat();
-			console::printf(L"stat alloc: %I64u, %I64u \n", stat.allocations, stat.allocSize);
-			console::printf(L"stat free : %I64u, %I64u \n", stat.frees, stat.freeSize);
-			console::printf(L"stat diff : %I64d \n", stat.allocSize - stat.freeSize);
-		}
-		::ExitProcess(ret);
-		return ret;
+		TraceFunc();
+		return epilog(ret);
 	}
 
 //	BOOL WINAPI	DllMainCRTStartup(HANDLE, DWORD dwReason, PVOID)
@@ -75,11 +86,13 @@ extern "C" {
 
 	int atexit(crt::Function pf)
 	{
+		TraceFunc();
 		return crt::atexit(pf);
 	}
 
 	void __cxa_pure_virtual(void)
 	{
+		TraceFunc();
 		crt::cxa_pure_virtual();
 	}
 

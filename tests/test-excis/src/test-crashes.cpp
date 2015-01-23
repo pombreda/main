@@ -6,6 +6,8 @@
 
 #include <excis/exception.hpp>
 
+#include <ctime>
+
 void do_cpp_exception()
 {
 	LogWarn(L"throwning 42\n");
@@ -35,23 +37,28 @@ void do_zero_division()
 	UNUSED(p);
 }
 
-void test_null_string()
+void crash_null_string()
 {
 	LogTrace();
-	do_null_string();
+	try {
+		do_null_string();
+	} catch (exception::Abstract & e) {
+		auto mstr = e.format_error();
+		for (size_t i = 0; i < mstr.size(); ++i)
+			LogFatal(L"\t%s\n", mstr[i]);
+	} catch (...) {
+		LogFatal(L"cpp exception cought\n");
+	}
 	LogTrace();
 }
 
-void test_cpp_exception()
+void crash_cpp_exception()
 {
 	LogTrace();
 
 	try {
 		do_cpp_exception();
-	} catch (exception::AbstractError & e) {
-		LogFatal(L"SEH exception cought: %s\n", e.what().c_str());
-		LogFatal(L"SEH exception cought: %s\n", e.where().c_str());
-
+	} catch (exception::Abstract & e) {
 		auto mstr = e.format_error();
 		for (size_t i = 0; i < mstr.size(); ++i)
 			LogFatal(L"\t%s\n", mstr[i]);
@@ -62,53 +69,88 @@ void test_cpp_exception()
 	LogTrace();
 }
 
-void test_access_violation()
+void crash_access_violation()
 {
 	LogTrace();
-
 	try {
 		do_acces_violation();
-	} catch (exception::AbstractError & e) {
-		LogFatal(L"SEH exception cought: %s\n", e.what().c_str());
-		LogFatal(L"SEH exception cought: %s\n", e.where().c_str());
-
+	} catch (exception::Abstract & e) {
 		auto mstr = e.format_error();
 		for (size_t i = 0; i < mstr.size(); ++i)
 			LogFatal(L"\t%s\n", mstr[i]);
 	} catch (...) {
 		LogFatal(L"cpp exception cought\n");
 	}
-
 	LogTrace();
 }
 
-void test_zero_division()
+void crash_zero_division()
 {
 	LogTrace();
-
 	try {
 		do_zero_division();
-	} catch (exception::AbstractError & e) {
-		LogFatal(L"SEH exception cought: %s\n", e.what().c_str());
-		LogFatal(L"SEH exception cought: %s\n", e.where().c_str());
-
+	} catch (exception::Abstract & e) {
 		auto mstr = e.format_error();
 		for (size_t i = 0; i < mstr.size(); ++i)
 			LogFatal(L"\t%s\n", mstr[i]);
 	} catch (...) {
 		LogFatal(L"cpp exception cought\n");
 	}
-
 	LogTrace();
+}
+
+void crash_virtual_function_call()
+{
+	struct B
+	{
+		virtual ~B() = default;
+
+		B()
+		{
+			LogTrace();
+			nvf();
+		}
+
+		virtual void vf() = 0;
+
+		void nvf() {vf();}
+	};
+
+	struct D: public B
+	{
+		void vf() override {LogTrace();}
+	};
+
+	B* b = new D;
+	b->vf();
 }
 
 /// WARNING for x64 Optimization must be -O0 or it will crash (tdm compiler)
 
 void test_crashes()
 {
-//	test_null_string();
+	srand(static_cast<unsigned int>(std::time(0)));
+	int option = rand() % 6;
 
-	test_zero_division();
-
-	test_access_violation();
+	switch (option)
+	{
+		case 0:
+			crash_null_string();
+			break;
+		case 1:
+			crash_zero_division();
+			break;
+		case 2:
+			crash_access_violation();
+			break;
+		case 3:
+			crash_cpp_exception();
+			break;
+		case 4:
+			crash_cpp_exception();
+			break;
+		case 5:
+			crash_virtual_function_call();
+			break;
+	}
 }

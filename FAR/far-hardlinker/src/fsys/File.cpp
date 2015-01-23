@@ -13,7 +13,7 @@ namespace fsys {
 		++global::statistics().fileObjectsDestroyed;
 	}
 
-	File::File(const fsys::Sequence::FindStat & info, Node_t parent) :
+	File::File(const fsys::Sequence::FindStat& info, Node_t parent) :
 		Node(info.name(), parent),
 		m_size(info.size()),
 		m_mtime(info.mtime()),
@@ -94,7 +94,7 @@ namespace fsys {
 	{
 		auto file(fsys::file::open(path));
 		if (file && file->set_position(static_cast<int64_t>(first), fsys::file::Seek::FromBeginOfFile)) {
-			crypt::Hash hasher(crypt::hash(global::vars().cryptProvider));
+			crypt::HashHolder hasher(crypt::hash(global::vars().cryptProvider));
 			if (hasher) {
 				uint64_t size = last - first;
 				while (size) {

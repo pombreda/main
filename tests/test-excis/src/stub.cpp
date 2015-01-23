@@ -2,6 +2,7 @@
 #ifdef NDEBUG
 #include <basis/sys/console.hpp>
 #include <basis/sys/crt.hpp>
+#include <basis/sys/linkage.hpp>
 #include <basis/sys/memory.hpp>
 
 extern "C" int wmain(int argc, wchar_t* argv[]);
@@ -9,15 +10,31 @@ extern "C" int wmain(int argc, wchar_t* argv[]);
 extern int WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int);
 
 extern "C" {
+
+	LONG WINAPI RedirectedSetUnhandledExceptionFilter(EXCEPTION_POINTERS * /*ExceptionInfo*/)
+	{
+		// When the CRT calls SetUnhandledExceptionFilter with NULL parameter
+		// our handler will not get removed.
+
+		console::printf("%s:%d\n", __PRETTY_FUNCTION__, __LINE__);
+
+		return 0;
+	}
+
 	int mainCRTStartup()
 	{
+		int ret = 0;
+
 		console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
+
+//		linkage::CAPIHook apiHook1("kernel32.dll", "SetUnhandledExceptionFilter", (PROC)RedirectedSetUnhandledExceptionFilter);
+
 		crt::init_atexit();
 
 		int argc = 0;
 		wchar_t ** argv = ::CommandLineToArgvW(::GetCommandLineW(), &argc);
 
-		int Result = wmain(argc, argv);
+		ret = wmain(argc, argv);
 
 		::LocalFree(argv);
 		crt::invoke_atexit();
@@ -28,16 +45,16 @@ extern "C" {
 			console::printf(L"stat free : %I64u, %I64u \n", stat.frees, stat.freeSize);
 			console::printf(L"stat diff : %I64d \n", stat.allocSize - stat.freeSize);
 		}
-		::ExitProcess(Result);
-		return Result;
+		::ExitProcess(ret);
+		return ret;
 	}
 
 	int	WinMainCRTStartup() // -mwindows
 	{
+		int ret = 0;
+
 		console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
 		crt::init_atexit();
-
-		int ret = 0;
 
 		STARTUPINFOW startupInfo;
 		::RtlSecureZeroMemory(&startupInfo, sizeof(startupInfo));

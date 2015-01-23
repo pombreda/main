@@ -7,52 +7,13 @@
 #include <basis/simstd/algorithm>
 #include <basis/simstd/string>
 
-#if defined(__GNUC__) && defined(DEBUG)
-#include <bfd.h>
-#endif
-
 namespace traceback {
 
 	LogRegisterLocal(L"traceback");
 
-	struct DebugSymbols {
-		static DebugSymbols & inst(const wchar_t* path = nullptr)
-		{
-			static DebugSymbols instance(path);
-			return instance;
-		}
-
-	private:
-		~DebugSymbols()
-		{
-			bool ret = os::Dbghelp_dll::inst().SymCleanup(::GetCurrentProcess());
-			LogTraceIf(ret);
-			LogErrorIf(!ret, L"%s\n", totext::api_error().c_str());
-			UNUSED(ret);
-		}
-
-		DebugSymbols(const wchar_t* path)
-		{
-			os::Dbghelp_dll::inst().SymSetOptions(os::Dbghelp_dll::inst().SymGetOptions() | /*SYMOPT_DEFERRED_LOADS | */SYMOPT_FAIL_CRITICAL_ERRORS | SYMOPT_LOAD_LINES);
-			bool ret = os::Dbghelp_dll::inst().SymInitializeW(::GetCurrentProcess(), path, TRUE);
-			LogNoiseIf(ret, L"['%s']\n", path);
-			LogErrorIf(!ret, L"['%s'] -> %s\n", path, totext::api_error().c_str());
-			UNUSED(ret);
-
-#if defined(__GNUC__) && defined(DEBUG)
-			bfd_init();
-#endif
-		}
-	};
-
-	void init(const wchar_t* path)
-	{
-		DebugSymbols::inst(path);
-	}
-
-	///=============================================================================================
 	Enum::Enum(size_t depth)
 	{
+		TraceFunc();
 		LogNoise(L"depth: %Iu\n", depth);
 
 		{
@@ -65,19 +26,24 @@ namespace traceback {
 			memory::free(tempFramesArray);
 		}
 		LogDebug(L"captured frames: %Iu\n", size());
+		TraceFunc();
 	}
 
 	Enum::Enum(PCONTEXT context, void* address, size_t depth)
 	{
+		TraceFunc();
 		LogNoise(L"context: %p address: %p depth: %Iu\n", context, address, depth);
 
 		/* � ��� � Release-������������ ���������� ��������� ���� /Oy- (�� �������� ��������� �� ������), ����� ����� ������.
 		 * http://www.bytetalk.net/2011/06/why-rtlcapturecontext-crashes-on.html
 		 */
-//		CONTEXT ctx;
-//		memory::zero(ctx);
-//		ctx.ContextFlags = CONTEXT_FULL;
-//		::RtlCaptureContext(&ctx);
+		if (context == nullptr) {
+			CONTEXT ctx;
+			memory::zero(ctx);
+			ctx.ContextFlags = CONTEXT_CONTROL/*CONTEXT_FULL*/;
+			::RtlCaptureContext(&ctx);
+			context = &ctx;
+		}
 
 		STACKFRAME64 sf;
 		memset(&sf, 0, sizeof(sf));
@@ -106,14 +72,14 @@ namespace traceback {
 #endif
 
 		while (depth-- > 0) {
-			PFUNCTION_TABLE_ACCESS_ROUTINE64 tar = (PFUNCTION_TABLE_ACCESS_ROUTINE64)&os::Dbghelp_dll::inst().SymFunctionTableAccess64;
-			PGET_MODULE_BASE_ROUTINE64 mbr = (PGET_MODULE_BASE_ROUTINE64)&os::Dbghelp_dll::inst().SymGetModuleBase64;
+			PFUNCTION_TABLE_ACCESS_ROUTINE64 tar = (PFUNCTION_TABLE_ACCESS_ROUTINE64)os::Dbghelp_dll::inst().SymFunctionTableAccess64;
+			PGET_MODULE_BASE_ROUTINE64 mbr = (PGET_MODULE_BASE_ROUTINE64)os::Dbghelp_dll::inst().SymGetModuleBase64;
 			BOOL res = os::Dbghelp_dll::inst().StackWalk64(machine, GetCurrentProcess(), GetCurrentThread(), &sf, (void*)context, nullptr, tar, mbr, nullptr);
 #ifdef _AMD64_
 			if (!res || sf.AddrReturn.Offset == 0)
 				break;
 			emplace_back(reinterpret_cast<void*>(sf.AddrReturn.Offset));
-			LogDebug(L"frame: %p\n", (void*)sf.AddrReturn.Offset);
+			LogNoise(L"frame: %p\n", (void*)sf.AddrReturn.Offset);
 #else
 			if (!res || sf.AddrPC.Offset == 0)
 				break;
@@ -122,6 +88,7 @@ namespace traceback {
 		}
 
 		LogDebug(L"captured frames: %Iu\n", size());
+		TraceFunc();
 	}
 
 	size_t Enum::get_max_depth()

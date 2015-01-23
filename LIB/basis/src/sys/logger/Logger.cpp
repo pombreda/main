@@ -6,9 +6,6 @@
 #include <basis/simstd/mutex>
 #include <basis/simstd/vector>
 
-//#define TraceFunc() console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
-#define TraceFunc()
-
 namespace logger {
 
 	struct pModule_less {
@@ -72,7 +69,7 @@ namespace logger {
 	{
 		TraceFunc();
 //		auto lockScope(simstd::auto_lock(m_sync));
-		defaultModule->out(Level::Force, L"Logger is being destroyed\n");
+		defaultModule->out(Level::Force, L"Logger is being destroyed. Modules: %Iu\n", m_modules.size());
 		while (!m_modules.empty()) {
 			m_modules.back()->destroy();
 			m_modules.pop_back();

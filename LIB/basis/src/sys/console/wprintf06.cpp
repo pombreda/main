@@ -4,17 +4,26 @@
 #include <basis/sys/memory.hpp>
 
 namespace {
-	const size_t DEFAULT_PRINTF_BUFFER = 8 * 1024;
+	const size_t DEFAULT_PRINTF_BUFFER = 16 * 1024;
 }
 
 namespace console {
 
 	size_t vprintf_var(Handle hnd, const wchar_t* format, va_list vl)
 	{
-		memory::auto_array<wchar_t> buf(DEFAULT_PRINTF_BUFFER);
-		while (!safe_vsnprintf(buf.data(), buf.size(), format, vl))
-			buf.reserve(buf.size() * 2);
-		return puts(buf.data(), cstr::length(buf.data()), hnd);
+		typedef memory::heap::Default heap_type;
+		typedef wchar_t char_type;
+
+		char_type* buff = nullptr;
+		size_t len = DEFAULT_PRINTF_BUFFER;
+		do {
+			buff = static_cast<char_type*>(HostRealloc(heap_type, buff, len * sizeof(char_type)));
+		} while (buff && !safe_vsnprintf(buff, len, format, vl) && (len *= 2));
+
+		auto ret = puts(buff, cstr::length(buff), hnd);
+		HostFree(heap_type, buff);
+
+		return ret;
 	}
 
 	size_t vprintf(Handle hnd, const wchar_t* format, va_list vl)

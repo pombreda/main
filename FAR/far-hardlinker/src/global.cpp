@@ -16,27 +16,18 @@ namespace global {
 		attrMustMatch = 0;
 		timeMustMatch = 0;
 		doHardlink = 0;
-		searchOptions.fileMinSize = 1024;
-		searchOptions.fileMaxSize = 3 * 1024 * 1024;
-		searchOptions.set_flag(fsys::Sequence::folderSkipAll, false);
-		searchOptions.set_flag(fsys::Sequence::folderSkipArchive, false);
-		searchOptions.set_flag(fsys::Sequence::folderSkipReadOnly, false);
-		searchOptions.set_flag(fsys::Sequence::folderSkipHidden, false);
-		searchOptions.set_flag(fsys::Sequence::folderSkipSystem, true);
-		searchOptions.set_flag(fsys::Sequence::folderSkipLink, false);
-		searchOptions.set_flag(fsys::Sequence::fileSkipAll, false);
-		searchOptions.set_flag(fsys::Sequence::fileSkipArchive, false);
-		searchOptions.set_flag(fsys::Sequence::fileSkipReadOnly, true);
-		searchOptions.set_flag(fsys::Sequence::fileSkipHidden, false);
-		searchOptions.set_flag(fsys::Sequence::fileSkipSystem, false);
-		searchOptions.set_flag(fsys::Sequence::fileSkipLink, true);
-		searchOptions.set_flag(fsys::Sequence::fileSkipStreamed, true);
-		searchOptions.set_flag(fsys::Sequence::fileSkipCompressed, true);
-		searchOptions.set_flag(fsys::Sequence::fileSkipEncrypted, true);
-		searchOptions.set_flag(fsys::Sequence::fileSkipSparse, true);
-		searchOptions.set_flag(fsys::Sequence::fileSkipTemporary, true);
-		searchOptions.set_flag(fsys::Sequence::fileSkipOffline, true);
-		searchOptions.set_flag(fsys::Sequence::fileSkipZeroSize, true);
+		{
+			auto& bunch = searchOptions.add_filter_bunch(fsys::Sequence::FiltersBunch::Type::IncludeOnly, L"qwe1");
+			bunch.add_filter(fsys::Sequence::Filter::BySize(1024, 1 * 1024 * 1024));
+//			auto enabledAttr = ~(FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_REPARSE_POINT);
+//			auto enabledAttr = ~static_cast<uint32_t>(0);
+			bunch.add_filter(fsys::Sequence::Filter::ByAttr(0, FILE_ATTRIBUTE_READONLY));
+//			filter.set_attr(FILE_ATTRIBUTE_HIDDEN, FILE_ATTRIBUTE_READONLY | FILE_ATTRIBUTE_SYSTEM);
+		}
+		{
+			auto& bunch = searchOptions.add_filter_bunch(fsys::Sequence::FiltersBunch::Type::ExcludeAll, L"qwe2");
+			bunch.add_filter(fsys::Sequence::Filter::BySize(500 * 1024, 600 * 1024));
+		}
 	}
 
 	Statistics & statistics()

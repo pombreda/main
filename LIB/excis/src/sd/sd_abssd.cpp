@@ -96,22 +96,22 @@ namespace Ext {
 		try {
 			m_owner = Sid::clone(owner);
 			set_owner(m_sd, m_owner);
-		} catch (exception::AbstractError & e) {
-			LogDebug(L"exception cought: %s, %s", e.what().c_str(), e.where().c_str());
+		} catch (exception::Abstract & e) {
+			LogDebug(L"exception cought: %s, %s", e.what(), e.where());
 		}
 
 		try {
 			m_group = Sid::clone(group);
 			set_group(m_sd, m_group);
-		} catch (exception::AbstractError & e) {
-			LogDebug(L"exception cought: %s, %s", e.what().c_str(), e.where().c_str());
+		} catch (exception::Abstract & e) {
+			LogDebug(L"exception cought: %s, %s", e.what(), e.where());
 		}
 
 		try {
 			WinDacl(dacl).detach(m_dacl);
 			set_dacl(m_sd, m_dacl);
-		} catch (exception::AbstractError & e) {
-			LogDebug(L"exception cought: %s, %s", e.what().c_str(), e.where().c_str());
+		} catch (exception::Abstract & e) {
+			LogDebug(L"exception cought: %s, %s", e.what(), e.where());
 		}
 
 		CheckApi(::IsValidSecurityDescriptor(m_sd));

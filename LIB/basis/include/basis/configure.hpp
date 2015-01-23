@@ -1,6 +1,8 @@
 ﻿#ifndef BASIS_CONFIGURE_HPP_
 #define BASIS_CONFIGURE_HPP_
 
+#include <basis/~configure/defines.hpp>
+
 #include <basis/~configure/os/windows_prolog.hpp>
 
 #ifdef _MSC_VER
@@ -28,5 +30,6 @@
 #include <basis/~configure/obligatory/this_file.hpp>
 #include <basis/~configure/obligatory/Va_list.hpp>
 #include <basis/~configure/simstd/rel_ops.hpp>
+#include <basis/~configure/printf_trace.hpp>
 
 #endif
