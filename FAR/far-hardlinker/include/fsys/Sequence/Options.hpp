@@ -16,7 +16,7 @@ namespace fsys {
 		bool apply_filters(const FindStat& stat) const;
 
 	private:
-		typedef simstd::vector<FiltersBunch> Filters;
+		using Filters = simstd::vector<FiltersBunch>;
 		Filters filters;
 	};
 
