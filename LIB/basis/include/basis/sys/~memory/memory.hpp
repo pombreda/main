@@ -121,7 +121,7 @@ namespace memory {
 	{
 		static_assert(std::is_pointer<Pointer1>::value, "Pointer type is required");
 		static_assert(std::is_pointer<Pointer2>::value, "Pointer type is required");
-		return memory::copy(memory::malloc<Pointer1>(size), src, size);
+		return memory::copy(static_cast<Pointer1>(HostAlloc(memory::heap::DefaultStat, size)), src, size);
 	}
 
 	template<typename Pointer>

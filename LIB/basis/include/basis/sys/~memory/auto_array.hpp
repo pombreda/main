@@ -16,11 +16,11 @@ namespace memory {
 	public:
 		~auto_array()
 		{
-			memory::free(m_ptr);
+			HostFree(memory::heap::DefaultStat, m_ptr);
 		}
 
 		explicit auto_array(size_type count) :
-			m_ptr(memory::calloc<pointer>(count)),
+			m_ptr(static_cast<pointer>(HostAlloc(memory::heap::DefaultStat, sizeof(value_type) * count))),
 			m_count(count)
 		{
 		}
@@ -42,7 +42,7 @@ namespace memory {
 		void reserve(size_type new_count)
 		{
 			if (size() < new_count) {
-				memory::realloc(m_ptr, new_count * sizeof(value_type), HEAP_ZERO_MEMORY);
+				m_ptr = static_cast<pointer>(HostRealloc(memory::heap::DefaultStat, m_ptr, new_count * sizeof(value_type)));
 				m_count = new_count;
 			}
 		}

@@ -289,7 +289,7 @@ namespace logger {
 			}
 		}
 
-		memory::free(urlCopy);
+		HostFree(memory::heap::DefaultStat, urlCopy);
 		TraceFunc();
 	}
 

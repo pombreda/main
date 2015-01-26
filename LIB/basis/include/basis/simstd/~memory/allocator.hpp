@@ -105,13 +105,13 @@ namespace simstd {
 	template<typename Type>
 	typename allocator<Type>::pointer allocator<Type>::allocate(size_type cnt, allocator<void>::const_pointer /*hint*/)
 	{
-		return static_cast<Type*>(::operator new(sizeof(Type) * cnt, simstd::nothrow));
+		return static_cast<Type*>(HostNew(sizeof(Type) * cnt));
 	}
 
 	template<typename Type>
 	void allocator<Type>::deallocate(pointer ptr, size_type /*cnt*/)
 	{
-		::operator delete(ptr, simstd::nothrow);
+		HostDelete(ptr);
 	}
 
 	template<typename Type>

@@ -16,24 +16,44 @@ namespace simstd {
 }
 
 ///=========================================================================== no exception versions
-inline void* operator new(size_t size, const simstd::nothrow_t&) throw()
+//inline void* operator new(size_t size, const simstd::nothrow_t&) throw()
+//{
+//	return HostAlloc(memory::heap::DefaultStat, size);
+//}
+//
+inline void* operator new(size_t size, const simstd::nothrow_t&, const char* func, int line) throw()
 {
-	return HostAlloc(memory::heap::DefaultStat, size);
+	return HostAlloc2(memory::heap::DefaultStat, size, func, line);
 }
 
-inline void* operator new[](size_t size, const simstd::nothrow_t&) throw()
+//inline void* operator new[](size_t size, const simstd::nothrow_t&) throw()
+//{
+//	return HostAlloc(memory::heap::DefaultStat, size);
+//}
+//
+inline void* operator new[](size_t size, const simstd::nothrow_t&, const char* func, int line) throw()
 {
-	return HostAlloc(memory::heap::DefaultStat, size);
+	return HostAlloc2(memory::heap::DefaultStat, size, func, line);
 }
 
-inline void operator delete(void* ptr, const simstd::nothrow_t&) throw()
+//inline void operator delete(void* ptr, const simstd::nothrow_t&) throw()
+//{
+//	HostFree(memory::heap::DefaultStat, ptr);
+//}
+//
+inline void operator delete(void* ptr, const simstd::nothrow_t&, const char* func, int line) throw()
 {
-	HostFree(memory::heap::DefaultStat, ptr);
+	HostFree2(memory::heap::DefaultStat, ptr, func, line);
 }
 
-inline void operator delete[](void * ptr, const simstd::nothrow_t&) throw()
+//inline void operator delete[](void * ptr, const simstd::nothrow_t&) throw()
+//{
+//	HostFree(memory::heap::DefaultStat, ptr);
+//}
+//
+inline void operator delete[](void * ptr, const simstd::nothrow_t&, const char* func, int line) throw()
 {
-	HostFree(memory::heap::DefaultStat, ptr);
+	HostFree2(memory::heap::DefaultStat, ptr, func, line);
 }
 
 ///===================================================================== Default no exception global

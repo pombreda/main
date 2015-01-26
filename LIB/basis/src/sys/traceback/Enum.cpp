@@ -17,13 +17,13 @@ namespace traceback {
 		LogNoise(L"depth: %Iu\n", depth);
 
 		{
-			PVOID* tempFramesArray = memory::calloc<PVOID*>(get_max_depth());
+			void** tempFramesArray = static_cast<void**>(HostAlloc(memory::heap::DefaultStat, sizeof(void**) * get_max_depth()));
 			WORD sz = ::RtlCaptureStackBackTrace(1, simstd::min(depth, get_max_depth()), tempFramesArray, nullptr);
 			for (WORD i = 0; i < sz; ++i) {
 				emplace_back(tempFramesArray[i]);
 //				LogDebug(L"frame[%d]: %p\n", (int)i, tempFramesArray[i]);
 			}
-			memory::free(tempFramesArray);
+			HostFree(memory::heap::DefaultStat, tempFramesArray);
 		}
 		LogDebug(L"captured frames: %Iu\n", size());
 		TraceFunc();
