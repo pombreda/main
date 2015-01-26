@@ -9,4 +9,8 @@
 #   endif
 #endif
 
+#ifndef PRINT_TRACE
+#   define PRINT_TRACE 0
+#endif
+
 #endif
