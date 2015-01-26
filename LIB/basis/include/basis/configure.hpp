@@ -22,14 +22,13 @@
 #include <basis/~configure/obligatory/types.hpp>
 #include <basis/~configure/simstd/types.hpp>
 #include <basis/~configure/simstd/algorithm.hpp>
+#include <basis/~configure/simstd/rel_ops.hpp>
 #include <basis/~configure/obligatory/array.hpp>
 #include <basis/~configure/obligatory/constants.hpp>
-#include <basis/~configure/obligatory/definitions.hpp>
 #include <basis/~configure/obligatory/make_ll.hpp>
 #include <basis/~configure/obligatory/safe.hpp>
 #include <basis/~configure/obligatory/this_file.hpp>
 #include <basis/~configure/obligatory/Va_list.hpp>
-#include <basis/~configure/simstd/rel_ops.hpp>
 #include <basis/~configure/printf_trace.hpp>
 
 #endif

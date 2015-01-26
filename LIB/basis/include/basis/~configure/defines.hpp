@@ -13,4 +13,8 @@
 #   define PRINT_TRACE 0
 #endif
 
+#define UNUSED(val) ((void)val)
+
+#define THIS_PLACE  __FILE__, __LINE__, __PRETTY_FUNCTION__
+
 #endif
