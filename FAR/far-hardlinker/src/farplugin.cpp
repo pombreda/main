@@ -29,6 +29,7 @@
 #include <far3/plugin.hpp>
 #include <far3/message.hpp>
 #include <far3/dialog.hpp>
+#include <far3/panel.hpp>
 
 #include <basis/sys/cstr.hpp>
 #include <basis/sys/logger.hpp>
@@ -108,7 +109,7 @@ namespace far3 {
 
 }
 
-far3::PanelController_i* FarPlugin::Open(const OpenInfo * info)
+far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 {
 	UNUSED(info);
 	LogTrace();
@@ -158,6 +159,24 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo * info)
 		LogTrace();
 		if (dialog->show() == 0) {
 			fgi->save_settings();
+
+			if (info->OpenFrom == OPEN_PLUGINSMENU || info->OpenFrom == OPEN_FROMMACRO) {
+				auto panel = far3::open_panel(far3::get_plugin_guid());
+				if (panel) {
+					auto ppi = panel->get_current();
+					auto fileName = ppi->FileName;
+					LogNoise(L"ppi->FileName: '%s'\n", fileName);
+//					if (cstr::find(fileName, PATH_SEPARATORS)) {
+//						cstr::copy(buf2, fileName, lengthof(buf2));
+//					} else {
+//						cstr::copy(buf2, panel->get_current_directory(), lengthof(buf2));
+//						if (!cstr::is_empty(buf2)) {
+//							Far::fsf().AddEndSlash(buf2);
+//						}
+//						cstr::cat(buf2, fileName, lengthof(buf2));
+//					}
+				}
+			}
 
 			global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(L"c:\\sysint")));
 			global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(L"d:\\sysint")));

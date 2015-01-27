@@ -1,5 +1,4 @@
-﻿
-/**
+﻿/**
  © 2014 Andrew Grechkin
  Source code: <http://code.google.com/p/andrew-grechkin>
 
@@ -39,7 +38,7 @@ namespace far3 {
 
 			virtual void add_OKCancel(PCWSTR OKLabel, PCWSTR CancelLabel, PCWSTR ExtraLabel = nullptr) = 0;
 
-//			virtual void add_radiobuttons(ssize_t * Value, ssize_t OptionCount, const AddRadioButton_t list[], bool FocusOnSelected = false) = 0;
+//			virtual void add_radiobuttons(ssize_t* Value, ssize_t OptionCount, const AddRadioButton_t list[], bool FocusOnSelected = false) = 0;
 
 			virtual void start_column() = 0;
 
@@ -54,7 +53,7 @@ namespace far3 {
 			virtual int show() = 0;
 		};
 
-		typedef simstd::unique_ptr<Builder_i> Builder;
+		using Builder = simstd::unique_ptr<Builder_i>;
 
 		Builder create_builder(size_t count, const GUID& aId, PCWSTR TitleLabel, PCWSTR aHelpTopic = nullptr, FARWINDOWPROC aDlgProc = nullptr, void * aUserParam = nullptr);
 
