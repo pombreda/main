@@ -13,16 +13,31 @@ namespace fsys {
 		++global::statistics().fileObjectsDestroyed;
 	}
 
-	File::File(const fsys::Sequence::FindStat& info, Node_t parent) :
-		Node(info.name(), parent),
-		m_size(info.size()),
-		m_mtime(info.mtime()),
-		m_attr(info.attr()),
-		m_volume_sn(),
-		m_inode()
+	File::File(const fsys::Sequence::FindStat& info, Node_t parent)
+		: Node(info.name(), parent)
+		, m_size(info.size())
+		, m_mtime(info.mtime())
+		, m_attr(info.attr())
+		, m_volume_sn()
+		, m_inode()
 	{
 		LogTraceObj();
 		LogNoise(L"'%s'\n", m_name.c_str());
+		++global::statistics().fileObjectsCreated;
+	}
+
+	File::File(const ustring& path, const ustring& name)
+		: Node(name)
+		, m_size()
+		, m_mtime()
+		, m_attr()
+		, m_volume_sn()
+		, m_inode()
+		, m_full_path(path + PATH_SEPARATOR + name)
+	{
+		LogTraceObj();
+		LogNoise(L"'%s'\n", m_name.c_str());
+		refresh_handle_info(true);
 		++global::statistics().fileObjectsCreated;
 	}
 
@@ -80,12 +95,18 @@ namespace fsys {
 		return m_wholeHash;
 	}
 
-	void File::refresh_handle_info() const
+	void File::refresh_handle_info(bool basicInfo) const
 	{
 		fsys::Stat stat(fsys::stat(get_full_path().c_str()));
 		if (stat) {
 			m_volume_sn = stat->volume_sn();
 			m_inode     = stat->inode();
+
+			if (basicInfo) {
+				m_size = stat->size();
+				m_mtime = stat->mtime();
+				m_attr = stat->attr();
+			}
 		}
 		LogDebug(L"vol: 0x%08X, inode: 0x%016X '%s'\n", m_volume_sn, m_inode, m_name.c_str());
 	}

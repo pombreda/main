@@ -48,11 +48,13 @@ namespace fsys {
 
 	class File: public Node {
 	public:
-		typedef simstd::vector<char> hash_type;
+		using hash_type = simstd::vector<char>;
 
 		~File();
 
-		File(const fsys::Sequence::FindStat & info, Node_t parent);
+		File(const fsys::Sequence::FindStat& info, Node_t parent);
+
+		File(const ustring& path, const ustring& name);
 
 		ustring get_full_path() const;
 
@@ -73,19 +75,19 @@ namespace fsys {
 		const hash_type & get_whole_hash() const;
 
 	private:
-		void refresh_handle_info() const;
+		void refresh_handle_info(bool basicInfo = false) const;
 
 		static bool count_hash(hash_type & out, ustring path, uint64_t first, uint64_t last);
 
-		uint64_t             m_size;
-		uint64_t             m_mtime;
-		size_t               m_attr;
+		mutable uint64_t     m_size;
+		mutable uint64_t     m_mtime;
+		mutable size_t       m_attr;
 		mutable hash_type    m_headHash;
 		mutable hash_type    m_tailHash;
 		mutable hash_type    m_wholeHash;
 		mutable size_t       m_volume_sn;
 		mutable uint64_t     m_inode;
-		mutable ustring m_full_path;
+		mutable ustring      m_full_path;
 
 		friend bool compare_head_hash(const File & file1, const File & file2);
 		friend bool compare_tail_hash(const File & file1, const File & file2);

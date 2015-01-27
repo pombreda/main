@@ -33,6 +33,8 @@
 
 #include <basis/sys/cstr.hpp>
 #include <basis/sys/logger.hpp>
+#include <basis/sys/fsys.hpp>
+#include <basis/sys/path.hpp>
 
 struct FarPlugin: public far3::Plugin_i {
 	~FarPlugin();
@@ -161,11 +163,23 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 			fgi->save_settings();
 
 			if (info->OpenFrom == OPEN_PLUGINSMENU || info->OpenFrom == OPEN_FROMMACRO) {
-				auto panel = far3::open_panel(far3::get_plugin_guid());
-				if (panel) {
-					auto ppi = panel->get_current();
-					auto fileName = ppi->FileName;
-					LogNoise(L"ppi->FileName: '%s'\n", fileName);
+				auto apanel = far3::open_panel(true);
+				auto ppanel = far3::open_panel(false);
+				if (apanel && ppanel) {
+					auto appi = apanel->get_current();
+					auto afileName = appi->FileName;
+					auto api = apanel->get_info();
+					LogNoise(L"pi->StructSize: '%Iu'\n", api->StructSize);
+					LogNoise(L"pi->PluginHandle: '%p'\n", api->PluginHandle);
+					LogNoise(L"pi->Flags: '%I64X'\n", api->Flags);
+					LogNoise(L"pi->ItemsNumber: '%Iu'\n", api->ItemsNumber);
+					LogNoise(L"pi->SelectedItemsNumber: '%Iu'\n", api->SelectedItemsNumber);
+					LogNoise(L"pi->CurrentItem: '%Iu'\n", api->CurrentItem);
+					LogNoise(L"pi->TopPanelItem: '%Iu'\n", api->TopPanelItem);
+
+					LogNoise(L"pi->curr_dir: '%s'\n", apanel->get_current_directory());
+					LogNoise(L"pi->FileName: '%s'\n", afileName);
+					LogNoise(L"ppi->FileName: '%s'\n", afileName);
 //					if (cstr::find(fileName, PATH_SEPARATORS)) {
 //						cstr::copy(buf2, fileName, lengthof(buf2));
 //					} else {
@@ -175,11 +189,36 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 //						}
 //						cstr::cat(buf2, fileName, lengthof(buf2));
 //					}
+
+					auto pppi = ppanel->get_current();
+					auto pfileName = pppi->FileName;
+					auto ppi = ppanel->get_info();
+					LogNoise(L"pi->StructSize: '%Iu'\n", ppi->StructSize);
+					LogNoise(L"pi->PluginHandle: '%p'\n", ppi->PluginHandle);
+					LogNoise(L"pi->Flags: '%I64X'\n", ppi->Flags);
+					LogNoise(L"pi->ItemsNumber: '%Iu'\n", ppi->ItemsNumber);
+					LogNoise(L"pi->SelectedItemsNumber: '%Iu'\n", ppi->SelectedItemsNumber);
+					LogNoise(L"pi->CurrentItem: '%Iu'\n", ppi->CurrentItem);
+					LogNoise(L"pi->TopPanelItem: '%Iu'\n", ppi->TopPanelItem);
+
+					LogNoise(L"pi->curr_dir: '%s'\n", ppanel->get_current_directory());
+					LogNoise(L"pi->FileName: '%s'\n", pfileName);
+					LogNoise(L"ppi->FileName: '%s'\n", pfileName);
+
+					apanel->start_selection();
+					for (size_t i = apanel->selected(); i; --i) {
+						auto item = apanel->get_selected(0);
+						if (item) {
+							if (fsys::is_dir(item->FileAttributes))
+								global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(path::make(apanel->get_current_directory(), item->FileName))));
+							else
+								global::vars().files.emplace_back(fsys::File_t(new fsys::File(apanel->get_current_directory(), item->FileName)));
+						}
+						apanel->unselect(0);
+					}
+					apanel->commit_selection();
 				}
 			}
-
-			global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(L"c:\\sysint")));
-			global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(L"d:\\sysint")));
 
 			FileProcessor().execute();
 		}

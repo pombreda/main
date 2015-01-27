@@ -27,29 +27,33 @@ namespace far3 {
 		struct Facade {
 			virtual ~Facade() = default;
 
-//			virtual bool is_active() const = 0;
-//
-//			virtual size_t size() const = 0;
-//
-//			virtual size_t selected() const = 0;
-//
-//			virtual size_t current() const = 0;
-//
-//			virtual PANELINFOFLAGS get_flags() const = 0;
-//
+			virtual const PanelInfo* get_info() const = 0;
+
+			virtual bool is_active() const = 0;
+
+			virtual size_t size() const = 0;
+
+			virtual size_t selected() const = 0;
+
+			virtual size_t current() const = 0;
+
+			virtual PANELINFOFLAGS get_flags() const = 0;
+
+			virtual const wchar_t* get_current_directory() const = 0;
+
 			virtual const PluginPanelItem* operator [](size_t index) const = 0;
-//
-//			virtual const PluginPanelItem* get_selected(size_t index) const;
-//
+
+			virtual const PluginPanelItem* get_selected(size_t index) const = 0;
+
 			virtual const PluginPanelItem* get_current() const = 0;
-//
-//			virtual void start_selection() = 0;
-//
-//			virtual void select(size_t index, bool in) = 0;
-//
-//			virtual void unselect(size_t index) = 0;
-//
-//			virtual void commit_selection() = 0;
+
+			virtual void start_selection() = 0;
+
+			virtual void select(size_t index, bool in) = 0;
+
+			virtual void unselect(size_t index) = 0;
+
+			virtual void commit_selection() = 0;
 		};
 
 	}
