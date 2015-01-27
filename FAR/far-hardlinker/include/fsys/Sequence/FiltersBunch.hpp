@@ -128,7 +128,7 @@ private:
 	ustring name;
 	Type    type;
 
-	typedef simstd::vector<Filter*> Filters;
+	using Filters = simstd::vector<Filter*>;
 	Filters bunch;
 };
 
