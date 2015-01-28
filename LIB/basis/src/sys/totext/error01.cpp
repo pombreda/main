@@ -28,7 +28,7 @@ namespace totext {
 		}
 
 		{ // remove new line from message
-			wchar_t*  cr = wcschr(buf, L'\n');
+			wchar_t* cr = wcschr(buf, L'\n');
 			if (cr)
 			{
 				if (cr > buf && *(cr - 1) == L'\r')

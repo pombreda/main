@@ -13,6 +13,7 @@ namespace console {
 		UTF16LE = 1200,
 		UTF16BE = 1201,
 		UTF8 = 65001,
+		OEM = 866,
 	};
 
 	size_t get_output_codepage();

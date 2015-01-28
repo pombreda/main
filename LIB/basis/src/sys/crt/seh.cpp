@@ -29,7 +29,7 @@ namespace crt {
 //		print_trace(ep->ContextRecord, reinterpret_cast<void*>(ep->ExceptionRecord->ExceptionAddress));
 
 		console::printf("%s(): terminating process\n", __FUNCTION__);
-		console::printf("%s(): with error %S\n", __FUNCTION__, totext::nt_status(ep->ExceptionRecord->ExceptionCode).c_str());
+		console::printf(L"%S(): with error %s\n", __FUNCTION__, totext::nt_status(ep->ExceptionRecord->ExceptionCode).c_str());
 
 		::ExitProcess(ep->ExceptionRecord->ExceptionCode);
 //		return EXCEPTION_CONTINUE_EXECUTION; // should terminate process.
