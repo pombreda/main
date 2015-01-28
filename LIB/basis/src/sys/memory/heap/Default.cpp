@@ -33,7 +33,7 @@ namespace memory {
 			TraceFunc();
 			UNUSED(function);
 			UNUSED(line);
-			return HeapReAlloc(GetProcessHeap(), 0, ptr, size);
+			return ptr ? HeapReAlloc(GetProcessHeap(), 0, ptr, size) : HeapAlloc(GetProcessHeap(), 0, size);
 		}
 
 		void Default::free(const void* ptr, const char* function, int line)

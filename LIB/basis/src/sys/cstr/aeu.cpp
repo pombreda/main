@@ -5,7 +5,7 @@ namespace cstr {
 
 	aeu::~aeu()
 	{
-		memory::free(ptr);
+		HostFree(memory::heap::DefaultStat, ptr);
 	}
 
 	aeu::aeu(const_pointer str) :

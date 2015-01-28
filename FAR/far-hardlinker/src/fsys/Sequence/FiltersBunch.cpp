@@ -2,6 +2,13 @@
 
 #include <basis/simstd/algorithm>
 
+namespace {
+	inline const wchar_t* matched_or_not(bool passed)
+	{
+		return passed ? L"    matched" : L"not matched";
+	}
+}
+
 const wchar_t* to_str(fsys::Sequence::FiltersBunch::Type type)
 {
 	auto ret = L"I";
@@ -25,7 +32,7 @@ bool fsys::Sequence::Filter::ByAttr::operator ()(const FindStat& stat) const
 {
 	bool passed = (stat.attr() | include) == stat.attr() && (stat.attr() & exclude) == Attr();
 
-	LogConsoleDebug2(-1, L"    %s [attr(0x%08X && !0x%08X)]: 0x%08X\n", passed ? L"passed" : L"ignore", include, exclude, stat.attr());
+	LogConsoleDebug2(-1, L"    %s [attr: 0x%08X %% (0x%08X && !0x%08X)]\n", matched_or_not(passed), stat.attr(), include, exclude);
 
 	return passed;
 }
@@ -50,7 +57,7 @@ bool fsys::Sequence::Filter::BySize::operator ()(const Sequence::FindStat& stat)
 {
 	bool passed = simstd::between(minSize, stat.size(), maxSize);
 
-	LogConsoleDebug2(-1, L"    %s [size(%I64u, %I64u)]: %I64u\n", passed ? L"passed" : L"ignore", minSize, maxSize, stat.size());
+	LogConsoleDebug2(-1, L"    %s [size: %I64u %% (%I64d, %I64d)]\n", matched_or_not(passed), stat.size(), minSize, maxSize);
 
 	return passed;
 }
@@ -74,7 +81,7 @@ bool fsys::Sequence::Filter::ByMask::operator ()(const Sequence::FindStat& /*sta
 {//FIXME
 	bool passed = true;
 
-	LogConsoleDebug2(-1, L"    %s [mask(%s)]\n", passed ? L"passed" : L"ignore", mask.c_str());
+	LogConsoleDebug2(-1, L"    %s [mask(%s)]\n", matched_or_not(passed), mask.c_str());
 
 	return passed;
 }
@@ -99,7 +106,7 @@ bool fsys::Sequence::Filter::ByWrTime::operator ()(const FindStat& stat) const
 {
 	bool passed = simstd::between(minTime, stat.mtime(), maxTime);
 
-	LogConsoleDebug2(-1, L"    %s [wrtime(%I64d, %I64d)]: %I64d\n", passed ? L"passed" : L"ignore", minTime, maxTime, stat.mtime());
+	LogConsoleDebug2(-1, L"    %s [wrtime: %I64d %% (%I64d, %I64d)]\n", matched_or_not(passed), stat.mtime(), minTime, maxTime);
 
 	return passed;
 }
@@ -124,7 +131,7 @@ bool fsys::Sequence::Filter::ByCrTime::operator ()(const FindStat& stat) const
 {
 	bool passed = simstd::between(minTime, stat.ctime(), maxTime);
 
-	LogConsoleDebug2(-1, L"    %s [crtime(%I64d, %I64d)]: %I64d\n", passed ? L"passed" : L"ignore", minTime, maxTime, stat.ctime());
+	LogConsoleDebug2(-1, L"    %s [crtime: %I64d %% (%I64d, %I64d)]\n", matched_or_not(passed), stat.ctime(), minTime, maxTime);
 
 	return passed;
 }
@@ -149,7 +156,7 @@ bool fsys::Sequence::Filter::ByAcTime::operator ()(const FindStat& stat) const
 {
 	bool passed = simstd::between(minTime, stat.atime(), maxTime);
 
-	LogConsoleDebug2(-1, L"    %s [actime(%I64d, %I64d)]: %I64d\n", passed ? L"passed" : L"ignore", minTime, maxTime, stat.atime());
+	LogConsoleDebug2(-1, L"    %s [actime: %I64d %% (%I64d, %I64d)]\n", matched_or_not(passed), stat.atime(), minTime, maxTime);
 
 	return passed;
 }
@@ -180,14 +187,14 @@ fsys::Sequence::FiltersBunch::FiltersBunch(Type type, const ustring& name):
 
 bool fsys::Sequence::FiltersBunch::operator ()(const FindStat& stat, Statistics& /*statistics*/) const
 { // return true if skip this item
-	LogConsoleDebug2(-1, L"   appply filter [%s, %s] on '%s'\n", to_str(type), name.c_str(), stat.name());
+	LogConsoleDebug2(-1, L"   appply filter [%s, '%s'] on '%s'\n", to_str(type), name.c_str(), stat.name());
 
-	bool passed = true;
-	for (auto it = bunch.cbegin(); it != bunch.cend() && passed; ++it) {
-		passed = (*it)->operator()(stat);
+	bool matched = true;
+	for (auto it = bunch.cbegin(); it != bunch.cend() && matched; ++it) {
+		matched = (*it)->operator()(stat);
 	}
 
-	return (type == Type::IncludeOnly && !passed) || (type == Type::ExcludeAll && passed);
+	return (type == Type::IncludeOnly && !matched) || (type == Type::ExcludeAll && matched);
 }
 
 fsys::Sequence::FiltersBunch::Type fsys::Sequence::FiltersBunch::get_type() const

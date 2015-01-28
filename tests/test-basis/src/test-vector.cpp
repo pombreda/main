@@ -17,7 +17,7 @@ void test_vector()
 {
 	LogWarn(L"\n");
 
-	vector_type* vec1 = memory::malloc<vector_type*>(sizeof(vector_type));
+	vector_type* vec1 = static_cast<vector_type*>(HostAlloc(heap_type, sizeof(vector_type)));
 	new (vec1, simstd::nothrow) vector_type();
 
 //	vector_type* vec1 = new vector_type;
@@ -27,7 +27,7 @@ void test_vector()
 	LogReport(L"size: %Iu, capa: %Iu\n", vec1->size(), vec1->capacity());
 //	delete vec1;
 	vec1->~vector();
-	memory::free(vec1);
+	HostFree(heap_type, vec1);
 
 	{
 		const auto stat = heap_type::get_stat();

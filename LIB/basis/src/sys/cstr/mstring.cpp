@@ -6,7 +6,7 @@ namespace cstr {
 
 	mstring::~mstring()
 	{
-		memory::free(m_data);
+		HostFree(memory::heap::DefaultStat, m_data);
 	}
 
 	mstring::mstring(const_pointer mstr) :
@@ -57,7 +57,7 @@ namespace cstr {
 			size_t size = cstr::length(str) + 1;
 			size_t new_index = m_capa;
 			m_capa += size;
-			memory::realloc(m_data, sizeof(value_type) * (m_capa + 1));
+			m_data = static_cast<pointer>(HostRealloc(memory::heap::DefaultStat, m_data, sizeof(value_type) * (m_capa + 1)));
 			cstr::char_traits<value_type>::ncopy(&m_data[new_index], str, size);
 			m_data[m_capa] = static_cast<value_type>(0);
 			++m_size;
@@ -100,7 +100,7 @@ namespace cstr {
 	void mstring::add_data(const_pointer mstr)
 	{
 		if (m_capa) {
-			m_data = memory::calloc<pointer>(m_capa + 1);
+			m_data = static_cast<pointer>(HostRealloc(memory::heap::DefaultStat, m_data, sizeof(value_type) * (m_capa + 1)));
 			cstr::char_traits<value_type>::ncopy(m_data, mstr, m_capa);
 			m_data[m_capa] = static_cast<value_type>(0);
 		}

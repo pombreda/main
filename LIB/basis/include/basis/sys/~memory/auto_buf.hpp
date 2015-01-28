@@ -41,7 +41,7 @@ namespace memory {
 		void reserve(size_type new_size_bytes)
 		{
 			if (size() < new_size_bytes) {
-				memory::realloc(m_ptr, new_size_bytes);
+				m_ptr = static_cast<value_type>(HostRealloc(memory::heap::DefaultStat, m_ptr, new_size_bytes));
 			}
 		}
 
@@ -77,7 +77,7 @@ namespace memory {
 
 		void attach(value_type& ptr)
 		{ //  FIXME
-			memory::free(m_ptr);
+			HostFree(memory::heap::DefaultStat, m_ptr);
 			m_ptr = ptr;
 		}
 

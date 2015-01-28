@@ -18,13 +18,13 @@ namespace simstd {
 		template<typename Type>
 		Type* _allocate(size_t cnt)
 		{
-			return static_cast<Type*>(::operator new(sizeof(Type) * cnt, simstd::nothrow));
+			return static_cast<Type*>(HostNew(sizeof(Type) * cnt));
 		}
 
 		template<typename Type>
 		void _deallocate(Type* ptr, size_t /*cnt*/ = 0)
 		{
-			::operator delete(ptr, simstd::nothrow);
+			HostDelete(ptr);
 		}
 
 		template<typename Type1, typename Type2>
@@ -121,14 +121,14 @@ namespace simstd {
 	template<typename Type>
 	simstd::pair<Type*, ptrdiff_t> get_temporary_buffer(ptrdiff_t cnt)
 	{
-		Type* ptr = static_cast<Type*>(::operator new(sizeof(Type) * cnt, simstd::nothrow));
+		Type* ptr = static_cast<Type*>(HostNew(sizeof(Type) * cnt));
 		return simstd::pair<Type*, ptrdiff_t>(ptr, ptr ? cnt : 0);
 	}
 
 	template<typename Type>
 	void return_temporary_buffer(Type* ptr)
 	{
-		::operator delete(ptr, simstd::nothrow);
+		HostDelete(ptr);
 	}
 
 }

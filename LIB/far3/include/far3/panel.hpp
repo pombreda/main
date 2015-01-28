@@ -16,10 +16,14 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef _FAR3_SETTINGS_HPP_
-#define _FAR3_SETTINGS_HPP_
+#ifndef _FAR3_PANEL_HPP_
+#define _FAR3_PANEL_HPP_
+
+#include <basis/configure.hpp>
+
+#include <basis/simstd/memory>
 
 #include <far3/plugin.hpp>
-#include <far3/~settings/Facade.hpp>
+#include <far3/~panel/Facade.hpp>
 
 #endif
