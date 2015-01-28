@@ -1,6 +1,8 @@
 #ifndef BASIS_SYS_MEMORY_HEAP_STAT_HPP_
 #define BASIS_SYS_MEMORY_HEAP_STAT_HPP_
 
+#include <basis/ext/pattern.hpp>
+
 namespace memory {
 	namespace heap {
 
@@ -48,8 +50,6 @@ namespace memory {
 			uint64_t frees;
 			uint64_t allocSize;
 			uint64_t freeSize;
-
-			void*    database;
 		};
 
 		struct StatLog: public StatCount

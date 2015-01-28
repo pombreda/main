@@ -1,14 +1,8 @@
 #include <basis/configure.hpp>
 #include <basis/sys/~memory/heap/Stat.hpp>
+#include <basis/sys/traceback.hpp>
 
 #include <basis/simstd/vector>
-
-#ifndef NDEBUG
-namespace {
-	typedef simstd::AllocatorHeap<memory::heap::AllocatedItem, memory::heap::Default> Allocator;
-	typedef simstd::vector<memory::heap::AllocatedItem, Allocator> vector_type;
-}
-#endif
 
 memory::heap::AllocatedItem::AllocatedItem(void* ptr, uint64_t size, const char* function, int line) :
 	size(size),
@@ -22,24 +16,15 @@ memory::heap::AllocatedItem::AllocatedItem(void* ptr, uint64_t size, const char*
 memory::heap::StatCount::~StatCount()
 {
 	TraceFunc();
-#ifndef NDEBUG
-	reinterpret_cast<vector_type*>(database)->~vector();
-	HostFree(memory::heap::Default, database);
-#endif
 }
 
 memory::heap::StatCount::StatCount():
 	allocations(),
 	frees(),
 	allocSize(),
-	freeSize(),
-	database()
+	freeSize()
 {
 	TraceFunc();
-#ifndef NDEBUG
-	database = HostAlloc(memory::heap::Default, sizeof(vector_type));
-	new (database, simstd::nothrow) vector_type();
-#endif
 }
 
 void* memory::heap::StatCount::commit_alloc(void* ptr, uint64_t size, const char* function, int line)
@@ -51,10 +36,6 @@ void* memory::heap::StatCount::commit_alloc(void* ptr, uint64_t size, const char
 	if (ptr) {
 		++allocations;
 		allocSize += size;
-
-#ifndef NDEBUG
-		reinterpret_cast<vector_type*>(database)->emplace_back(ptr, size, function, line);
-#endif
 	}
 
 	return ptr;
@@ -82,4 +63,3 @@ void memory::heap::StatCount::free_database(AllocatedItem* db) const
 {
 	delete db;
 }
-

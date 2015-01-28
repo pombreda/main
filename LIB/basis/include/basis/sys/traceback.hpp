@@ -11,6 +11,8 @@ namespace traceback {
 
 	void init(const wchar_t* path = nullptr);
 
+	void print();
+
 	struct Frame_i
 	{
 		virtual ~Frame_i();

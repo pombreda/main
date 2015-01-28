@@ -1,8 +1,11 @@
 #include <basis/os/dbghelp.hpp>
 #include <basis/sys/traceback.hpp>
+#include <basis/sys/console.hpp>
 #include <basis/sys/logger.hpp>
 #include <basis/sys/memory.hpp>
 #include <basis/sys/totext.hpp>
+
+#include <basis/simstd/string>
 
 #include "Bfd.hpp"
 
@@ -52,4 +55,12 @@ namespace traceback {
 void traceback::init(const wchar_t* path)
 {
 	DebugSymbols::inst(path);
+}
+
+void traceback::print()
+{
+	traceback::Enum tb;
+	console::printf("Backtrace: [%Iu]\n", tb.size());
+	for (size_t i = 0; i < tb.size(); ++i)
+		console::printf("[%02Iu] %S\n", tb.size() - (i + 1), tb[i].to_str().c_str());
 }

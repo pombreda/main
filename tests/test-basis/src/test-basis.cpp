@@ -3,6 +3,7 @@
 #include <basis/sys/console.hpp>
 #include <basis/sys/crt.hpp>
 #include <basis/sys/logger.hpp>
+#include <basis/sys/memory.hpp>
 
 namespace {
 	void setup_logger()
@@ -66,6 +67,7 @@ int main(int argc, char* argv[])
 //	test_zodiac();
 
 	TraceFunc();
+	LogTrace();
 	return 0;
 }
 
