@@ -44,9 +44,9 @@ int main(int argc, char* argv[])
 //
 //	test_crypt();
 //
-//	test_crashes();
+	test_crashes();
 //
-	test_list();
+//	test_list();
 //
 //	test_math();
 //

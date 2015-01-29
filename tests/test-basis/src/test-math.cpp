@@ -8,17 +8,19 @@ void test_math()
 {
 	LogWarn(L"\n");
 
-	math::fixed<32> v0;
-	math::fixed<32> v1(15, 64);
-	math::fixed<32> v_1(-7, 64);
-	math::fixed<32> v1_25(1.25);
-	math::fixed<32> v_1_25(-1.25);
-	math::fixed<32> v1_5(1.5);
-	math::fixed<32> v_1_5(-1.5);
-	math::fixed<32> v13_14(13.14);
-	math::fixed<32> v_13_14(-13.14);
-	math::fixed<32> v__13_14(-v_13_14);
-//	math::fixed<32> v23__7(23, 7);
+	const int bits = sizeof(size_t) * 8 / 2;
+
+	math::fixed<bits> v0;
+	math::fixed<bits> v1(15, 64);
+	math::fixed<bits> v_1(-7, 64);
+	math::fixed<bits> v1_25(1.25);
+	math::fixed<bits> v_1_25(-1.25);
+	math::fixed<bits> v1_5(1.5);
+	math::fixed<bits> v_1_5(-1.5);
+	math::fixed<bits> v13_14(13.14);
+	math::fixed<bits> v_13_14(-13.14);
+	math::fixed<bits> v__13_14(-v_13_14);
+//	math::fixed<bits> v23__7(23, 7);
 
 	LogReport(L"v0:       %08X.%08X -> %f\n", high_part_64(v0.value), low_part_64(v0.value), double(v0));
 	LogReport(L"v1:       %08X.%08X -> %f\n", high_part_64(v1.value), low_part_64(v1.value), double(v1));

@@ -54,7 +54,7 @@ traceback::Bfd::Context::Context(const wchar_t* image)
 
 	if (!(r1 && r2 && r3)) {
 		bfd_close(b);
-		LogError(L"Failed to init bfd from (%s)\n", image);
+		LogError(L"Failed to init bfd from (%d, %d, %d) (%s)\n", r1, r2, r3, image);
 		return;
 	}
 
