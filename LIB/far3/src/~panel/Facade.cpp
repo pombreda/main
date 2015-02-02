@@ -133,7 +133,7 @@ namespace far3 {
 			if (psi().PanelControl(m_hndl, FCTL_GETPANELDIRECTORY, size, m_dir) && m_dir->Name) {
 				ret = m_dir->Name;
 			}
-			LogNoise(L"-> %s\n", ret);
+			LogNoise(L"-> '%s'\n", ret);
 			return ret;
 		}
 

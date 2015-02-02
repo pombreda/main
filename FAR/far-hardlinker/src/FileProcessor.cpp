@@ -127,7 +127,7 @@ void scan_single_folder(fsys::Node_t folder)
 
 	fsys::Sequence dir(fullPath, L"*", global::options().searchOptions);
 	for (auto it = dir.begin(); it != dir.end(); ++it) {
-		LogDebug(L"%s\n", it->name());
+		LogDebug(L"found: '%s'\n", it->name());
 		if (it->is_dir()) {
 			global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(it->name(), folder)));
 		} else {
