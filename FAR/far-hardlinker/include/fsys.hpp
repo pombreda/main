@@ -2,6 +2,7 @@
 #define _FSYS_HPP_
 
 #include <basis/ext/pattern.hpp>
+#include <basis/sys/fsys.hpp>
 #include <basis/simstd/iosfwd>
 #include <basis/simstd/memory>
 

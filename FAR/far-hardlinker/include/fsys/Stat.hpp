@@ -5,11 +5,11 @@
 
 namespace fsys {
 
-	class Stat_i {
+	class StatEx_i {
 	public:
-		virtual ~Stat_i() = default;
+		virtual ~StatEx_i() = default;
 
-		bool operator ==(const Stat_i & other) const;
+		bool operator ==(const StatEx_i & other) const;
 
 		virtual size_t attr() const = 0;
 		virtual size_t volume_sn() const = 0;
@@ -26,7 +26,7 @@ namespace fsys {
 		virtual bool is_lnk() const = 0;
 	};
 
-	typedef simstd::unique_ptr<Stat_i> Stat;
+	typedef simstd::unique_ptr<StatEx_i> Stat;
 
 	Stat stat(const char* path);
 

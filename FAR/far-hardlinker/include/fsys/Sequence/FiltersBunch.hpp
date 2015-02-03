@@ -14,7 +14,7 @@ public:
 
 	virtual ~Filter() = default;
 
-	virtual bool operator ()(const FindStat& stat) const = 0;
+	virtual bool operator ()(const Stat_i& stat) const = 0;
 
 private:
 	virtual void destroy() = 0;
@@ -28,7 +28,7 @@ class fsys::Sequence::Filter::ByAttr: public Filter {
 public:
 	ByAttr(Attr include, Size exclude);
 
-	bool operator ()(const FindStat& stat) const override;
+	bool operator ()(const Stat_i& stat) const override;
 
 private:
 	Attr include, exclude;
@@ -42,7 +42,7 @@ class fsys::Sequence::Filter::BySize: public Filter {
 public:
 	BySize(Size from, Size to);
 
-	bool operator ()(const FindStat& stat) const override;
+	bool operator ()(const Stat_i& stat) const override;
 
 private:
 	Size minSize, maxSize;
@@ -56,7 +56,7 @@ class fsys::Sequence::Filter::ByMask: public Filter {
 public:
 	ByMask(const ustring& mask);
 
-	bool operator ()(const FindStat& stat) const override;
+	bool operator ()(const Stat_i& stat) const override;
 
 private:
 	ustring mask;
@@ -70,7 +70,7 @@ class fsys::Sequence::Filter::ByWrTime: public Filter {
 public:
 	ByWrTime(Time from, Time to);
 
-	bool operator ()(const FindStat& stat) const override;
+	bool operator ()(const Stat_i& stat) const override;
 
 private:
 	Time minTime, maxTime;
@@ -84,7 +84,7 @@ class fsys::Sequence::Filter::ByCrTime: public Filter {
 public:
 	ByCrTime(Time from, Time to);
 
-	bool operator ()(const FindStat& stat) const override;
+	bool operator ()(const Stat_i& stat) const override;
 
 private:
 	Time minTime, maxTime;
@@ -98,7 +98,7 @@ class fsys::Sequence::Filter::ByAcTime: public Filter {
 public:
 	ByAcTime(Time from, Time to);
 
-	bool operator ()(const FindStat& stat) const override;
+	bool operator ()(const Stat_i& stat) const override;
 
 private:
 	Time minTime, maxTime;
@@ -118,7 +118,7 @@ public:
 	~FiltersBunch();
 	FiltersBunch(Type type, const ustring& name);
 
-	bool operator ()(const FindStat& stat, Statistics& statistics) const;
+	bool operator ()(const Stat_i& stat, Statistics& statistics) const;
 
 	Type get_type() const;
 

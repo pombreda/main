@@ -13,7 +13,7 @@ namespace fsys {
 
 		FiltersBunch& add_filter_bunch(FiltersBunch::Type type, const ustring& name);
 
-		bool apply_filters(const FindStat& stat) const;
+		bool apply_filters(const Stat_i& stat) const;
 
 	private:
 		using Filters = simstd::vector<FiltersBunch>;

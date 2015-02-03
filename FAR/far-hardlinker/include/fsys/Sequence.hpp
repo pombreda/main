@@ -20,40 +20,11 @@ namespace fsys {
 		class Options;
 		class Statistics;
 
-		enum SearchFlags {
-			folderIncludeDots  = 0x0000001,
-
-			folderSkipAll      = 0x0000010,
-			folderSkipArchive  = 0x0000020,
-			folderSkipReadOnly = 0x0000040,
-			folderSkipHidden   = 0x0000080,
-			folderSkipSystem   = 0x0000100,
-			folderSkipLink     = 0x0000200,
-
-			fileSkipAll        = 0x0001000,
-			fileSkipArchive    = 0x0002000,
-			fileSkipReadOnly   = 0x0004000,
-			fileSkipHidden     = 0x0008000,
-			fileSkipSystem     = 0x0010000,
-			fileSkipLink       = 0x0020000,
-			fileSkipStreamed   = 0x0040000,
-			fileSkipCompressed = 0x0080000,
-			fileSkipEncrypted  = 0x0100000,
-			fileSkipSparse     = 0x0200000,
-			fileSkipTemporary  = 0x0400000,
-			fileSkipOffline    = 0x0800000,
-			fileSkipZeroSize   = 0x1000000,
-		};
-
 		typedef FindStat    value_type;
 		typedef size_t      size_type;
 		typedef uint64_t    flags_type;
 		typedef ci_iterator iterator;
 		typedef ci_iterator const_iterator;
-
-		typedef size_t   Attr;
-		typedef int64_t  Time;
-		typedef uint64_t Size;
 
 		Sequence(const ustring& path, const ustring& mask, const Options& options);
 
@@ -125,7 +96,7 @@ namespace fsys {
 
 }
 
-#include <fsys/Sequence/Stat.hpp>
+#include <fsys/Sequence/FindStat.hpp>
 #include <fsys/Sequence/FiltersBunch.hpp>
 #include <fsys/Sequence/Options.hpp>
 #include <fsys/Sequence/Iterator.hpp>

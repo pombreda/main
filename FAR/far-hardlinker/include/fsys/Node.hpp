@@ -4,6 +4,7 @@
 #include <fsys.hpp>
 
 #include <basis/simstd/list>
+#include <basis/simstd/string>
 #include <basis/simstd/vector>
 
 namespace fsys {
@@ -52,9 +53,9 @@ namespace fsys {
 
 		~File();
 
-		File(const fsys::Sequence::FindStat& info, Node_t parent);
+		File(const fsys::Stat_i& info, Node_t parent);
 
-		File(const ustring& path, const ustring& name);
+		File(const ustring& name, Node_t parent);
 
 		ustring get_full_path() const;
 

@@ -4,7 +4,7 @@
 const size_t MAX_PATH_LEN = 32772;
 
 const wchar_t* const EMPTY_STR = L"";
-const wchar_t* const SPACE = L" ";
+const wchar_t* const SPACE_STR = L" ";
 const wchar_t* const NETWORK_PATH_PREFIX = L"\\\\";
 
 const char    ASTR_END_C =  '\0';

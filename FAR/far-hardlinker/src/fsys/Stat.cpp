@@ -8,7 +8,7 @@
 
 namespace {
 
-	struct Stat_impl: public fsys::Stat_i {
+	struct Stat_impl: public fsys::StatEx_i {
 //		static HANDLE open(const char* path);
 		static HANDLE open(const wchar_t* path);
 
