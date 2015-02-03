@@ -171,118 +171,124 @@ namespace simstd {
 	};
 
 	template<typename Type, typename Deleter>
-	inline void swap(unique_ptr<Type, Deleter>& a, unique_ptr<Type, Deleter>& b) noexcept
+	void swap(unique_ptr<Type, Deleter>& a, unique_ptr<Type, Deleter>& b) noexcept
 	{
 		a.swap(b);
 	}
 
 	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	inline bool operator ==(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	bool operator ==(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
 	{
 		return a.get() == b.get();
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator ==(const unique_ptr<Type, Deleter>& a, nullptr_t) noexcept
+	bool operator ==(const unique_ptr<Type, Deleter>& a, nullptr_t) noexcept
 	{
 		return !a;
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator ==(nullptr_t, const unique_ptr<Type, Deleter>& b) noexcept
+	bool operator ==(nullptr_t, const unique_ptr<Type, Deleter>& b) noexcept
 	{
 		return !b;
 	}
 
 	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	inline bool operator <(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	bool operator <(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
 	{
 		typedef typename std::common_type<typename unique_ptr<Type, Deleter>::pointer, typename unique_ptr<_Up, _Ep>::pointer>::type CommonType;
 		return simstd::less<CommonType>()(a.get(), b.get());
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator <(const unique_ptr<Type, Deleter>& a, nullptr_t)
+	bool operator <(const unique_ptr<Type, Deleter>& a, nullptr_t)
 	{
 		return simstd::less<typename unique_ptr<Type, Deleter>::pointer>()(a.get(), nullptr);
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator <(nullptr_t, const unique_ptr<Type, Deleter>& a)
+	bool operator <(nullptr_t, const unique_ptr<Type, Deleter>& a)
 	{
 		return simstd::less<typename unique_ptr<Type, Deleter>::pointer>()(nullptr, a.get());
 	}
 
 	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	inline bool operator !=(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	bool operator !=(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
 	{
 		return a.get() != b.get();
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator !=(const unique_ptr<Type, Deleter>& a, nullptr_t) noexcept
+	bool operator !=(const unique_ptr<Type, Deleter>& a, nullptr_t) noexcept
 	{
 		return (bool)a;
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator !=(nullptr_t, const unique_ptr<Type, Deleter>& b) noexcept
+	bool operator !=(nullptr_t, const unique_ptr<Type, Deleter>& b) noexcept
 	{
 		return (bool)b;
 	}
 
 	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	inline bool operator <=(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	bool operator <=(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
 	{
 		return !(b < a);
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator <=(const unique_ptr<Type, Deleter>& a, nullptr_t)
+	bool operator <=(const unique_ptr<Type, Deleter>& a, nullptr_t)
 	{
 		return !(nullptr < a);
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator <=(nullptr_t, const unique_ptr<Type, Deleter>& a)
+	bool operator <=(nullptr_t, const unique_ptr<Type, Deleter>& a)
 	{
 		return !(a < nullptr);
 	}
 
 	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	inline bool operator >(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	bool operator >(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
 	{
 		return (b < a);
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator >(const unique_ptr<Type, Deleter>& a, nullptr_t)
+	bool operator >(const unique_ptr<Type, Deleter>& a, nullptr_t)
 	{
 		return simstd::less<typename unique_ptr<Type, Deleter>::pointer>()(nullptr, a.get());
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator >(nullptr_t, const unique_ptr<Type, Deleter>& a)
+	bool operator >(nullptr_t, const unique_ptr<Type, Deleter>& a)
 	{
 		return simstd::less<typename unique_ptr<Type, Deleter>::pointer>()(a.get(), nullptr);
 	}
 
 	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	inline bool operator >=(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	bool operator >=(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
 	{
 		return !(a < b);
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator >=(const unique_ptr<Type, Deleter>& a, nullptr_t)
+	bool operator >=(const unique_ptr<Type, Deleter>& a, nullptr_t)
 	{
 		return !(a < nullptr);
 	}
 
 	template<typename Type, typename Deleter>
-	inline bool operator >=(nullptr_t, const unique_ptr<Type, Deleter>& a)
+	bool operator >=(nullptr_t, const unique_ptr<Type, Deleter>& a)
 	{
 		return !(nullptr < a);
+	}
+
+	template<class T, class ... Args>
+	unique_ptr<T> make_unique(Args&&... args)
+	{
+		return simstd::move(unique_ptr<T>(new T(args...)));
 	}
 
 }

@@ -7,7 +7,8 @@ namespace fsys {
 	typedef int64_t  Time;
 	typedef uint32_t Attr;
 
-	struct Stat_i {
+	class Stat_i {
+	public:
 		virtual ~Stat_i() = default;
 
 		virtual const wchar_t* name() const = 0;
@@ -23,6 +24,22 @@ namespace fsys {
 		bool is_dir() const;
 		bool is_link() const;
 	};
+
+	class StatEx_i: public Stat_i {
+	public:
+		virtual bool operator ==(const StatEx_i& other) const;
+
+		virtual size_t num_links() const = 0;
+
+		virtual uint64_t volume_sn() const = 0;
+		virtual uint64_t inode() const = 0;
+	};
+
+	using StatEx = simstd::unique_ptr<StatEx_i>;
+
+	StatEx stat_ex(HANDLE hndl);
+	StatEx stat_ex(const char* path);
+	StatEx stat_ex(const wchar_t* path);
 
 	Attr get_attr_nt(const wchar_t* path);
 	bool set_attr_nt(const wchar_t* path, Attr attr);

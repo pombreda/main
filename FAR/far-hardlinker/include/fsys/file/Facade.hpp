@@ -24,7 +24,7 @@ namespace fsys {
 
 			virtual ustring path() const = 0;
 
-			virtual Stat stat() const = 0;
+			virtual fsys::StatEx stat() const = 0;
 
 			virtual bool size(uint64_t & size) const = 0;
 

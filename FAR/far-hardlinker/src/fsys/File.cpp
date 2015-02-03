@@ -96,7 +96,7 @@ namespace fsys {
 
 	void File::refresh_handle_info(bool basicInfo) const
 	{
-		fsys::Stat stat(fsys::stat(get_full_path().c_str()));
+		auto stat(fsys::stat_ex(get_full_path().c_str()));
 		if (stat) {
 			m_volume_sn = stat->volume_sn();
 			m_inode     = stat->inode();

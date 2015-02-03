@@ -7,7 +7,6 @@
 #include <basis/simstd/memory>
 
 #include <fsys/Sequence.hpp>
-#include <fsys/Stat.hpp>
 #include <fsys/Node.hpp>
 #include <fsys/file/Facade.hpp>
 
