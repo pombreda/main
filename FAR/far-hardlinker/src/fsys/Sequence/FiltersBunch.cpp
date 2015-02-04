@@ -22,17 +22,17 @@ const wchar_t* to_str(fsys::Sequence::FiltersBunch::Type type)
 	return ret;
 }
 
-fsys::Sequence::Filter::ByAttr::ByAttr(Attr include, Size exclude):
-	include(include),
-	exclude(exclude)
+fsys::Sequence::Filter::ByAttr::ByAttr(Attr exclude, Attr include)
+	: exclude(exclude)
+	, include(include)
 {
 }
 
 bool fsys::Sequence::Filter::ByAttr::operator ()(const Stat_i& stat) const
 {
-	bool passed = (stat.attr() | include) == stat.attr() && (stat.attr() & exclude) == Attr();
+	bool passed = (stat.attr() & exclude) == Attr() && (include == ~Attr() || (stat.attr() & include) == include);
 
-	LogConsoleDebug2(-1, L"    %s [attr: 0x%08X %% (0x%08X && !0x%08X)]\n", matched_or_not(passed), stat.attr(), include, exclude);
+	LogConsoleDebug2(-1, L"    %s [attr: 0x%08X %% (!0x%08X && 0x%08X)]\n", matched_or_not(passed), stat.attr(), exclude, include);
 
 	return passed;
 }
@@ -57,7 +57,7 @@ bool fsys::Sequence::Filter::BySize::operator ()(const fsys::Stat_i& stat) const
 {
 	bool passed = simstd::between(minSize, stat.size(), maxSize);
 
-	LogConsoleDebug2(-1, L"    %s [size: %I64u %% (%I64d, %I64d)]\n", matched_or_not(passed), stat.size(), minSize, maxSize);
+	LogConsoleDebug2(-1, L"    %s [size: %I64u %% (%I64u, %I64u)]\n", matched_or_not(passed), stat.size(), minSize, maxSize);
 
 	return passed;
 }

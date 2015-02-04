@@ -26,12 +26,12 @@ private:
 class fsys::Sequence::Filter::ByAttr: public Filter {
 	typedef ByAttr this_type;
 public:
-	ByAttr(Attr include, Size exclude);
+	ByAttr(Attr exclude, Attr include = ~Attr());
 
 	bool operator ()(const Stat_i& stat) const override;
 
 private:
-	Attr include, exclude;
+	Attr exclude, include;
 
 	void destroy() override;
 	fsys::Sequence::Filter* clone() const override;
@@ -40,7 +40,7 @@ private:
 class fsys::Sequence::Filter::BySize: public Filter {
 	typedef BySize this_type;
 public:
-	BySize(Size from, Size to);
+	BySize(Size from, Size to = ~Size());
 
 	bool operator ()(const Stat_i& stat) const override;
 

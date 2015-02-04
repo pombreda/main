@@ -5,7 +5,7 @@
 
 typedef const void* PCVOID;
 
-uint32_t reverse_bits(uint32_t val)
+inline uint32_t reverse_bits(uint32_t val)
 {
 	val = ((val >> 16) & 0x0000ffffu) | ((val & 0x0000ffffu) << 16);
 	val = ((val >>  8) & 0x00ff00ffu) | ((val & 0x00ff00ffu) <<  8);
