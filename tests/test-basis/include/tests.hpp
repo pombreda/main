@@ -31,6 +31,8 @@ void test_threads();
 
 void test_traceback();
 
+void test_unique_ptr();
+
 void test_url();
 
 void test_vector();

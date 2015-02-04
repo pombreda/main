@@ -15,7 +15,7 @@ namespace simstd {
 		{
 		}
 
-		void operator ()(Type * ptr) const
+		void operator ()(Type* ptr) const
 		{
 			delete ptr;
 		}
@@ -32,7 +32,7 @@ namespace simstd {
 	template<typename Type>
 	struct default_delete<Type[]>
 	{
-		void operator ()(Type * ptr) const
+		void operator ()(Type* ptr) const
 		{
 			delete [] ptr;
 		}
