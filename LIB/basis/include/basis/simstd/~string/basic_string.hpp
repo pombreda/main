@@ -22,7 +22,7 @@ namespace simstd {
 		typename Traits = simstd::char_traits<CharType>,
 		typename Allocator = simstd::allocator<CharType> >
 	class basic_string: private pvt::StrBase<CharType, Allocator> {
-		typedef basic_string                               this_type;
+		typedef basic_string                                this_type;
 		typedef pvt::StrBase<CharType, Allocator>           base_type;
 
 	public:

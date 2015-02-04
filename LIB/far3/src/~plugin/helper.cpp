@@ -21,6 +21,8 @@
 #include <far3/~plugin/GlobalInfo_i.hpp>
 #include <far3/~plugin/Plugin_i.hpp>
 
+#include <basis/sys/crt.hpp>
+
 namespace far3 {
 
 	helper_t& helper_t::inst()
@@ -34,8 +36,10 @@ namespace far3 {
 		delete m_gi;
 	}
 
-	helper_t& helper_t::init(GlobalInfo_i * gi)
+	helper_t& helper_t::init(GlobalInfo_i* gi)
 	{
+		CRT_ASSERT(m_gi == nullptr);
+		CRT_ASSERT(gi != nullptr);
 		m_gi = gi;
 		return *this;
 	}

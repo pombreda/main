@@ -59,10 +59,12 @@ inline bool fsys::Stat_i::is_file() const
 {
 	return !fsys::is_dir(attr());
 }
+
 inline bool fsys::Stat_i::is_dir() const
 {
 	return fsys::is_dir(attr());
 }
+
 inline bool fsys::Stat_i::is_link() const
 {
 	return fsys::is_link(attr());

@@ -11,7 +11,7 @@ namespace {
 	struct Facade_impl: public fsys::file::Facade_i, private pattern::Uncopyable {
 		~Facade_impl();
 
-		Facade_impl(const ustring& path, const fsys::file::OpenOptions & options);
+		Facade_impl(const ustring& path, const fsys::file::OpenOptions& options);
 
 		bool is_valid() const;
 
@@ -185,21 +185,13 @@ namespace {
 
 }
 
-namespace fsys {
+fsys::file::OpenOptions::OpenOptions():
+	write(false)
+{
+}
 
-	namespace file {
-
-		OpenOptions::OpenOptions():
-			write(false)
-		{
-		}
-
-		///=============================================================================================================
-		Facade open(const ustring& path, const OpenOptions & options)
-		{
-			auto tmp(simstd::make_unique<Facade_impl>(path, options));
-			return tmp->is_valid() ? Facade(simstd::move(tmp)) : Facade();
-		}
-
-	}
+fsys::file::Facade fsys::file::open(const ustring& path, const fsys::file::OpenOptions& options)
+{
+	auto tmp(simstd::make_unique<Facade_impl>(path, options));
+	return tmp->is_valid() ? Facade(simstd::move(tmp)) : Facade();
 }

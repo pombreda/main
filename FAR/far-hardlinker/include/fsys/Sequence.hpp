@@ -8,7 +8,6 @@
 
 namespace fsys {
 
-	///=================================================================================================================
 	class Sequence: private pattern::Uncopyable {
 		typedef Sequence this_type;
 		class ci_iterator;

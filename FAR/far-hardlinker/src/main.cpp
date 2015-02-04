@@ -24,20 +24,26 @@
 #include <farplugin.hpp>
 
 #include <basis/sys/logger.hpp>
+#include <basis/sys/sstr.hpp>
+#include <basis/simstd/string>
 
 namespace {
 	void setup_logger()
 	{
-		LogSetOptions(L"logger:///default?level=t3;prefix=fu;target=fo(hardlinker.log)");
-//		LogSetOptions(L"logger:///module?name=std_console;level=fa;prefix=0;target=n");
-		LogSetOptions(L"logger:///module?name=std_console;level=t;prefix=0;target=fo(hardlinkerConsole.log)");
+		{
+			auto buff = sstr::format(L"logger:///default?level=%s;prefix=%d;target=%s", L"t3", logger::Prefix::Full & ~logger::Prefix::Date, L"fo(hardlinker.log)");
+			LogSetOptions(buff.c_str());
+		}
+		{
+			auto buff = sstr::format(L"logger:///module?name=std_console;level=%s;prefix=%d;target=%s", L"t", 0, L"fo(hardlinkerConsole.log)");
+			LogSetOptions(buff.c_str());
+		}
 	}
 }
 
-
 ///========================================================================================== Export
 /// GlobalInfo
-void WINAPI GetGlobalInfoW(GlobalInfo * info)
+void WINAPI GetGlobalInfoW(GlobalInfo* info)
 {
 	setup_logger();
 
@@ -46,33 +52,33 @@ void WINAPI GetGlobalInfoW(GlobalInfo * info)
 	get_global_info()->GetGlobalInfoW(info);
 }
 
-void WINAPI SetStartupInfoW(const PluginStartupInfo * info)
+void WINAPI SetStartupInfoW(const PluginStartupInfo* info)
 {
 	LogTrace();
 	get_global_info()->SetStartupInfoW(info);
 	get_global_info()->load_settings();
 }
 
-intptr_t WINAPI ConfigureW(const ConfigureInfo * info)
+intptr_t WINAPI ConfigureW(const ConfigureInfo* info)
 {
 	LogTrace();
 	return get_global_info()->ConfigureW(info);
 }
 
 /// Plugin
-void WINAPI GetPluginInfoW(PluginInfo * info)
+void WINAPI GetPluginInfoW(PluginInfo* info)
 {
 	LogTrace();
 	far3::helper_t::inst().get_plugin()->GetPluginInfoW(info);
 }
 
-HANDLE WINAPI OpenW(const OpenInfo * info)
+HANDLE WINAPI OpenW(const OpenInfo* info)
 {
 	LogTrace();
 	return far3::helper_t::inst().get_plugin()->OpenW(info);
 }
 
-void WINAPI ExitFARW(const ExitInfo *info)
+void WINAPI ExitFARW(const ExitInfo* info)
 {
 	LogTrace();
 	far3::helper_t::inst().get_plugin()->ExitFARW(info);
