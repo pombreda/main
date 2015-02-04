@@ -11,7 +11,7 @@ namespace simstd {
 	template<typename Type, typename Deleter = default_delete<Type>>
 	class unique_ptr {
 		class Pointer {
-			using _Deleter = typename simstd::remove_reference<Deleter>::type;
+			using DeleterType = typename simstd::remove_reference<Deleter>::type;
 
 			template<typename TypeI>
 			static typename TypeI::pointer test_pointer(typename TypeI::pointer*);
@@ -20,7 +20,7 @@ namespace simstd {
 			static Type* test_pointer(...);
 
 		public:
-			typedef decltype(test_pointer<_Deleter>(0)) type;
+			typedef decltype(test_pointer<DeleterType>(0)) type;
 		};
 
 	public:
@@ -30,22 +30,20 @@ namespace simstd {
 
 	private:
 		using condition_type_r = typename std::conditional<std::is_reference<deleter_type>::value, deleter_type, const deleter_type&>::type;
-		using condition_type_ur = typename std::remove_reference<deleter_type>::type&&;
+		using condition_type_ur = typename simstd::remove_reference<deleter_type>::type&&;
 
 	public:
-
 		~unique_ptr() noexcept;
 
 		constexpr unique_ptr() noexcept;
 		constexpr unique_ptr(nullptr_t) noexcept;
 		explicit  unique_ptr(pointer ptr) noexcept;
 
+		template<typename OType, typename ODeleter>
+		unique_ptr(unique_ptr<OType, ODeleter> && other) noexcept;
 		unique_ptr(pointer ptr, condition_type_r dltr) noexcept;
 		unique_ptr(pointer ptr, condition_type_ur dltr) noexcept;
 		unique_ptr(unique_ptr&& other) noexcept;
-
-		template<typename OType, typename ODeleter>
-		unique_ptr(unique_ptr<OType, ODeleter> && other) noexcept;
 
 		template<typename OType, typename ODeleter>
 		unique_ptr& operator =(unique_ptr<OType, ODeleter>&& other) noexcept;
@@ -115,6 +113,15 @@ namespace simstd {
 	}
 
 	template<typename Type, typename Deleter>
+//		template<typename _Up, typename _Ep, typename = std::_Require<std::is_convertible<typename unique_ptr<_Up, _Ep>::pointer, pointer>,std::__not_<std::is_array<_Up>>, typename std::conditional<std::is_reference<Deleter>::value, std::is_same<_Ep, Deleter>, std::is_convertible<_Ep, Deleter>>::type>>
+	template<typename OType, typename ODeleter>
+	unique_ptr<Type, Deleter>::unique_ptr(unique_ptr<OType, ODeleter> && other) noexcept
+		: m_ptr(other.release())
+		, m_dltr(simstd::forward<ODeleter>(other.get_deleter()))
+	{
+	}
+
+	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>::unique_ptr(pointer ptr, condition_type_r dltr) noexcept
 		: m_ptr(ptr)
 		, m_dltr(dltr)
@@ -137,15 +144,6 @@ namespace simstd {
 	}
 
 	template<typename Type, typename Deleter>
-//		template<typename _Up, typename _Ep, typename = std::_Require<std::is_convertible<typename unique_ptr<_Up, _Ep>::pointer, pointer>,std::__not_<std::is_array<_Up>>, typename std::conditional<std::is_reference<Deleter>::value, std::is_same<_Ep, Deleter>, std::is_convertible<_Ep, Deleter>>::type>>
-	template<typename OType, typename ODeleter>
-	unique_ptr<Type, Deleter>::unique_ptr(unique_ptr<OType, ODeleter> && other) noexcept
-		: m_ptr(other.release())
-		  , m_dltr(simstd::forward<ODeleter>(other.get_deleter()))
-	{
-	}
-
-	template<typename Type, typename Deleter>
 	template<typename OType, typename ODeleter>
 	unique_ptr<Type, Deleter>& unique_ptr<Type, Deleter>::operator =(unique_ptr<OType, ODeleter> && other) noexcept
 	{
@@ -153,14 +151,14 @@ namespace simstd {
 		get_deleter() = simstd::forward<ODeleter>(other.get_deleter());
 		return *this;
 	}
-//		template<typename _Up, typename _Ep>
-//		typename enable_if< __and_<is_convertible<typename unique_ptr<_Up, _Ep>::pointer, pointer>, __not_<is_array<_Up>>>::value, unique_ptr&>::type
-//		operator = (unique_ptr<_Up, _Ep>&& other) noexcept
-//		{
-//			reset(other.release());
-//			get_deleter() = std::forward<_Ep>(other.get_deleter());
-//			return *this;
-//		}
+//	template<typename _Up, typename _Ep>
+//	typename enable_if< __and_<is_convertible<typename unique_ptr<_Up, _Ep>::pointer, pointer>, __not_<is_array<_Up>>>::value, unique_ptr&>::type
+//	operator = (unique_ptr<_Up, _Ep>&& other) noexcept
+//	{
+//		reset(other.release());
+//		get_deleter() = std::forward<_Ep>(other.get_deleter());
+//		return *this;
+//	}
 
 	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>& unique_ptr<Type, Deleter>::operator =(unique_ptr&& other) noexcept

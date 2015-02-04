@@ -1,6 +1,5 @@
 #include <tests.hpp>
 
-#include <basis/sys/console.hpp>
 #include <basis/sys/logger.hpp>
 #include <basis/simstd/memory>
 
