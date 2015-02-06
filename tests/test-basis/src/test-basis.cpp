@@ -52,13 +52,15 @@ int main(int argc, char* argv[])
 //
 //	test_memory();
 //
+	test_shared_ptr();
+//
 //	test_string();
 //
 //	test_traceback();
 //
 //	test_threads();
 //
-	test_unique_ptr();
+//	test_unique_ptr();
 //
 //	test_url();
 //
