@@ -1,0 +1,47 @@
+﻿#ifndef BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_HPP_
+#define BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_HPP_
+
+#include "counted_base.hpp"
+
+namespace simstd1 {
+
+	namespace pvt {
+
+		template<typename Ptr, LockPolicy LockPol>
+		class counted_ptr final : public counted_base<LockPol> {
+		public:
+			explicit counted_ptr(Ptr ptr) noexcept : ptr(ptr) {}
+
+			void dispose() noexcept {delete ptr;}
+
+			void destroy() noexcept {delete this;}
+
+			void* get_deleter(const std::type_info&) noexcept {return nullptr;}
+
+		private:
+			counted_ptr(const counted_ptr&) = delete;
+			counted_ptr& operator =(const counted_ptr&) = delete;
+
+			Ptr ptr;
+		};
+
+		template<>
+		void counted_ptr<nullptr_t, LockPolicy::ATOMIC>::dispose() noexcept
+		{
+		}
+
+		template<>
+		void counted_ptr<nullptr_t, LockPolicy::SINGLE>::dispose() noexcept
+		{
+		}
+
+		template<>
+		void counted_ptr<nullptr_t, LockPolicy::MUTEX>::dispose() noexcept
+		{
+		}
+
+	}
+
+}
+
+#endif
