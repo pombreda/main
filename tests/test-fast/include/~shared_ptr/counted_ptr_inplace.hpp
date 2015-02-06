@@ -20,11 +20,11 @@ namespace simstd1 {
 			};
 
 		public:
-			template<typename... _Args>
+			template<typename... Args>
 			counted_ptr_inplace(Allocator allocator, Args&&... args)
 				: impl(allocator)
 			{
-				simstd::allocator_traits<Allocator>::construct(allocator, get_ptr(), std::forward<Args>(args)...);
+				simstd::allocator_traits<Allocator>::construct(allocator, get_ptr(), simstd::forward<Args>(args)...);
 			}
 
 			void dispose() noexcept

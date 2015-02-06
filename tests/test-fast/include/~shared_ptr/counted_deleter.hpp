@@ -16,7 +16,7 @@ namespace simstd1 {
 				using Allocator_base = ebo_helper<1, Allocator>;
 
 			public:
-				Impl(Ptr ptr, Deleter deleter, const Allocator& a) noexcept : ptr(ptr), Deleter_base(deleter), Allocator_base(allocator) {}
+				Impl(Ptr ptr, Deleter deleter, const Allocator& allocator) noexcept : ptr(ptr), Deleter_base(deleter), Allocator_base(allocator) {}
 				Deleter& get_deleter() noexcept {return Deleter_base::get(*this);}
 				Allocator& get_allocator() noexcept {return Allocator_base::get(*this);}
 				Ptr ptr;

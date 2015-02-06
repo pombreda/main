@@ -4,6 +4,8 @@
 #include <basis/configure.hpp>
 #include <basis/simstd/memory>
 
+#include <typeinfo>
+
 #include "~shared_ptr/forward.hpp"
 #include "~shared_ptr/counted_ptr.hpp"
 #include "~shared_ptr/shared_ptr.hpp"

@@ -2,6 +2,9 @@
 #define BASIS_MEMORY_SHARED_PTR_SHARED_COUNT_HPP_
 
 #include "counted_base.hpp"
+#include "counted_ptr.hpp"
+#include "counted_deleter.hpp"
+#include "counted_ptr_inplace.hpp"
 
 namespace simstd1 {
 
@@ -108,9 +111,9 @@ namespace simstd1 {
 
 			void* get_deleter(const std::type_info& ti) const noexcept {return _M_pi ? _M_pi->get_deleter(ti) : nullptr;}
 
-			bool less(const shared_count& other) const noexcept {return std::less<counted_base<LockPol>*>()(_M_pi, other._M_pi);}
+			bool less(const shared_count& other) const noexcept {return _M_pi < other._M_pi;}
 
-			bool less(const weak_count<LockPol>& other) const noexcept {return std::less<counted_base<LockPol>*>()(_M_pi, other._M_pi);}
+			bool less(const weak_count<LockPol>& other) const noexcept {return _M_pi < other._M_pi;}
 
 			friend bool operator ==(const shared_count& a, const shared_count& b) noexcept {return a._M_pi == b._M_pi;}
 
@@ -168,9 +171,9 @@ namespace simstd1 {
 
 			long get_use_count() const noexcept {return _M_pi ? _M_pi->get_use_count() : 0;}
 
-			bool less(const weak_count& other) const noexcept {return std::less<counted_base<LockPol>*>()(_M_pi, other._M_pi);}
+			bool less(const weak_count& other) const noexcept {return _M_pi < other._M_pi;}
 
-			bool less(const shared_count<LockPol>& other) const noexcept {return std::less<counted_base<LockPol>*>()(_M_pi, other._M_pi);}
+			bool less(const shared_count<LockPol>& other) const noexcept {return _M_pi < other._M_pi;}
 
 			friend bool operator ==(const weak_count& a, const weak_count& b) noexcept {return a._M_pi == b._M_pi;}
 

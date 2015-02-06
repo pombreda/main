@@ -4,11 +4,22 @@
 namespace simstd1 {
 
 	namespace pvt {
-		enum class LockPolicy: ssize_t {ATOMIC, SINGLE, MUTEX};
 
-		static const LockPolicy DEFAULT_LOCK_POLICY = LockPolicy::ATOMIC;
+		enum class LockPolicy: ssize_t {
+			ATOMIC,
+			SINGLE,
+			MUTEX,
+		};
+
+		const LockPolicy DEFAULT_LOCK_POLICY = LockPolicy::ATOMIC;
 
 		struct make_shared_tag {};
+
+		template<LockPolicy LockPol = DEFAULT_LOCK_POLICY>
+		class weak_count;
+
+		template<LockPolicy LockPol = DEFAULT_LOCK_POLICY>
+		class shared_count;
 
 		template<typename Type, LockPolicy LockPol = DEFAULT_LOCK_POLICY>
 		class shared_ptr;
@@ -18,12 +29,6 @@ namespace simstd1 {
 
 		template<typename Type, LockPolicy LockPol = DEFAULT_LOCK_POLICY>
 		class enable_shared_from_this;
-
-		template<LockPolicy LockPol = DEFAULT_LOCK_POLICY>
-		class weak_count;
-
-		template<LockPolicy LockPol = DEFAULT_LOCK_POLICY>
-		class shared_count;
 
 	}
 
