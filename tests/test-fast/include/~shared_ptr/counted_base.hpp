@@ -7,7 +7,7 @@ namespace simstd1 {
 
 	namespace pvt {
 
-		template<int Num, typename Type, bool __use_ebo = !__is_final(Type) && __is_empty(Type)>
+		template<int Num, typename Type, bool use_ebo = !__is_final(Type) && __is_empty(Type)>
 		struct ebo_helper;
 
 		/// Specialization using EBO.
