@@ -1,6 +1,7 @@
 #include <fsys.hpp>
 
 #include <basis/sys/cstr.hpp>
+#include <basis/sys/logger.hpp>
 
 fsys::Sequence::Options::Options()
 {

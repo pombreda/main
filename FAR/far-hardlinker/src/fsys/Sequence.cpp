@@ -17,9 +17,6 @@ namespace fsys {
 		LogTraceObj();
 		LogDebug(L"path:                '%s'\n", m_path.c_str());
 		LogDebug(L"options.mask:        '%s'\n", m_mask.c_str());
-//		LogDebug(L"options.fileMinSize: %I64u\n", options.fileMinSize);
-//		LogDebug(L"options.fileMaxSize: %I64u\n", options.fileMaxSize);
-//		LogDebug(L"options.flags:       0x%I64X\n", static_cast<uint64_t>(options.flags));
 	}
 
 	Sequence::const_iterator Sequence::begin() const
@@ -46,23 +43,25 @@ namespace fsys {
 	Sequence::ci_iterator & Sequence::ci_iterator::operator ++()
 	{
 		while (true) {
-			FindStat & st = m_impl->m_fstat;
-			if (m_impl->m_find_handle == INVALID_HANDLE_VALUE) {
-				ustring pattern = path::make(m_impl->m_sequence->path(), m_impl->m_sequence->mask());
-				m_impl->m_find_handle = ::FindFirstFileW(pattern.c_str(), &st.m_stat);
-				LogErrorIf(m_impl->m_find_handle == INVALID_HANDLE_VALUE, L"'%s' -> %s\n", pattern.c_str(), totext::api_error().c_str());
-				if (m_impl->m_find_handle == INVALID_HANDLE_VALUE) {
-					m_impl.reset(new impl);
-					break;
-				}
+			auto& st = m_impl->findStat;
+			auto& fh = m_impl->findHandle;
+			if (fh == INVALID_HANDLE_VALUE) {
+				auto pattern = path::make(m_impl->sequence->path(), m_impl->sequence->mask());
+				fh = ::FindFirstFileW(pattern.c_str(), &st.m_stat);
+				LogErrorIf(fh == INVALID_HANDLE_VALUE, L"'%s' -> %s\n", pattern.c_str(), totext::api_error().c_str());
 			} else {
-				if (!::FindNextFileW(m_impl->m_find_handle, &st.m_stat)) {
-					m_impl.reset(new impl);
-					break;
+				if (!::FindNextFileW(fh, &st.m_stat)) {
+					::FindClose(fh);
+					fh = INVALID_HANDLE_VALUE;
 				}
 			}
 
-			const Options& options = m_impl->m_sequence->options();
+			if (fh == INVALID_HANDLE_VALUE) {
+				m_impl.reset(new impl);
+				break;
+			}
+
+			auto& options = m_impl->sequence->options();
 			if (!options.apply_filters(st))
 				break;
 		}
@@ -78,22 +77,22 @@ namespace fsys {
 
 	const Sequence::value_type & Sequence::ci_iterator::operator *() const
 	{
-		return m_impl->m_fstat;
+		return m_impl->findStat;
 	}
 
 	const Sequence::value_type * Sequence::ci_iterator::operator ->() const
 	{
-		return &m_impl->m_fstat;
+		return &m_impl->findStat;
 	}
 
-	bool Sequence::ci_iterator::operator ==(const this_type & rhs) const
+	bool Sequence::ci_iterator::operator ==(const this_type& rhs) const
 	{
-		return m_impl->m_find_handle == rhs.m_impl->m_find_handle;
+		return m_impl->findHandle == rhs.m_impl->findHandle;
 	}
 
-	bool Sequence::ci_iterator::operator !=(const this_type & rhs) const
+	bool Sequence::ci_iterator::operator !=(const this_type& rhs) const
 	{
-		return m_impl->m_find_handle != rhs.m_impl->m_find_handle;
+		return m_impl->findHandle != rhs.m_impl->findHandle;
 	}
 
 	Sequence::ci_iterator::ci_iterator() :
@@ -101,7 +100,7 @@ namespace fsys {
 	{
 	}
 
-	Sequence::ci_iterator::ci_iterator(const Sequence & seq) :
+	Sequence::ci_iterator::ci_iterator(const Sequence& seq) :
 		m_impl(new impl(seq))
 	{
 		operator++();
@@ -111,21 +110,21 @@ namespace fsys {
 	Sequence::ci_iterator::impl::~impl() noexcept
 	{
 		LogTraceObj();
-		if (m_find_handle && m_find_handle != INVALID_HANDLE_VALUE ) {
-			::FindClose(m_find_handle);
+		if (findHandle && findHandle != INVALID_HANDLE_VALUE ) {
+			::FindClose(findHandle);
 		}
 	}
 
 	Sequence::ci_iterator::impl::impl() noexcept :
-		m_sequence(nullptr),
-		m_find_handle(nullptr)
+		sequence(),
+		findHandle()
 	{
 		LogTraceObj();
 	}
 
-	Sequence::ci_iterator::impl::impl(const Sequence & seq) noexcept :
-		m_sequence(&seq),
-		m_find_handle(INVALID_HANDLE_VALUE)
+	Sequence::ci_iterator::impl::impl(const Sequence& sequence) noexcept :
+		sequence(&sequence),
+		findHandle(INVALID_HANDLE_VALUE)
 	{
 		LogTraceObj();
 	}

@@ -1,5 +1,6 @@
 #include <fsys.hpp>
 
+#include <basis/sys/logger.hpp>
 #include <basis/simstd/algorithm>
 
 namespace {

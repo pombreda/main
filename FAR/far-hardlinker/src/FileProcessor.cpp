@@ -129,7 +129,8 @@ void scan_single_folder(fsys::Node_t folder)
 	for (auto it = dir.begin(); it != dir.end(); ++it) {
 		LogDebug(L"found: '%s'\n", it->name());
 		if (it->is_dir()) {
-			global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(it->name(), folder)));
+			global::vars().folders.emplace_back(simstd::make_shared<fsys::Folder>(it->name(), folder));
+//			global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(it->name(), folder)));
 		} else {
 			global::vars().files.emplace_back(fsys::File_t(new fsys::File(*it, folder)));
 		}
@@ -172,11 +173,11 @@ ssize_t FileProcessor::execute()
 	} else {
 		LogConsoleInfo(-1, L"files found to process: %I64u\n", global::vars().files.size());
 	}
-	return 0;
 
 	using namespace global;
 	simstd::sort(vars().files.begin(), vars().files.end(), CompareBySizeAndTimeLess);
 
+	return 0;
 	while (!vars().files.empty()) {
 //		logCounter(L"Files left:\t%8llu", std::distance(srch, data.end()));
 		auto bounds = simstd::equal_range(vars().files.begin(), vars().files.end(), vars().files.front(), CompareBySizeLess);

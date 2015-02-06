@@ -1,5 +1,7 @@
 #include <global.hpp>
 
+#include <basis/sys/logger.hpp>
+
 namespace global {
 
 	Statistics::Statistics()

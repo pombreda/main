@@ -35,11 +35,11 @@ namespace fsys {
 	struct Sequence::ci_iterator::impl {
 		~impl() noexcept;
 		impl() noexcept;
-		impl(const Sequence& seq) noexcept;
+		impl(const Sequence& sequence) noexcept;
 
-		const Sequence* m_sequence;
-		HANDLE          m_find_handle;
-		FindStat        m_fstat;
+		const Sequence* sequence;
+		HANDLE          findHandle;
+		FindStat        findStat;
 	};
 
 }

@@ -3,7 +3,6 @@
 
 #include <fsys.hpp>
 
-#include <basis/simstd/list>
 #include <basis/simstd/string>
 #include <basis/simstd/vector>
 
@@ -15,7 +14,7 @@ namespace fsys {
 
 	typedef simstd::shared_ptr<Node> Node_t;
 //	typedef simstd::vector<Node_t>   Nodes_t;
-	typedef simstd::list<Node_t>     Folders_t;
+	typedef simstd::vector<Node_t>   Folders_t;
 	typedef simstd::shared_ptr<File> File_t;
 	typedef simstd::vector<File_t>   Files_t;
 
