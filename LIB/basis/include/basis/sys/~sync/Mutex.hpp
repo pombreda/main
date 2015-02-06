@@ -10,11 +10,11 @@ namespace sync {
 		struct native_impl_type;
 
 	public:
-		typedef native_impl_type * native_handle_type;
+		using native_handle_type = native_impl_type*;
 
 		~Mutex();
 
-		Mutex(const wchar_t* name = nullptr);
+		Mutex(const wchar_t* name = EMPTY_STR);
 
 		void lock();
 

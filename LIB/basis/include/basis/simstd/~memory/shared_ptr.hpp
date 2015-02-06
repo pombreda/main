@@ -70,6 +70,13 @@ namespace simstd {
 			return *this;
 		}
 
+//	    template<typename OType>
+//		shared_ptr& operator =(const shared_ptr<OType>& other) noexcept
+//		{
+//	    	this->__shared_ptr<_Tp>::operator=(other);
+//	    	return *this;
+//		}
+
 		template<typename newType>
 		operator shared_ptr<newType>()
 		{
@@ -241,6 +248,11 @@ namespace simstd {
 		return simstd::rel_ops::operator >=(a, b);
 	}
 
+	template<class T, class ... Args>
+	shared_ptr<T> make_shared(Args&&... args)
+	{
+		return shared_ptr<T>(new T(simstd::forward<Args>(args)...));
+	}
 }
 
 #endif
