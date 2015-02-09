@@ -2,6 +2,10 @@
 #define BASIS_MEMORY_
 
 #include <basis/configure.hpp>
+
+#include <type_traits>
+namespace defstd = std;
+
 #include <basis/simstd/~memory/allocator.hpp>
 #include <basis/simstd/~memory/AllocatorHeap.hpp>
 #include <basis/simstd/~memory/AllocatorHeapLogged.hpp>
@@ -12,7 +16,7 @@
 #include <basis/simstd/~memory/movable_allocator.hpp>
 #include <basis/simstd/~memory/raw_storage_iterator.hpp>
 #include <basis/simstd/~memory/default_deleters.hpp>
-#include <basis/simstd/~memory/shared_ptr.hpp>
 #include <basis/simstd/~memory/unique_ptr.hpp>
+#include <basis/simstd/~memory/shared_ptr.hpp>
 
 #endif

@@ -10,8 +10,8 @@ namespace simstd {
 	{
 		constexpr default_delete() noexcept = default;
 
-		template<typename _Up, typename = typename std::enable_if<std::is_convertible<_Up*, Type*>::value>::type>
-		default_delete(const default_delete<_Up>&) noexcept
+		template<typename OType, typename = typename defstd::enable_if<defstd::is_convertible<OType*, Type*>::value>::type>
+		default_delete(const default_delete<OType>&) noexcept
 		{
 		}
 

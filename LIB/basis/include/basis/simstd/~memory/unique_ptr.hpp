@@ -1,10 +1,7 @@
 ﻿#ifndef BASIS_MEMORY_UNIQUE_PTR_HPP_
 #define BASIS_MEMORY_UNIQUE_PTR_HPP_
 
-#include <basis/simstd/~memory/default_deleters.hpp>
 #include <basis/simstd/~functional/functional.hpp>
-
-#include <type_traits>
 
 namespace simstd {
 
@@ -18,7 +15,7 @@ namespace simstd {
 		using deleter_type = Deleter;
 
 	private:
-		using condition_type_r = typename std::conditional<std::is_reference<deleter_type>::value, deleter_type, const deleter_type&>::type;
+		using condition_type_r = typename defstd::conditional<defstd::is_reference<deleter_type>::value, deleter_type, const deleter_type&>::type;
 		using condition_type_ur = typename simstd::remove_reference<deleter_type>::type&&;
 
 	public:
@@ -39,7 +36,7 @@ namespace simstd {
 		unique_ptr& operator =(unique_ptr&& other) noexcept;
 		unique_ptr& operator =(nullptr_t) noexcept;
 
-		typename std::add_lvalue_reference<element_type>::type operator *() const noexcept
+		typename defstd::add_lvalue_reference<element_type>::type operator *() const noexcept
 		{
 			return *get();
 		}
@@ -83,7 +80,7 @@ namespace simstd {
 		: helper_type(deleter_type())
 		, m_ptr()
 	{
-		static_assert(!std::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
+		static_assert(!defstd::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
 	}
 
 	template<typename Type, typename Deleter>
@@ -97,13 +94,13 @@ namespace simstd {
 		: helper_type(deleter_type())
 		, m_ptr(ptr)
 	{
-		static_assert(!std::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
+		static_assert(!defstd::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
 	}
 
 	template<typename Type, typename Deleter>
-//		template<typename OType, typename ODeleter, typename = std::_Require<std::is_convertible<typename unique_ptr<OType, ODeleter>::pointer, pointer>,std::__not_<std::is_array<OType>>, typename std::conditional<std::is_reference<Deleter>::value, std::is_same<ODeleter, Deleter>, std::is_convertible<ODeleter, Deleter>>::type>>
+//		template<typename OType, typename ODeleter, typename = defstd::_Require<defstd::is_convertible<typename unique_ptr<OType, ODeleter>::pointer, pointer>,defstd::__not_<defstd::is_array<OType>>, typename defstd::conditional<defstd::is_reference<Deleter>::value, defstd::is_same<ODeleter, Deleter>, defstd::is_convertible<ODeleter, Deleter>>::type>>
 	template<typename OType, typename ODeleter>
-	unique_ptr<Type, Deleter>::unique_ptr(unique_ptr<OType, ODeleter> && other) noexcept
+	unique_ptr<Type, Deleter>::unique_ptr(unique_ptr<OType, ODeleter>&& other) noexcept
 		: helper_type(simstd::forward<ODeleter>(other.get_deleter()))
 		, m_ptr(other.release())
 	{
@@ -121,7 +118,7 @@ namespace simstd {
 		: helper_type(simstd::move(dltr))
 		, m_ptr(ptr)
 	{
-		static_assert(!std::is_reference<deleter_type>::value, "rvalue deleter bound to reference");
+		static_assert(!defstd::is_reference<deleter_type>::value, "rvalue deleter bound to reference");
 	}
 
 	template<typename Type, typename Deleter>
@@ -144,7 +141,7 @@ namespace simstd {
 //	operator = (unique_ptr<OType, ODeleter>&& other) noexcept
 //	{
 //		reset(other.release());
-//		get_deleter() = std::forward<ODeleter>(other.get_deleter());
+//		get_deleter() = defstd::forward<ODeleter>(other.get_deleter());
 //		return *this;
 //	}
 
@@ -249,7 +246,7 @@ namespace simstd {
 	template<typename Type, typename Deleter, typename OType, typename ODeleter>
 	bool operator <(const unique_ptr<Type, Deleter>& a, const unique_ptr<OType, ODeleter>& b) noexcept
 	{
-		typedef typename std::common_type<typename unique_ptr<Type, Deleter>::pointer, typename unique_ptr<OType, ODeleter>::pointer>::type CommonType;
+		typedef typename defstd::common_type<typename unique_ptr<Type, Deleter>::pointer, typename unique_ptr<OType, ODeleter>::pointer>::type CommonType;
 		return simstd::less<CommonType>()(a.get(), b.get());
 	}
 
