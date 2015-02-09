@@ -64,6 +64,24 @@ namespace simstd {
 	}
 #endif
 
+	namespace pvt {
+
+		template<typename Type, typename Deleter>
+		class RecognizePointer {
+			using DeleterType = typename simstd::remove_reference<Deleter>::type;
+
+			template<typename TypeI>
+			static typename TypeI::pointer recognize_pointer(typename TypeI::pointer*);
+
+			template<typename TypeI>
+			static Type* recognize_pointer(...);
+
+		public:
+			typedef decltype(recognize_pointer<DeleterType>(0)) type;
+		};
+
+	}
+
 }
 
 namespace simstd {

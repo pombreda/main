@@ -9,22 +9,11 @@
 namespace simstd {
 
 	template<typename Type, typename Deleter = default_delete<Type>>
-	class unique_ptr {
-		class Pointer {
-			using DeleterType = typename simstd::remove_reference<Deleter>::type;
-
-			template<typename TypeI>
-			static typename TypeI::pointer test_pointer(typename TypeI::pointer*);
-
-			template<typename TypeI>
-			static Type* test_pointer(...);
-
-		public:
-			typedef decltype(test_pointer<DeleterType>(0)) type;
-		};
+	class unique_ptr: private pvt::ebo_helper<0, Deleter> {
+		using helper_type = pvt::ebo_helper<0, Deleter>;
 
 	public:
-		using pointer = typename Pointer::type;
+		using pointer = typename simstd::pvt::RecognizePointer<Type, Deleter>::type;
 		using element_type = Type;
 		using deleter_type = Deleter;
 
@@ -41,16 +30,16 @@ namespace simstd {
 
 		template<typename OType, typename ODeleter>
 		unique_ptr(unique_ptr<OType, ODeleter> && other) noexcept;
-		unique_ptr(pointer ptr, condition_type_r dltr) noexcept;
-		unique_ptr(pointer ptr, condition_type_ur dltr) noexcept;
 		unique_ptr(unique_ptr&& other) noexcept;
+		unique_ptr(pointer ptr, condition_type_r deleter) noexcept;
+		unique_ptr(pointer ptr, condition_type_ur deleter) noexcept;
 
 		template<typename OType, typename ODeleter>
 		unique_ptr& operator =(unique_ptr<OType, ODeleter>&& other) noexcept;
 		unique_ptr& operator =(unique_ptr&& other) noexcept;
 		unique_ptr& operator =(nullptr_t) noexcept;
 
-		typename std::add_lvalue_reference<element_type>::type operator *() const
+		typename std::add_lvalue_reference<element_type>::type operator *() const noexcept
 		{
 			return *get();
 		}
@@ -72,10 +61,9 @@ namespace simstd {
 
 	private:
 		unique_ptr(const unique_ptr&) = delete;
-		unique_ptr& operator=(const unique_ptr&) = delete;
+		unique_ptr& operator =(const unique_ptr&) = delete;
 
 		pointer m_ptr;
-		Deleter m_dltr;
 	};
 
 }
@@ -92,8 +80,8 @@ namespace simstd {
 
 	template<typename Type, typename Deleter>
 	constexpr unique_ptr<Type, Deleter>::unique_ptr() noexcept
-		: m_ptr()
-		, m_dltr(deleter_type())
+		: helper_type(deleter_type())
+		, m_ptr()
 	{
 		static_assert(!std::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
 	}
@@ -106,40 +94,40 @@ namespace simstd {
 
 	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>::unique_ptr(pointer ptr) noexcept
-		: m_ptr(ptr)
-		, m_dltr(deleter_type())
+		: helper_type(deleter_type())
+		, m_ptr(ptr)
 	{
 		static_assert(!std::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
 	}
 
 	template<typename Type, typename Deleter>
-//		template<typename _Up, typename _Ep, typename = std::_Require<std::is_convertible<typename unique_ptr<_Up, _Ep>::pointer, pointer>,std::__not_<std::is_array<_Up>>, typename std::conditional<std::is_reference<Deleter>::value, std::is_same<_Ep, Deleter>, std::is_convertible<_Ep, Deleter>>::type>>
+//		template<typename OType, typename ODeleter, typename = std::_Require<std::is_convertible<typename unique_ptr<OType, ODeleter>::pointer, pointer>,std::__not_<std::is_array<OType>>, typename std::conditional<std::is_reference<Deleter>::value, std::is_same<ODeleter, Deleter>, std::is_convertible<ODeleter, Deleter>>::type>>
 	template<typename OType, typename ODeleter>
 	unique_ptr<Type, Deleter>::unique_ptr(unique_ptr<OType, ODeleter> && other) noexcept
-		: m_ptr(other.release())
-		, m_dltr(simstd::forward<ODeleter>(other.get_deleter()))
+		: helper_type(simstd::forward<ODeleter>(other.get_deleter()))
+		, m_ptr(other.release())
 	{
 	}
 
 	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>::unique_ptr(pointer ptr, condition_type_r dltr) noexcept
-		: m_ptr(ptr)
-		, m_dltr(dltr)
+		: helper_type(dltr)
+		, m_ptr(ptr)
 	{
 	}
 
 	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>::unique_ptr(pointer ptr, condition_type_ur dltr) noexcept
-		: m_ptr(ptr)
-		, m_dltr(simstd::move(dltr))
+		: helper_type(simstd::move(dltr))
+		, m_ptr(ptr)
 	{
 		static_assert(!std::is_reference<deleter_type>::value, "rvalue deleter bound to reference");
 	}
 
 	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>::unique_ptr(unique_ptr&& other) noexcept
-		: m_ptr(other.release())
-		, m_dltr(simstd::forward<deleter_type>(other.get_deleter()))
+		: helper_type(simstd::forward<deleter_type>(other.get_deleter()))
+		, m_ptr(other.release())
 	{
 	}
 
@@ -151,12 +139,12 @@ namespace simstd {
 		get_deleter() = simstd::forward<ODeleter>(other.get_deleter());
 		return *this;
 	}
-//	template<typename _Up, typename _Ep>
-//	typename enable_if< __and_<is_convertible<typename unique_ptr<_Up, _Ep>::pointer, pointer>, __not_<is_array<_Up>>>::value, unique_ptr&>::type
-//	operator = (unique_ptr<_Up, _Ep>&& other) noexcept
+//	template<typename OType, typename ODeleter>
+//	typename enable_if< __and_<is_convertible<typename unique_ptr<OType, ODeleter>::pointer, pointer>, __not_<is_array<OType>>>::value, unique_ptr&>::type
+//	operator = (unique_ptr<OType, ODeleter>&& other) noexcept
 //	{
 //		reset(other.release());
-//		get_deleter() = std::forward<_Ep>(other.get_deleter());
+//		get_deleter() = std::forward<ODeleter>(other.get_deleter());
 //		return *this;
 //	}
 
@@ -190,13 +178,13 @@ namespace simstd {
 	template<typename Type, typename Deleter>
 	typename unique_ptr<Type, Deleter>::deleter_type& unique_ptr<Type, Deleter>::get_deleter() noexcept
 	{
-		return m_dltr;
+		return helper_type::get(*this);
 	}
 
 	template<typename Type, typename Deleter>
 	const typename unique_ptr<Type, Deleter>::deleter_type& unique_ptr<Type, Deleter>::get_deleter() const noexcept
 	{
-		return m_dltr;
+		return helper_type::get(*this);
 	}
 
 	template<typename Type, typename Deleter>
@@ -227,7 +215,7 @@ namespace simstd {
 	{
 		using simstd::swap;
 		swap(m_ptr, other.m_ptr);
-		swap(m_dltr, other.m_dltr);
+		swap(static_cast<helper_type&>(*this), static_cast<helper_type&>(other));
 	}
 
 }
@@ -240,8 +228,8 @@ namespace simstd {
 		a.swap(b);
 	}
 
-	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	bool operator ==(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	template<typename Type, typename Deleter, typename OType, typename ODeleter>
+	bool operator ==(const unique_ptr<Type, Deleter>& a, const unique_ptr<OType, ODeleter>& b) noexcept
 	{
 		return a.get() == b.get();
 	}
@@ -258,27 +246,27 @@ namespace simstd {
 		return !b;
 	}
 
-	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	bool operator <(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	template<typename Type, typename Deleter, typename OType, typename ODeleter>
+	bool operator <(const unique_ptr<Type, Deleter>& a, const unique_ptr<OType, ODeleter>& b) noexcept
 	{
-		typedef typename std::common_type<typename unique_ptr<Type, Deleter>::pointer, typename unique_ptr<_Up, _Ep>::pointer>::type CommonType;
+		typedef typename std::common_type<typename unique_ptr<Type, Deleter>::pointer, typename unique_ptr<OType, ODeleter>::pointer>::type CommonType;
 		return simstd::less<CommonType>()(a.get(), b.get());
 	}
 
 	template<typename Type, typename Deleter>
-	bool operator <(const unique_ptr<Type, Deleter>& a, nullptr_t)
+	bool operator <(const unique_ptr<Type, Deleter>& a, nullptr_t) noexcept
 	{
 		return simstd::less<typename unique_ptr<Type, Deleter>::pointer>()(a.get(), nullptr);
 	}
 
 	template<typename Type, typename Deleter>
-	bool operator <(nullptr_t, const unique_ptr<Type, Deleter>& a)
+	bool operator <(nullptr_t, const unique_ptr<Type, Deleter>& a) noexcept
 	{
 		return simstd::less<typename unique_ptr<Type, Deleter>::pointer>()(nullptr, a.get());
 	}
 
-	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	bool operator !=(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	template<typename Type, typename Deleter, typename OType, typename ODeleter>
+	bool operator !=(const unique_ptr<Type, Deleter>& a, const unique_ptr<OType, ODeleter>& b) noexcept
 	{
 		return rel_ops::operator !=(a, b);
 	}
@@ -295,64 +283,64 @@ namespace simstd {
 		return rel_ops::operator !=(nullptr, b);
 	}
 
-	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	bool operator <=(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	template<typename Type, typename Deleter, typename OType, typename ODeleter>
+	bool operator <=(const unique_ptr<Type, Deleter>& a, const unique_ptr<OType, ODeleter>& b) noexcept
 	{
 		return rel_ops::operator <=(a, b);
 	}
 
 	template<typename Type, typename Deleter>
-	bool operator <=(const unique_ptr<Type, Deleter>& a, nullptr_t)
+	bool operator <=(const unique_ptr<Type, Deleter>& a, nullptr_t) noexcept
 	{
 		return rel_ops::operator <=(a, nullptr);
 	}
 
 	template<typename Type, typename Deleter>
-	bool operator <=(nullptr_t, const unique_ptr<Type, Deleter>& b)
+	bool operator <=(nullptr_t, const unique_ptr<Type, Deleter>& b) noexcept
 	{
 		return rel_ops::operator <=(nullptr, b);
 	}
 
-	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	bool operator >(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	template<typename Type, typename Deleter, typename OType, typename ODeleter>
+	bool operator >(const unique_ptr<Type, Deleter>& a, const unique_ptr<OType, ODeleter>& b) noexcept
 	{
 		return rel_ops::operator >(a, b);
 	}
 
 	template<typename Type, typename Deleter>
-	bool operator >(const unique_ptr<Type, Deleter>& a, nullptr_t)
+	bool operator >(const unique_ptr<Type, Deleter>& a, nullptr_t) noexcept
 	{
 		return rel_ops::operator >(a, nullptr);
 	}
 
 	template<typename Type, typename Deleter>
-	bool operator >(nullptr_t, const unique_ptr<Type, Deleter>& b)
+	bool operator >(nullptr_t, const unique_ptr<Type, Deleter>& b) noexcept
 	{
 		return rel_ops::operator >(nullptr, b);
 	}
 
-	template<typename Type, typename Deleter, typename _Up, typename _Ep>
-	bool operator >=(const unique_ptr<Type, Deleter>& a, const unique_ptr<_Up, _Ep>& b)
+	template<typename Type, typename Deleter, typename OType, typename ODeleter>
+	bool operator >=(const unique_ptr<Type, Deleter>& a, const unique_ptr<OType, ODeleter>& b) noexcept
 	{
 		return rel_ops::operator >=(a, b);
 	}
 
 	template<typename Type, typename Deleter>
-	bool operator >=(const unique_ptr<Type, Deleter>& a, nullptr_t)
+	bool operator >=(const unique_ptr<Type, Deleter>& a, nullptr_t) noexcept
 	{
 		return rel_ops::operator >=(a, nullptr);
 	}
 
 	template<typename Type, typename Deleter>
-	bool operator >=(nullptr_t, const unique_ptr<Type, Deleter>& b)
+	bool operator >=(nullptr_t, const unique_ptr<Type, Deleter>& b) noexcept
 	{
 		return rel_ops::operator >=(nullptr, b);
 	}
 
-	template<class T, class ... Args>
-	unique_ptr<T> make_unique(Args&&... args)
+	template<class Type, class ... Args>
+	unique_ptr<Type> make_unique(Args&&... args)
 	{
-		return simstd::move(unique_ptr<T>(new T(args...)));
+		return simstd::move(unique_ptr<Type>(new Type(args...)));
 	}
 
 }

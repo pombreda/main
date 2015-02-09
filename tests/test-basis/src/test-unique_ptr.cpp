@@ -1,7 +1,25 @@
+#include <A.hpp>
 #include <tests.hpp>
 
 #include <basis/sys/logger.hpp>
 #include <basis/simstd/memory>
+
+template<typename Type>
+struct Dltr
+{
+	constexpr Dltr() noexcept = default;
+
+	template<typename _Up, typename = typename std::enable_if<std::is_convertible<_Up*, Type*>::value>::type>
+	Dltr(const Dltr<_Up>&) noexcept
+	{
+	}
+
+	void operator ()(Type* ptr) const noexcept
+		{
+		LogNoise(L"[deleter called]\n");
+		delete ptr;
+		}
+};
 
 void test_unique_ptr()
 {
@@ -12,10 +30,22 @@ void test_unique_ptr()
 		delete ptr;
 	};
 
-	simstd::unique_ptr<int, decltype(deleter)> uniq(new int, deleter);
-	LogNoise(L"sizeof(uniq): %d\n", sizeof(uniq));
+	simstd::unique_ptr<int, decltype(deleter)> uniq1(new int, deleter);
+	LogNoise(L"sizeof(uniq1): %d\n", sizeof(uniq1));
 
-	LogNoise(L"uniq %s\n", uniq ? L"not empty" : L"empty");
-	uniq.reset();
-	LogNoise(L"uniq %s\n", uniq ? L"not empty" : L"empty");
+	simstd::unique_ptr<int, Dltr<int>> uniq2(new int, Dltr<int>());
+	LogNoise(L"sizeof(uniq2): %d\n", sizeof(uniq2));
+
+	auto uniq3(simstd::make_unique<A>(3));
+	LogNoise(L"sizeof(uniq3): %d\n", sizeof(uniq3));
+
+	auto uniq4(simstd::make_unique<A>(4));
+	LogNoise(L"sizeof(uniq4): %d\n", sizeof(uniq4));
+
+	using simstd::swap;
+	swap(uniq3, uniq4);
+
+	LogNoise(L"uniq1 %s\n", uniq1 ? L"not empty" : L"empty");
+	uniq1.reset();
+	LogNoise(L"uniq %s\n", uniq1 ? L"not empty" : L"empty");
 }

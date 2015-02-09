@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 //
 //	test_memory();
 //
-	test_shared_ptr();
+//	test_shared_ptr();
 //
 //	test_string();
 //
@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 //
 //	test_threads();
 //
-//	test_unique_ptr();
+	test_unique_ptr();
 //
 //	test_url();
 //
