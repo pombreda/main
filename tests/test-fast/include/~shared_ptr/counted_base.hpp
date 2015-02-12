@@ -7,27 +7,6 @@ namespace simstd1 {
 
 	namespace pvt {
 
-		template<int Num, typename Type, bool use_ebo = !__is_final(Type) && __is_empty(Type)>
-		struct ebo_helper;
-
-		/// Specialization using EBO.
-		template<int Num, typename Type>
-		struct ebo_helper<Num, Type, true> : private Type
-		{
-			explicit ebo_helper(const Type& tp): Type(tp) {}
-			static Type& get(ebo_helper& ebo) {return static_cast<Type&>(ebo);}
-		};
-
-		/// Specialization not using EBO.
-		template<int Num, typename Type>
-		struct ebo_helper<Num, Type, false>
-		{
-			explicit ebo_helper(const Type& tp): tp(tp) {}
-			static Type& get(ebo_helper& eboh) {return eboh.tp;}
-		private:
-			Type tp;
-		};
-
 //		template<LockPolicy LockPol>
 		struct choose_lock_policy
 		{

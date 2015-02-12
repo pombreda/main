@@ -7,7 +7,7 @@ namespace simstd1 {
 
 		enum class LockPolicy: ssize_t {
 			ATOMIC,
-			SINGLE,
+			NONE,
 			MUTEX,
 		};
 
@@ -16,10 +16,10 @@ namespace simstd1 {
 		struct make_shared_tag {};
 
 		template<LockPolicy LockPol = DEFAULT_LOCK_POLICY>
-		class weak_count;
+		class shared_count;
 
 		template<LockPolicy LockPol = DEFAULT_LOCK_POLICY>
-		class shared_count;
+		class weak_count;
 
 		template<typename Type, LockPolicy LockPol = DEFAULT_LOCK_POLICY>
 		class shared_ptr;
@@ -29,7 +29,6 @@ namespace simstd1 {
 
 		template<typename Type, LockPolicy LockPol = DEFAULT_LOCK_POLICY>
 		class enable_shared_from_this;
-
 	}
 
 	// Forward declarations.

@@ -1,8 +1,6 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_INPLACE_HPP_
 #define BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_INPLACE_HPP_
 
-#include "counted_base.hpp"
-
 namespace simstd1 {
 
 	namespace pvt {
@@ -10,7 +8,7 @@ namespace simstd1 {
 		template<typename Type, typename Allocator, LockPolicy LockPol>
 		class counted_ptr_inplace final : public counted_base<LockPol>
 		{
-			class Impl: private ebo_helper<0, Allocator>
+			class Impl: private simstd::pvt::ebo_helper<0, Allocator>
 			{
 				using base_type = ebo_helper<0, Allocator>;
 			public:

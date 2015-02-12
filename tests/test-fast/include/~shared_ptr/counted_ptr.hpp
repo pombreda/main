@@ -1,8 +1,6 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_HPP_
 #define BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_HPP_
 
-#include "counted_base.hpp"
-
 namespace simstd1 {
 
 	namespace pvt {

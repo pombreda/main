@@ -7,7 +7,11 @@
 #include <typeinfo>
 
 #include "~shared_ptr/forward.hpp"
+#include "~shared_ptr/counted_base.hpp"
+#include "~shared_ptr/counted_deleter.hpp"
+#include "~shared_ptr/counted_ptr_inplace.hpp"
 #include "~shared_ptr/counted_ptr.hpp"
+#include "~shared_ptr/shared_count.hpp"
 #include "~shared_ptr/shared_ptr.hpp"
 
 namespace simstd1 {
