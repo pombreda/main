@@ -6,7 +6,7 @@
 
 namespace simstd {
 
-	template<typename Type, typename Allocator = simstd::allocator<Type> >
+	template<typename Type, typename Allocator>
 	class list: private pvt::List_base<Type, Allocator> {
 		typedef list                                   this_type;
 		typedef pvt::List_base<Type, Allocator>        base_type;
@@ -492,7 +492,7 @@ namespace simstd {
 	{
 		LogTraceObj();
 		auto tmp = base_type::new_node(simstd::forward<Args>(args)...);
-		tmp->hook(pos.m_node);
+		tmp->hook(pos.pnode);
 		return iterator(tmp);
 	}
 
@@ -501,11 +501,11 @@ namespace simstd {
 	list<Type, Allocator>::iterator list<Type, Allocator>::erase(const_iterator pos)
 	{
 		LogTraceObj();
-		iterator ret(pos.m_node->m_next);
+		iterator ret(pos.pnode->m_next);
 
 		iterator it(pos.iterator_cast());
-		it.m_node->unhook();
-		base_type::delete_node(it.m_node);
+		it.pnode->unhook();
+		base_type::delete_node(it.pnode);
 
 		return ret;
 	}
@@ -860,7 +860,7 @@ namespace simstd {
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::_transfer(const_iterator pos, const_iterator first, const_iterator last)
 	{
-		pos.m_node->transfer(first.m_node, last.m_node);
+		pos.pnode->transfer(first.pnode, last.pnode);
 	}
 
 	template<typename Type, typename Allocator>

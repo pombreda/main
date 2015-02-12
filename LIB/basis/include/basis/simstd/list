@@ -6,8 +6,12 @@
 #include <basis/simstd/iterator>
 #include <basis/simstd/memory>
 
+namespace simstd {
+	template<typename Type, typename Allocator = simstd::allocator<Type>>
+	class list;
+}
+
 #include <basis/simstd/~list/node.hpp>
-#include <basis/simstd/~list/iterator.hpp>
 #include <basis/simstd/~list/base.hpp>
 #include <basis/simstd/~list/interface.hpp>
 

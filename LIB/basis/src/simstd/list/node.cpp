@@ -4,15 +4,15 @@ namespace simstd {
 
 	namespace pvt {
 
-		List_node_base::List_node_base() noexcept:
-			m_next(this),
-			m_prev(this)
+		List_node_base::List_node_base() noexcept
+			: m_next(this)
+			, m_prev(this)
 		{
 		}
 
-		void List_node_base::transfer(const this_type * first, const this_type * last) noexcept
+		void List_node_base::transfer(const this_type* first, const this_type* last) noexcept
 		{
-			this_type* first1 = m_prev;
+			auto first1 = m_prev;
 
 			m_prev = last->m_prev;
 			m_prev->m_next = this;
@@ -68,8 +68,8 @@ namespace simstd {
 		void List_node_base::unhook() noexcept
 		{
 //			LogTraceObj();
-			this_type * prev = m_prev;
-			this_type * next = m_next;
+			auto prev = m_prev;
+			auto next = m_next;
 //			LogDebug(L"prev: %p\n", prev);
 //			LogDebug(L"this: %p\n", this);
 //			LogDebug(L"next: %p\n", next);
