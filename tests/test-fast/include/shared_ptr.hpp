@@ -2,18 +2,17 @@
 #define BASIS_MEMORY_SHARED_PTR_HPP_
 
 #include <basis/configure.hpp>
-#include <basis/sys/logger.hpp>
 #include <basis/simstd/memory>
 
 #include <typeinfo>
 
-#include "~shared_ptr/forward.hpp"
-#include "~shared_ptr/counted_base.hpp"
-#include "~shared_ptr/counted_deleter.hpp"
-#include "~shared_ptr/counted_ptr_inplace.hpp"
-#include "~shared_ptr/counted_ptr.hpp"
-#include "~shared_ptr/shared_count.hpp"
-#include "~shared_ptr/shared_ptr.hpp"
+#include "~shared_ptr/shared_ptr_forward.hpp"
+#include "~shared_ptr/shared_ptr_counted_base.hpp"
+#include "~shared_ptr/shared_ptr_counted_deleter.hpp"
+#include "~shared_ptr/shared_ptr_counted_ptr_inplace.hpp"
+#include "~shared_ptr/shared_ptr_counted_ptr.hpp"
+#include "~shared_ptr/shared_ptr_shared_count.hpp"
+#include "~shared_ptr/shared_ptr_shared_ptr_base.hpp"
 
 namespace simstd1 {
 
@@ -27,7 +26,7 @@ namespace simstd1 {
 		constexpr shared_ptr() noexcept = default;
 
 		template<typename OType>
-		explicit shared_ptr(OType* ptr): pvt::shared_ptr_base<OType>(ptr) {}
+		explicit shared_ptr(OType* ptr): base_type(ptr) {}
 		template<typename OType, typename Deleter>
 		shared_ptr(OType* ptr, Deleter deleter): pvt::shared_ptr_base<OType>(ptr, deleter) {}
 		template<typename OType, typename Deleter, typename Allocator>

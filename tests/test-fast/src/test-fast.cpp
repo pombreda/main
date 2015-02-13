@@ -20,6 +20,7 @@ public:
 	}
 
 	int i;
+	int k[10];
 };
 
 class Derived: public Base {
@@ -39,7 +40,6 @@ void Base_deleter(Base* p)
 	printf("%s:%d Base_deleter called\n", __PRETTY_FUNCTION__, __LINE__);
 	delete p;
 }
-
 
 int main() {
 	printf("%s:%d\n", __PRETTY_FUNCTION__, __LINE__);
@@ -78,10 +78,52 @@ int main() {
 
 	{
 		simstd1::shared_ptr<Derived> sdNull(nullptr);
-		printf("%s:%d sizeof(sd):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdNull));
+		printf("%s:%d sizeof(sdNull):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdNull));
+		printf("%s:%d get():           %p\n", __PRETTY_FUNCTION__, __LINE__, sdNull.get());
 		sdNull.reset();
 	}
 
+	{
+		simstd1::shared_ptr<Base> sdb(new Derived);
+		printf("%s:%d sizeof(sdb):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdb));
+		printf("%s:%d get():       %p\n", __PRETTY_FUNCTION__, __LINE__, sdb.get());
+		sdb.reset();
+	}
+
+	{
+		simstd1::shared_ptr<Derived> sdd(new Derived);
+		printf("%s:%d sizeof(sdd):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdd));
+		printf("%s:%d get():        %p\n", __PRETTY_FUNCTION__, __LINE__, sdd.get());
+		sdd.reset();
+	}
+
+	{
+		auto deleter = [](const Derived* ptr){
+			printf("%s:%d [deleter called]: %p\n", __PRETTY_FUNCTION__, __LINE__, ptr);
+			delete ptr;
+		};
+
+		simstd1::shared_ptr<Derived> sdDeleter(new Derived, deleter);
+		printf("%s:%d sizeof(sdDeleter):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdDeleter));
+		printf("%s:%d get():              %p\n", __PRETTY_FUNCTION__, __LINE__, sdDeleter.get());
+		sdDeleter.reset();
+	}
+
+	{
+		auto sdAuto1 = simstd1::make_shared<Derived>();
+		printf("%s:%d sizeof(sdAuto1):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdAuto1));
+		printf("%s:%d get():            %p\n", __PRETTY_FUNCTION__, __LINE__, sdAuto1.get());
+		sdAuto1.reset();
+	}
+
+	{
+		auto sdAuto2 = simstd1::allocate_shared<Derived>(simstd::allocator<Derived>());
+		printf("%s:%d sizeof(sdAuto2):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdAuto2));
+		printf("%s:%d get():            %p\n", __PRETTY_FUNCTION__, __LINE__, sdAuto2.get());
+		sdAuto2.reset();
+	}
+
+	return 0;
 	printf("\n%s:%d allocating der\n", __PRETTY_FUNCTION__, __LINE__);
 	auto der = new Derived;
 	printf("%s:%d der: %p\n", __PRETTY_FUNCTION__, __LINE__, der);

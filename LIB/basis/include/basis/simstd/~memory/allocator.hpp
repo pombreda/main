@@ -13,11 +13,11 @@ namespace simstd {
 	class allocator<void>
 	{
 	public:
-		typedef size_t size_type;
-		typedef ptrdiff_t difference_type;
+		typedef void value_type;
 		typedef void* pointer;
 		typedef const void* const_pointer;
-		typedef void value_type;
+		typedef size_t size_type;
+		typedef ptrdiff_t difference_type;
 
 		template<typename TypeOther>
 		struct rebind

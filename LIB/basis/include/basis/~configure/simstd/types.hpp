@@ -85,6 +85,29 @@ namespace simstd {
 }
 
 namespace simstd {
+
+	template<typename Type, Type Val>
+	struct integral_constant
+	{
+		static constexpr Type value = Val;
+		typedef Type value_type;
+		typedef integral_constant<Type, Val> type;
+		constexpr operator value_type()
+		{
+			return value;
+		}
+	};
+
+	template<typename Type, Type Val>
+	constexpr Type integral_constant<Type, Val>::value;
+
+	typedef integral_constant<bool, true> true_type;
+
+	typedef integral_constant<bool, false> false_type;
+
+}
+
+namespace simstd {
 //#ifdef __x86_64__
 //	typedef long long unsigned int size_t;
 //	typedef long long int ssize_t;

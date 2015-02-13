@@ -49,7 +49,8 @@ namespace simstd1 {
 			}
 
 		private:
-			Type* get_ptr() noexcept {return impl._M_storage._M_ptr();}
+//			Type* get_ptr() noexcept {return impl._M_storage._M_ptr();}
+			Type* get_ptr() noexcept {return &impl._M_storage;}
 
 			Impl impl;
 		};

@@ -2,13 +2,12 @@
 #define BASIS_MEMORY_SHARED_PTR_FORWARD_HPP_
 
 namespace simstd1 {
-
 	namespace pvt {
 
 		enum class LockPolicy: ssize_t {
 			ATOMIC,
-			NONE,
 			MUTEX,
+			NONE,
 		};
 
 		const LockPolicy DEFAULT_LOCK_POLICY = LockPolicy::ATOMIC;
@@ -43,7 +42,6 @@ namespace simstd1 {
 
 	template<typename Type>
 	class enable_shared_from_this;
-
 }
 
 #endif

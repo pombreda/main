@@ -1,9 +1,6 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_SHARED_PTR_HPP_
 #define BASIS_MEMORY_SHARED_PTR_SHARED_PTR_HPP_
 
-#include "~shared_ptr/forward.hpp"
-#include "~shared_ptr/shared_count.hpp"
-
 namespace simstd1 {
 
 	// Friend of enable_shared_from_this.
@@ -42,11 +39,11 @@ namespace simstd1 {
 
 			template<typename OType, typename Deleter>
 			shared_ptr_base(OType* ptr, Deleter deleter)
-				: _M_ptr(ptr)
-				, _M_refcount(ptr, deleter)
+				: _M_refcount(ptr, deleter)
+				, _M_ptr(ptr)
 			{
 //				__glibcxx_function_requires(_ConvertibleConcept<OType*, Type*>)
-				__enable_shared_from_this_helper(_M_refcount, ptr, ptr);
+				enable_shared_from_this_helper(_M_refcount, ptr, ptr);
 			}
 
 			template<typename OType, typename Deleter, typename Allocator>
@@ -224,53 +221,42 @@ namespace simstd1 {
 	protected:
 		// This constructor is non-standard, it is used by allocate_shared.
 		template<typename _Alloc, typename... _Args>
-		shared_ptr_base(make_shared_tag __tag, const _Alloc& __a,
-			_Args&&... __args)
-		: _M_ptr(), _M_refcount(__tag, (Type*)0, __a, simstd::forward<_Args>(__args)...)
+		shared_ptr_base(make_shared_tag __tag, const _Alloc& __a, _Args&&... __args)
+			: _M_refcount(__tag, (Type*)0, __a, simstd::forward<_Args>(__args)...)
+			, _M_ptr()
 		{
 			// _M_ptr needs to point to the newly constructed object.
 			// This relies on _Sp_counted_ptr_inplace::_M_get_deleter.
-			void* __p = _M_refcount._M_get_deleter(typeid(__tag));
+			void* __p = _M_refcount.get_deleter(typeid(__tag));
 			_M_ptr = static_cast<Type*>(__p);
-			__enable_shared_from_this_helper(_M_refcount, _M_ptr, _M_ptr);
+			enable_shared_from_this_helper(_M_refcount, _M_ptr, _M_ptr);
 		}
 #else
-		template<typename _Alloc>
+		template<typename Allocator>
 		struct _Deleter
 		{
 			void operator()(Type* __ptr)
 			{
-				typedef allocator_traits<_Alloc> _Alloc_traits;
+				typedef simstd::allocator_traits<Allocator> _Alloc_traits;
 				_Alloc_traits::destroy(_M_alloc, __ptr);
 				_Alloc_traits::deallocate(_M_alloc, __ptr, 1);
 			}
-			_Alloc _M_alloc;
+			Allocator _M_alloc;
 		};
 
 		template<typename _Alloc, typename... _Args>
-		shared_ptr_base(_Sp_make_shared_tag __tag, const _Alloc& __a,
-			_Args&&... __args)
-		: _M_ptr(), _M_refcount()
+		shared_ptr_base(make_shared_tag, const _Alloc& __a, _Args&&... __args)
+			: _M_refcount()
+			, _M_ptr()
 		{
 			typedef typename _Alloc::template rebind<Type>::other _Alloc2;
 			_Deleter<_Alloc2> __del = {_Alloc2(__a)};
-			typedef allocator_traits<_Alloc2> __traits;
+			typedef simstd::allocator_traits<_Alloc2> __traits;
 			_M_ptr = __traits::allocate(__del._M_alloc, 1);
-			__try
-			{
-				// _GLIBCXX_RESOLVE_LIB_DEFECTS
-				// 2070. allocate_shared should use allocator_traits<A>::construct
-				__traits::construct(__del._M_alloc, _M_ptr,
-					std::forward<_Args>(__args)...);
-			}
-			__catch(...)
-			{
-				__traits::deallocate(__del._M_alloc, _M_ptr, 1);
-				__throw_exception_again;
-			}
-			__shared_count<LockPol> __count(_M_ptr, __del, __del._M_alloc);
-			_M_refcount._M_swap(__count);
-			__enable_shared_from_this_helper(_M_refcount, _M_ptr, _M_ptr);
+			__traits::construct(__del._M_alloc, _M_ptr, simstd::forward<_Args>(__args)...);
+			shared_count<LockPol> __count(_M_ptr, __del, __del._M_alloc);
+			_M_refcount.swap(__count);
+			enable_shared_from_this_helper(_M_refcount, _M_ptr, _M_ptr);
 		}
 #endif
 

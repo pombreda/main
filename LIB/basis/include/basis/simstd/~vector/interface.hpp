@@ -5,34 +5,29 @@
 #include <basis/simstd/memory>
 #include <basis/simstd/vector>
 
-//#include <basis/sys/console.hpp>
-//#define FuncTrace() console::printf(L"%S()[%d]\n", __PRETTY_FUNCTION__, __LINE__)
-#define FuncTrace()
-
-
 namespace simstd {
 	namespace Test {
 		ssize_t _vector(wPrintFunc printFunc);
 	}
 
-	template<typename Type, typename Allocator = simstd::allocator<Type> >
+	template<typename Type, typename Allocator = simstd::allocator<Type>>
 	class vector {
-		typedef vector this_type;
+		using this_type = vector;
 
 	public:
-		typedef Type value_type;
-		typedef Allocator allocator_type;
-		typedef size_t size_type;
-		typedef allocator_traits<allocator_type> alloc_traits;
-		typedef typename alloc_traits::pointer pointer;
-		typedef typename alloc_traits::const_pointer const_pointer;
-		typedef typename alloc_traits::reference reference;
-		typedef typename alloc_traits::const_reference const_reference;
-		typedef typename alloc_traits::difference_type difference_type;
-		typedef simstd::pvt::normal_iterator<pointer> iterator;
-		typedef simstd::pvt::normal_iterator<const_pointer> const_iterator;
-		typedef simstd::reverse_iterator<iterator> reverse_iterator;
-		typedef simstd::reverse_iterator<const_iterator> const_reverse_iterator;
+		using value_type = Type ;
+		using allocator_type = Allocator;
+		using size_type = size_t;
+		using alloc_traits = allocator_traits<allocator_type>;
+		using pointer = typename alloc_traits::pointer;
+		using const_pointer = typename alloc_traits::const_pointer;
+		using reference = value_type&;
+		using const_reference = const value_type&;
+		using difference_type = typename alloc_traits::difference_type;
+		using iterator = simstd::pvt::normal_iterator<pointer>;
+		using const_iterator = simstd::pvt::normal_iterator<const_pointer>;
+		using reverse_iterator = simstd::reverse_iterator<iterator>;
+		using const_reverse_iterator = simstd::reverse_iterator<const_iterator>;
 
 	public:
 		~vector();

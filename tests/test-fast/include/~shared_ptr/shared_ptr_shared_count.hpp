@@ -29,7 +29,8 @@ namespace simstd1 {
 			template<typename Ptr, typename Deleter>
 			shared_count(Ptr ptr, Deleter deleter)
 				: shared_count(ptr, simstd::move(deleter), simstd::allocator<void>())
-			{}
+			{
+			}
 
 			template<typename Ptr, typename Deleter, typename Allocator>
 			shared_count(Ptr ptr, Deleter deleter, Allocator allocator)
@@ -37,7 +38,7 @@ namespace simstd1 {
 			{
 				using _Sp_cd_type = counted_deleter<Ptr, Deleter, Allocator, LockPol>;
 				using _Alloc_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<_Sp_cd_type>;
-				auto l_alloc(allocator);
+				typename _Alloc_traits::allocator_type l_alloc(allocator);
 
 				auto __mem = _Alloc_traits::allocate(l_alloc, 1);
 				if (__mem) {
@@ -53,7 +54,7 @@ namespace simstd1 {
 				typedef counted_ptr_inplace<Type, Allocator, LockPol> _Sp_cp_type;
 				typedef typename simstd::allocator_traits<Allocator>::template rebind_traits<_Sp_cp_type> _Alloc_traits;
 
-				auto l_allocator(allocator);
+				typename _Alloc_traits::allocator_type l_allocator(allocator);
 				_Sp_cp_type* __mem = _Alloc_traits::allocate(l_allocator, 1);
 				if (__mem)
 				{
@@ -134,14 +135,14 @@ namespace simstd1 {
 				: _M_pi(other._M_pi)
 			{
 				if (_M_pi)
-					_M_pi->weak_add_ref();
+					_M_pi->add_weak_ref_count();
 			}
 
 			weak_count(const weak_count<LockPol>& other) noexcept
 				: _M_pi(other._M_pi)
 			{
 				if (_M_pi)
-					_M_pi->weak_add_ref();
+					_M_pi->add_weak_ref_count();
 			}
 
 			weak_count<LockPol>& operator =(const shared_count<LockPol>& other) noexcept
@@ -184,7 +185,7 @@ namespace simstd1 {
 		{
 //			CRT_ASSERT(_M_pi);
 			if (_M_pi != nullptr)
-				if (!_M_pi->use_add_ref())
+				if (!_M_pi->add_use_ref_count())
 					_M_pi = nullptr;
 		}
 	}

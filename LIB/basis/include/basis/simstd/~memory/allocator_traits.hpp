@@ -6,6 +6,38 @@
 
 namespace simstd {
 
+	namespace pvt {
+		template<typename Allocator, typename Type>
+		class allocator_rebind_helper
+		{
+			template<typename OAllocator, typename OType>
+			static constexpr simstd::true_type chk_allocator(typename OAllocator::template rebind<OType>::other*);
+
+			template<typename, typename>
+			static constexpr simstd::false_type chk_allocator(...);
+
+		public:
+			using type = decltype(chk_allocator<Allocator, Type>(nullptr));
+		};
+
+		template<typename Allocator, typename Type,
+		bool = allocator_rebind_helper<Allocator, Type>::type::value>
+
+		struct allocator_rebind;
+
+		template<typename Allocator, typename Type>
+		struct allocator_rebind<Allocator, Type, true>
+		{
+			typedef typename Allocator::template rebind<Type>::other type;
+		};
+
+		template<template<typename, typename...> class Allocator, typename Type, typename _Up, typename... _Args>
+		struct allocator_rebind<Allocator<_Up, _Args...>, Type, false>
+		{
+			typedef Allocator<Type, _Args...> type;
+		};
+	}
+
 	template<typename Allocator>
 	struct allocator_traits
 	{
@@ -13,18 +45,18 @@ namespace simstd {
 		typedef typename Allocator::value_type      value_type;
 		typedef typename Allocator::size_type       size_type;
 		typedef typename Allocator::difference_type difference_type;
-		typedef typename Allocator::reference       reference;
-		typedef typename Allocator::const_reference const_reference;
+//		typedef typename Allocator::reference       reference;
+//		typedef typename Allocator::const_reference const_reference;
 		typedef typename Allocator::pointer         pointer;
 		typedef typename Allocator::const_pointer   const_pointer;
 		typedef void*                               void_pointer;
 		typedef const void*                         const_void_pointer;
 
-//		template<typename Type>
-//		using rebind_alloc = typename Allocator::rebind<Type>::other;
-//
-//		template<typename Type>
-//		using rebind_traits = allocator_traits<rebind_alloc<Type> >;
+		template<typename Type>
+		using rebind_alloc = typename pvt::allocator_rebind<Allocator, Type>::type;
+
+		template<typename Type>
+		using rebind_traits = allocator_traits<rebind_alloc<Type>>;
 
 		static pointer allocate(Allocator& a, size_type n);
 
