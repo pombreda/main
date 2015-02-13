@@ -22,10 +22,10 @@ namespace simstd1 {
 		class weak_count;
 
 		template<typename Type, LockPolicy LockPol = DEFAULT_LOCK_POLICY>
-		class shared_ptr;
+		class shared_ptr_base;
 
 		template<typename Type, LockPolicy LockPol = DEFAULT_LOCK_POLICY>
-		class weak_ptr;
+		class weak_ptr_base;
 
 		template<typename Type, LockPolicy LockPol = DEFAULT_LOCK_POLICY>
 		class enable_shared_from_this;

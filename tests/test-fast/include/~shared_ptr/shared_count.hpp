@@ -15,7 +15,10 @@ namespace simstd1 {
 					_M_pi->release();
 			}
 
-			constexpr shared_count() noexcept: _M_pi(nullptr) {}
+			constexpr shared_count() noexcept
+				: _M_pi(nullptr)
+			{
+			}
 
 			template<typename Ptr>
 			explicit shared_count(Ptr ptr)
@@ -60,8 +63,7 @@ namespace simstd1 {
 			}
 
 			template<typename Type, typename Deleter>
-			explicit
-			shared_count(simstd::unique_ptr<Type, Deleter>&& other)
+			explicit shared_count(simstd::unique_ptr<Type, Deleter>&& other)
 				: _M_pi(nullptr)
 			{
 				using Ptr = typename simstd::unique_ptr<Type, Deleter>::pointer;
@@ -76,8 +78,6 @@ namespace simstd1 {
 				_M_pi = __mem;
 			}
 
-			explicit shared_count(const weak_count<LockPol>& other);
-
 			explicit shared_count(const weak_count<LockPol>& other, simstd::nothrow_t);
 
 			shared_count(const shared_count& other) noexcept
@@ -89,7 +89,7 @@ namespace simstd1 {
 
 			shared_count& operator =(const shared_count& other) noexcept
 			{
-				if (_M_pi != _M_pi)
+				if (_M_pi != other._M_pi)
 					shared_count(other).swap(*this);
 				return *this;
 			}
@@ -100,7 +100,7 @@ namespace simstd1 {
 				swap(_M_pi, other._M_pi);
 			}
 
-			int get_use_count() const noexcept {return _M_pi ? _M_pi->get_use_count() : 0;}
+			ssize_t get_use_count() const noexcept {return _M_pi ? _M_pi->get_use_count() : 0;}
 
 			bool unique() const noexcept {return get_use_count() == 1;}
 
@@ -113,9 +113,9 @@ namespace simstd1 {
 			friend bool operator ==(const shared_count& a, const shared_count& b) noexcept {return a._M_pi == b._M_pi;}
 
 		private:
-			friend class weak_count<LockPol>;
-
 			counted_base<LockPol>* _M_pi;
+
+			friend class weak_count<LockPol>;
 		};
 
 		template<LockPolicy LockPol>
@@ -178,8 +178,16 @@ namespace simstd1 {
 			counted_base<LockPol>* _M_pi;
 		};
 
+		template<LockPolicy LockPol>
+		shared_count<LockPol>::shared_count(const weak_count<LockPol>& other, simstd::nothrow_t)
+			: _M_pi(other._M_pi)
+		{
+//			CRT_ASSERT(_M_pi);
+			if (_M_pi != nullptr)
+				if (!_M_pi->use_add_ref())
+					_M_pi = nullptr;
+		}
 	}
-
 }
 
 #endif

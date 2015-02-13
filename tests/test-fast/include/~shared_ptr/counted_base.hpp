@@ -10,9 +10,9 @@ namespace simstd1 {
 //		template<LockPolicy LockPol>
 		struct choose_lock_policy
 		{
-			int get_use_count() const noexcept {return use_count;}
-			void use_add_ref() noexcept {++use_count;}
-			void weak_add_ref() noexcept {++weak_count;}
+			ssize_t get_use_count() const noexcept {return use_count;}
+			bool use_add_ref() noexcept {return use_count ? ++use_count, true : false;}
+			bool weak_add_ref() noexcept {return weak_count ? ++weak_count, true : false;}
 
 		protected:
 			choose_lock_policy() noexcept: use_count(1), weak_count(1) {}
@@ -20,8 +20,8 @@ namespace simstd1 {
 			bool weak_sub_ref() noexcept {return --weak_count == 0;}
 
 		private:
-			volatile int use_count;
-			volatile int weak_count;
+			volatile ssize_t use_count;
+			volatile ssize_t weak_count;
 		};
 
 		template<LockPolicy LockPol = DEFAULT_LOCK_POLICY>

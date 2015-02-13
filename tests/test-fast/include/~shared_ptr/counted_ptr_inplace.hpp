@@ -10,11 +10,12 @@ namespace simstd1 {
 		{
 			class Impl: private simstd::pvt::ebo_helper<0, Allocator>
 			{
-				using base_type = ebo_helper<0, Allocator>;
+				using base_type = simstd::pvt::ebo_helper<0, Allocator>;
 			public:
 				explicit Impl(Allocator allocator) noexcept: base_type(allocator) {}
 				Allocator& get_allocator() noexcept {return base_type::get(*this);}
-				__gnu_cxx::__aligned_buffer<Type> _M_storage;
+				Type _M_storage;
+//				__gnu_cxx::__aligned_buffer<Type> _M_storage;
 			};
 
 		public:

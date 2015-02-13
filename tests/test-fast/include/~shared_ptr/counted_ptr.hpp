@@ -29,7 +29,7 @@ namespace simstd1 {
 		}
 
 		template<>
-		void counted_ptr<nullptr_t, LockPolicy::SINGLE>::dispose() noexcept
+		void counted_ptr<nullptr_t, LockPolicy::NONE>::dispose() noexcept
 		{
 		}
 
