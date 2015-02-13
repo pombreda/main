@@ -1,7 +1,7 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_SHARED_PTR_HPP_
 #define BASIS_MEMORY_SHARED_PTR_SHARED_PTR_HPP_
 
-namespace simstd1 {
+namespace simstd {
 
 	// Friend of enable_shared_from_this.
 	template<typename Type, typename OType>
@@ -69,6 +69,8 @@ namespace simstd1 {
 			{
 			}
 
+			shared_ptr_base(const shared_ptr_base&) noexcept = default;
+
 			template<typename OType>
 			shared_ptr_base(const shared_ptr_base<OType, LockPol>& other, Type* ptr) noexcept
 				: _M_ptr(ptr)
@@ -117,12 +119,15 @@ namespace simstd1 {
 
 		/* TODO: use delegating constructor */
 		constexpr shared_ptr_base(nullptr_t) noexcept
-		: _M_ptr(0), _M_refcount()
-		{}
+			: _M_refcount()
+			, _M_ptr(0)
+		{
+		}
+
+		shared_ptr_base& operator =(const shared_ptr_base&) noexcept = default;
 
 		template<typename OType>
-		shared_ptr_base&
-		operator=(const shared_ptr_base<OType, LockPol>& __r) noexcept
+		shared_ptr_base& operator =(const shared_ptr_base<OType, LockPol>& __r) noexcept
 		{
 			_M_ptr = __r._M_ptr;
 			_M_refcount = __r._M_refcount; // __shared_count::op= doesn't throw
@@ -136,8 +141,7 @@ namespace simstd1 {
 		}
 
 		template<class OType>
-		shared_ptr_base&
-		operator=(shared_ptr_base<OType, LockPol>&& __r) noexcept
+		shared_ptr_base& operator =(shared_ptr_base<OType, LockPol>&& __r) noexcept
 		{
 			shared_ptr_base(simstd::move(__r)).swap(*this);
 			return *this;
@@ -175,7 +179,7 @@ namespace simstd1 {
 		typename std::add_lvalue_reference<Type>::type
 		operator*() const noexcept
 		{
-			_GLIBCXX_DEBUG_ASSERT(_M_ptr != 0);
+//			_GLIBCXX_DEBUG_ASSERT(_M_ptr != 0);
 			return *_M_ptr;
 		}
 

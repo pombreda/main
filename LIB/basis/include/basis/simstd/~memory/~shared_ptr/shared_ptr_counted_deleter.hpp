@@ -1,7 +1,7 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_COUNTED_DELETER_HPP_
 #define BASIS_MEMORY_SHARED_PTR_COUNTED_DELETER_HPP_
 
-namespace simstd1 {
+namespace simstd {
 	namespace pvt {
 
 		template<typename Ptr, typename Deleter, typename Allocator, LockPolicy LockPol>

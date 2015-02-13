@@ -8,9 +8,9 @@ namespace simstd {
 
 	template<typename Type, typename Allocator>
 	class list: private pvt::List_base<Type, Allocator> {
-		typedef list                                   this_type;
-		typedef pvt::List_base<Type, Allocator>        base_type;
-		typedef typename base_type::NodeAllocator      NodeAllocator;
+		typedef list                                    this_type;
+		typedef pvt::List_base<Type, Allocator>         base_type;
+		typedef typename base_type::node_allocator_type NodeAllocator;
 
 	public:
 		typedef Allocator allocator_type;
@@ -20,8 +20,8 @@ namespace simstd {
 		typedef typename alloc_traits::value_type      value_type;
 		typedef typename alloc_traits::pointer         pointer;
 		typedef typename alloc_traits::const_pointer   const_pointer;
-		typedef typename alloc_traits::reference       reference;
-		typedef typename alloc_traits::const_reference const_reference;
+		typedef value_type&                            reference;
+		typedef const value_type&                      const_reference;
 		typedef typename alloc_traits::difference_type difference_type;
 
 		typedef simstd::pvt::List_iterator<value_type>       iterator;

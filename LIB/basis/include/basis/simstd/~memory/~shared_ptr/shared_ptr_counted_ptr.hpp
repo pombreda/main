@@ -1,7 +1,7 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_HPP_
 #define BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_HPP_
 
-namespace simstd1 {
+namespace simstd {
 
 	namespace pvt {
 
@@ -24,17 +24,17 @@ namespace simstd1 {
 		};
 
 		template<>
-		void counted_ptr<nullptr_t, LockPolicy::ATOMIC>::dispose() noexcept
+		inline void counted_ptr<nullptr_t, LockPolicy::ATOMIC>::dispose() noexcept
 		{
 		}
 
 		template<>
-		void counted_ptr<nullptr_t, LockPolicy::NONE>::dispose() noexcept
+		inline void counted_ptr<nullptr_t, LockPolicy::NONE>::dispose() noexcept
 		{
 		}
 
 		template<>
-		void counted_ptr<nullptr_t, LockPolicy::MUTEX>::dispose() noexcept
+		inline void counted_ptr<nullptr_t, LockPolicy::MUTEX>::dispose() noexcept
 		{
 		}
 

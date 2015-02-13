@@ -1,258 +1,332 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_HPP_
 #define BASIS_MEMORY_SHARED_PTR_HPP_
 
-#include <basis/ext/pattern.hpp>
+#include <basis/configure.hpp>
+#include <basis/simstd/memory>
 
-#include <basis/simstd/~memory/default_deleters.hpp>
+#ifdef __GXX_RTTI
+#   include <typeinfo>
+#endif
+
+#include <basis/simstd/~memory/~shared_ptr/shared_ptr_forward.hpp>
+#include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_base.hpp>
+#include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_deleter.hpp>
+#include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_ptr_inplace.hpp>
+#include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_ptr.hpp>
+#include <basis/simstd/~memory/~shared_ptr/shared_ptr_shared_count.hpp>
+#include <basis/simstd/~memory/~shared_ptr/shared_ptr_shared_ptr_base.hpp>
 
 namespace simstd {
 
 	template<typename Type>
-	class shared_ptr {
-		typedef shared_ptr<Type> this_type;
+	class shared_ptr: public pvt::shared_ptr_base<Type>
+	{
+		using this_type = shared_ptr<Type>;
+		using base_type = pvt::shared_ptr_base<Type>;
 
 	public:
-		typedef Type element_type;
-		typedef size_t size_type;
+		constexpr shared_ptr() noexcept = default;
 
-		~shared_ptr() throw()
-		{
-			reset();
-		}
+		template<typename OType>
+		explicit shared_ptr(OType* ptr): base_type(ptr) {}
+		template<typename OType, typename Deleter>
+		shared_ptr(OType* ptr, Deleter deleter): base_type(ptr, deleter) {}
+		template<typename OType, typename Deleter, typename Allocator>
+		shared_ptr(OType* ptr, Deleter deleter, Allocator allocator): base_type(ptr, deleter, simstd::move(allocator)) {}
 
-		shared_ptr() throw() :
-			m_impl(0)
-		{
-			TraceFunc();
-		}
-
-		/*constexpr*/ shared_ptr(nullptr_t ptr) noexcept :
-			m_impl(new shared_ptr_impl_std(ptr))
-		{
-			TraceFunc();
-		}
-
-		explicit shared_ptr(element_type * ptr) :
-			m_impl(new shared_ptr_impl_std(ptr))
-		{
-			TraceFunc();
-			static_assert(sizeof(Type) > 0, "incomplete type");
-		}
-
+		constexpr shared_ptr(nullptr_t) noexcept;
 		template<typename Deleter>
-		shared_ptr(element_type * ptr, Deleter d) :
-			m_impl(new shared_ptr_impl_deleter<Deleter>(ptr, d))
-		{
-			TraceFunc();
-		}
+		shared_ptr(nullptr_t ptr, Deleter deleter): base_type(ptr, deleter) {}
+		template<typename Deleter, typename Allocator>
+		shared_ptr(nullptr_t ptr, Deleter deleter, Allocator allocator): base_type(ptr, deleter, simstd::move(allocator)) {}
 
-		template<typename Deleter>
-		shared_ptr(nullptr_t ptr, Deleter d) :
-			m_impl(new shared_ptr_impl_deleter<Deleter>(ptr, d))
-		{
-			TraceFunc();
-		}
+		shared_ptr(const this_type&) noexcept = default;
+		template<typename OType, typename = typename std::enable_if<std::is_convertible<OType*, Type*>::value>::type>
+		shared_ptr(const shared_ptr<OType>& other) noexcept: base_type(other) {}
 
-		shared_ptr(const this_type & other) :
-			m_impl(0)
-		{
-			if (other.m_impl) {
-				m_impl = other.m_impl;
-				m_impl->increase_ref();
-			}
-		}
+		shared_ptr(this_type&& other) noexcept: base_type(simstd::move(other)) {}
+		template<typename OType, typename = typename std::enable_if<std::is_convertible<OType*, Type*>::value>::type>
+		shared_ptr(shared_ptr<OType>&& other) noexcept: base_type(simstd::move(other)) {}
 
-		this_type & operator =(const this_type & other)
+		template<typename OType>
+		explicit shared_ptr(const weak_ptr<OType>& other): base_type(other) {}
+
+		template<typename OType, typename Deleter>
+		shared_ptr(simstd::unique_ptr<OType, Deleter>&& other): base_type(simstd::move(other)) {}
+
+		this_type& operator =(const this_type&) noexcept = default;
+
+		template<typename OType>
+		this_type& operator =(const shared_ptr<OType>& other) noexcept
 		{
-			if (m_impl != other.m_impl) {
-				shared_ptr(other).swap(*this);
-			}
+			this->base_type::operator =(other);
 			return *this;
 		}
 
-//	    template<typename OType>
-//		shared_ptr& operator =(const shared_ptr<OType>& other) noexcept
-//		{
-//	    	this->__shared_ptr<_Tp>::operator=(other);
-//	    	return *this;
-//		}
-
-		template<typename newType>
-		operator shared_ptr<newType>()
+		this_type& operator =(this_type&& other) noexcept
 		{
-			TraceFunc();
-			return shared_ptr<newType>(m_impl); // TODO
+			this->base_type::operator =(simstd::move(other));
+			return *this;
 		}
 
-		void reset()
+		template<class OType>
+		this_type& operator =(shared_ptr<OType>&& other) noexcept
 		{
-			if (m_impl) {
-				m_impl->decrease_ref();
-				m_impl = 0;
-			}
+			this->base_type::operator =(simstd::move(other));
+			return *this;
 		}
 
-		void reset(element_type * ptr)
+		template<typename OType, typename Deleter>
+		this_type& operator =(simstd::unique_ptr<OType, Deleter>&& other)
 		{
-			shared_ptr(ptr).swap(*this);
-		}
-
-		template<typename Deleter>
-		void reset(element_type * ptr, Deleter d)
-		{
-			shared_ptr(ptr, d).swap(*this);
-		}
-
-		element_type & operator *() const
-		{
-			return *(m_impl->get());
-		}
-
-		element_type * operator ->() const
-		{
-			return m_impl->get();
-		}
-
-		element_type * get() const
-		{
-			return (m_impl) ? m_impl->get() : 0;
-		}
-
-		bool unique() const
-		{
-			return !m_impl || m_impl->count_ref() == 1;
-		}
-
-		size_type use_count() const
-		{
-			return (m_impl) ? m_impl->count_ref() : 0;
-		}
-
-		operator bool() const
-		{
-			return m_impl && m_impl->get();
-		}
-
-		void swap(this_type & b) throw()
-		{
-#if defined(__GNUC__) && (__GNUC__ < 3)
-			simstd::swap(m_impl, b.m_impl);
-#else
-			using simstd::swap;
-			swap(m_impl, b.m_impl);
-#endif
+			this->base_type::operator =(simstd::move(other));
+			return *this;
 		}
 
 	private:
-		typedef typename simstd::default_delete<Type> default_deleter;
-
-		struct shared_ptr_impl: public pattern::RefCounter
+		template<typename Allocator, typename... Args>
+		shared_ptr(pvt::make_shared_tag tag, const Allocator& allocator, Args&&... args)
+			: base_type(tag, allocator, simstd::forward<Args>(args)...)
 		{
-			shared_ptr_impl(element_type* ptr):
-				m_ptr(ptr)
-			{
-				TraceFunc();
-			}
+		}
 
-			element_type* get() const {return m_ptr;}
+		template<typename OType, typename Allocator, typename... Args>
+		friend shared_ptr<OType> allocate_shared(const Allocator& allocator, Args&&... args);
 
-			void destroy() const override = 0;
+		shared_ptr(const weak_ptr<Type>& other, simstd::nothrow_t tag): base_type(other, tag) {}
 
-			void deallocate() const override {delete this;}
-
-		private:
-			element_type* m_ptr;
-		};
-
-		struct shared_ptr_impl_std: public shared_ptr_impl
-		{
-			shared_ptr_impl_std(element_type * ptr) :
-				shared_ptr_impl(ptr)
-			{
-				TraceFunc();
-			}
-
-		private:
-			void destroy() const override {default_deleter()(get());}
-		};
-
-		template<typename Deleter>
-		struct shared_ptr_impl_deleter: public shared_ptr_impl {
-			shared_ptr_impl_deleter(element_type * ptr, Deleter d) :
-				shared_ptr_impl(ptr),
-				m_deleter(d)
-			{
-				TraceFunc();
-			}
-
-		private:
-			void destroy() const override {m_deleter(get());}
-
-			Deleter m_deleter;
-		};
-
-		shared_ptr_impl * m_impl;
+		friend class weak_ptr<Type>;
 	};
 
-	template<typename T>
-	void swap(shared_ptr<T> & a, shared_ptr<T> & b) throw()
+	template<typename Type>
+	constexpr shared_ptr<Type>::shared_ptr(nullptr_t) noexcept
 	{
-		a.swap(b);
-	}
+	};
 
-	template<typename T, typename U>
-	bool operator ==(const shared_ptr<T> & a, const shared_ptr<U> & b)
+	template<typename Type>
+	class weak_ptr: public pvt::weak_ptr_base<Type>
+	{
+		using this_type = weak_ptr<Type>;
+		using base_type = pvt::weak_ptr_base<Type>;
+
+	public:
+		constexpr weak_ptr() noexcept = default;
+
+		template<typename OType, typename = typename std::enable_if<std::is_convertible<OType*, Type*>::value>::type>
+		weak_ptr(const weak_ptr<OType>& other) noexcept: base_type(other) {}
+
+		template<typename OType, typename = typename std::enable_if<std::is_convertible<OType*, Type*>::value>::type>
+		weak_ptr(const shared_ptr<OType>& other) noexcept: base_type(other) {}
+
+		template<typename OType>
+		this_type& operator =(const weak_ptr<OType>& other) noexcept
+		{
+			this->base_type::operator =(other);
+			return *this;
+		}
+
+		template<typename OType>
+		this_type& operator =(const shared_ptr<OType>& other) noexcept
+		{
+			this->base_type::operator =(other);
+			return *this;
+		}
+
+		shared_ptr<Type> lock() const noexcept
+		{
+			return shared_ptr<Type>(*this, simstd::nothrow);
+		}
+
+	};
+
+	template<typename Type>
+	class enable_shared_from_this
+	{
+	public:
+		shared_ptr<Type> shared_from_this()
+		{
+			return shared_ptr<Type>(this->_M_weak_this);
+		}
+
+		shared_ptr<const Type> shared_from_this() const
+		{
+			return shared_ptr<const Type>(this->_M_weak_this);
+		}
+
+	protected:
+		~enable_shared_from_this() = default;
+		constexpr enable_shared_from_this() noexcept = default;
+		enable_shared_from_this(const enable_shared_from_this&) noexcept = default;
+		enable_shared_from_this& operator =(const enable_shared_from_this&) noexcept = default;
+
+	private:
+		template<typename OType>
+		void _weak_assign(OType* ptr, const pvt::shared_count<>& __n) const noexcept
+		{
+			_M_weak_this._M_assign(ptr, __n);
+		}
+
+		template<typename OType>
+		void __enable_shared_from_this_helper(const pvt::shared_count<>& __pn, const enable_shared_from_this* __pe, const OType* px) noexcept
+		{
+			if (__pe != 0)
+				__pe->_weak_assign(const_cast<OType*>(px), __pn);
+		}
+
+		mutable weak_ptr<Type> _M_weak_this;
+	};
+
+	template<typename TypeA, typename TypeB>
+	bool operator ==(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
 	{
 		return a.get() == b.get();
 	}
 
-	template<typename T>
-	bool operator ==(const shared_ptr<T> & a, nullptr_t)
+	template<typename Type>
+	bool operator ==(const shared_ptr<Type>& a, nullptr_t) noexcept
 	{
 		return !a;
 	}
 
-	template<typename T>
-	bool operator ==(nullptr_t, const shared_ptr<T> & b)
+	template<typename Type>
+	bool operator ==(nullptr_t, const shared_ptr<Type>& a) noexcept
 	{
-		return !b;
+		return !a;
 	}
 
-	template<typename T, typename U>
-	bool operator <(const shared_ptr<T> & a, const shared_ptr<U> & b)
+	template<typename TypeA, typename TypeB>
+	bool operator !=(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
 	{
-		return a.get() < b.get();
+		return rel_ops::operator !=(a, b);
 	}
 
-	template<typename T, typename U>
-	bool operator !=(const shared_ptr<T> & a, const shared_ptr<U> & b)
+	template<typename Type>
+	bool operator !=(const shared_ptr<Type>& a, nullptr_t) noexcept
 	{
-		return simstd::rel_ops::operator !=(a, b);
+		return rel_ops::operator !=(a, nullptr);
 	}
 
-	template<typename T, typename U>
-	bool operator >(const shared_ptr<T> & a, const shared_ptr<U> & b)
+	template<typename Type>
+	bool operator !=(nullptr_t, const shared_ptr<Type>& b) noexcept
 	{
-		return simstd::rel_ops::operator >(a, b);
+		return rel_ops::operator !=(nullptr, b);
 	}
 
-	template<typename T, typename U>
-	bool operator <=(const shared_ptr<T> & a, const shared_ptr<U> & b)
+	template<typename TypeA, typename TypeB>
+	bool operator <(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
 	{
-		return simstd::rel_ops::operator <=(a, b);
+		typedef typename std::common_type<TypeA*, TypeB*>::type CT;
+		return simstd::less<CT>()(a.get(), b.get());
 	}
 
-	template<typename T, typename U>
-	bool operator >=(const shared_ptr<T> & a, const shared_ptr<U> & b)
+	template<typename Type>
+	bool operator <(const shared_ptr<Type>& a, nullptr_t) noexcept
 	{
-		return simstd::rel_ops::operator >=(a, b);
+		return simstd::less<Type*>()(a.get(), nullptr);
 	}
 
-	template<class T, class ... Args>
-	shared_ptr<T> make_shared(Args&&... args)
+	template<typename Type>
+	bool operator <(nullptr_t, const shared_ptr<Type>& b) noexcept
 	{
-		return shared_ptr<T>(new T(simstd::forward<Args>(args)...));
+		return simstd::less<Type*>()(nullptr, b.get());
 	}
+
+	template<typename TypeA, typename TypeB>
+	bool operator <=(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
+	{
+		return rel_ops::operator <=(a, b);
+	}
+
+	template<typename Type>
+	bool operator <=(const shared_ptr<Type>& a, nullptr_t) noexcept
+	{
+		return rel_ops::operator <=(a, nullptr);
+	}
+
+	template<typename Type>
+	bool operator <=(nullptr_t, const shared_ptr<Type>& b) noexcept
+	{
+		return rel_ops::operator <=(nullptr, b);
+	}
+
+	template<typename TypeA, typename TypeB>
+	bool operator>(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
+	{
+		return rel_ops::operator >(a, b);
+	}
+
+	template<typename Type>
+	bool operator >(const shared_ptr<Type>& a, nullptr_t) noexcept
+	{
+		return rel_ops::operator >(a, nullptr);
+	}
+
+	template<typename Type>
+	bool operator >(nullptr_t, const shared_ptr<Type>& b) noexcept
+	{
+		return rel_ops::operator >(nullptr, b);
+	}
+
+	template<typename TypeA, typename TypeB>
+	bool operator>=(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
+	{
+		return rel_ops::operator >=(a, b);
+	}
+
+	template<typename Type>
+	bool operator >=(const shared_ptr<Type>& a, nullptr_t) noexcept
+	{
+		return rel_ops::operator >=(a, nullptr);
+	}
+
+	template<typename Type>
+	bool operator >=(nullptr_t, const shared_ptr<Type>& b) noexcept
+	{
+		return rel_ops::operator >=(nullptr, b);
+	}
+
+//	template<typename Type>
+//	struct less<shared_ptr<Type>> : public _Sp_less<shared_ptr<Type>> {
+//	};
+
+	template<typename Type>
+	void swap(shared_ptr<Type>& a, shared_ptr<Type>& b) noexcept
+	{
+		a.swap(b);
+	}
+
+	template<typename Type, typename OType>
+	shared_ptr<Type> static_pointer_cast(const shared_ptr<OType>& r) noexcept
+	{
+		return shared_ptr<Type>(r, static_cast<Type*>(r.get()));
+	}
+
+	template<typename Type, typename OType>
+	shared_ptr<Type> const_pointer_cast(const shared_ptr<OType>& r) noexcept
+	{
+		return shared_ptr<Type>(r, const_cast<Type*>(r.get()));
+	}
+
+	template<typename Type, typename OType>
+	shared_ptr<Type> dynamic_pointer_cast(const shared_ptr<OType>& r) noexcept
+	{
+		if (Type* p = dynamic_cast<Type*>(r.get()))
+			return shared_ptr<Type>(r, p);
+		return shared_ptr<Type>();
+	}
+
+	template<typename Type, typename Allocator, typename... Args>
+	shared_ptr<Type> allocate_shared(const Allocator& allocator, Args&&... args)
+	{
+		return shared_ptr<Type>(pvt::make_shared_tag(), allocator, simstd::forward<Args>(args)...);
+	}
+
+	template<typename Type, typename... Args>
+	shared_ptr<Type> make_shared(Args&&... args)
+	{
+		return allocate_shared<Type>(allocator<remove_const_t<Type>>(), simstd::forward<Args>(args)...);
+	}
+
 }
 
 #endif

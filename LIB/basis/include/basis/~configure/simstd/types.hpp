@@ -12,35 +12,107 @@ namespace simstd {
 	}
 
 	template<typename Type>
-	struct remove_reference {
-		typedef Type type;
+	struct remove_const
+	{
+		using type = Type;
 	};
 
 	template<typename Type>
-	struct remove_reference<Type&> {
-		typedef Type type;
+	struct remove_const<Type const>
+	{
+		using type = Type;
 	};
 
 	template<typename Type>
-	struct remove_reference<Type&&> {
-		typedef Type type;
+	struct remove_volatile
+	{
+		using type = Type;
 	};
+
+	template<typename Type>
+	struct remove_volatile<Type volatile>
+	{
+		using type = Type;
+	};
+
+	template<typename Type>
+	struct remove_cv
+	{
+		using type = typename remove_const<typename remove_volatile<Type>::type>::type;
+	};
+
+	template<typename Type>
+	struct add_const
+	{
+		using type = const Type;
+	};
+
+	template<typename Type>
+	struct add_volatile
+	{
+		using type = volatile Type;
+	};
+
+	template<typename Type>
+	struct add_cv
+	{
+		using type = typename add_const<typename add_volatile<Type>::type>::type;
+	};
+
+	template<typename Type>
+	using remove_const_t = typename remove_const<Type>::type;
+
+	template<typename Type>
+	using remove_volatile_t = typename remove_volatile<Type>::type;
+
+	template<typename Type>
+	using remove_cv_t = typename remove_cv<Type>::type;
+
+	template<typename Type>
+	using add_const_t = typename add_const<Type>::type;
+
+	template<typename Type>
+	using add_volatile_t = typename add_volatile<Type>::type;
+
+	template<typename Type>
+	using add_cv_t = typename add_cv<Type>::type;
+
+	template<typename Type>
+	struct remove_reference
+	{
+		using type = Type;
+	};
+
+	template<typename Type>
+	struct remove_reference<Type&>
+	{
+		using type = Type;
+	};
+
+	template<typename Type>
+	struct remove_reference<Type&&>
+	{
+		using type = Type;
+	};
+
+	template<typename Type>
+	using remove_reference_t = typename remove_reference<Type>::type;
 
 #if defined(__GNUC__)
 	template<typename Type>
-	constexpr Type&& forward(typename remove_reference<Type>::type& val) noexcept
+	constexpr Type&& forward(remove_reference_t<Type>& val) noexcept
 	{
 		return static_cast<Type&&>(val);
 	}
 
 	template<typename Type>
-	constexpr Type&& forward(typename remove_reference<Type>::type&& val) noexcept
+	constexpr Type&& forward(remove_reference_t<Type>&& val) noexcept
 	{
 		return static_cast<Type&&>(val);
 	}
 
 	template<typename Type>
-	constexpr typename remove_reference<Type>::type&& move(Type&& val) noexcept
+	constexpr remove_reference_t<Type>&& move(Type&& val) noexcept
 	{
 		return static_cast<typename remove_reference<Type>::type&&>(val);
 	}
@@ -68,8 +140,6 @@ namespace simstd {
 
 		template<typename Type, typename Deleter>
 		class RecognizePointer {
-			using DeleterType = typename simstd::remove_reference<Deleter>::type;
-
 			template<typename TypeI>
 			static typename TypeI::pointer recognize_pointer(typename TypeI::pointer*);
 
@@ -77,7 +147,7 @@ namespace simstd {
 			static Type* recognize_pointer(...);
 
 		public:
-			typedef decltype(recognize_pointer<DeleterType>(0)) type;
+			typedef decltype(recognize_pointer<remove_reference_t<Deleter>>(0)) type;
 		};
 
 	}

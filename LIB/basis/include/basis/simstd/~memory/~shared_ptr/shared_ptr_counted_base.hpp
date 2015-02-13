@@ -3,7 +3,7 @@
 
 //#include <basis/sys/~sync/Mutex.hpp>
 
-namespace simstd1 {
+namespace simstd {
 	namespace pvt {
 
 		template<LockPolicy LockPol>

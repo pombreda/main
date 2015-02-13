@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 //
 //	test_crashes();
 //
-//	test_list();
+	test_list();
 //
 //	test_math();
 //

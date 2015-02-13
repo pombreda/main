@@ -186,7 +186,7 @@ namespace simstd {
 	template<typename Type, typename Allocator>
 	vector<Type, Allocator>::~vector()
 	{
-		FuncTrace();
+		TraceFunc();
 	}
 
 	template<typename Type, typename Allocator>
@@ -247,7 +247,7 @@ namespace simstd {
 	typename
 	vector<Type, Allocator>::this_type& vector<Type, Allocator>::operator =(const this_type& other)
 	{
-		FuncTrace();
+		TraceFunc();
 		this_type(other).swap(*this);
 		return *this;
 	}
@@ -255,7 +255,7 @@ namespace simstd {
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::assign(size_type n, const value_type& value)
 	{
-		FuncTrace();
+		TraceFunc();
 		this_type(n, value).swap(*this);
 	}
 
@@ -263,7 +263,7 @@ namespace simstd {
 	template<typename InputIterator>
 	void vector<Type, Allocator>::assign(InputIterator first, InputIterator last)
 	{
-		FuncTrace();
+		TraceFunc();
 		this_type(first, last).swap(*this);
 	}
 
@@ -456,14 +456,14 @@ namespace simstd {
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::shrink_to_fit()
 	{
-		FuncTrace();
+		TraceFunc();
 		this_type(*this).swap(*this);
 	}
 
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::clear()
 	{
-		FuncTrace();
+		TraceFunc();
 		if (!empty())
 			m_impl.clear();
 	}
@@ -473,7 +473,7 @@ namespace simstd {
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::insert(const_iterator pos, InputIterator first, InputIterator last)
 	{
-		FuncTrace();
+		TraceFunc();
 		return _insert(pos, first, last, simstd::pvt::iterator_category(first));
 	}
 
@@ -481,7 +481,7 @@ namespace simstd {
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::insert(const_iterator cpos, const value_type& value)
 	{
-		FuncTrace();
+		TraceFunc();
 		return _insert(cpos, static_cast<size_type>(1), value);
 	}
 
@@ -489,7 +489,7 @@ namespace simstd {
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::insert(const_iterator cpos, size_type n, const value_type& value)
 	{
-		FuncTrace();
+		TraceFunc();
 		return _insert(cpos, n, value);
 	}
 
@@ -497,7 +497,7 @@ namespace simstd {
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::insert(const_iterator pos, value_type&& value)
 	{
-		FuncTrace();
+		TraceFunc();
 		return emplace(pos, simstd::move(value));
 	}
 
@@ -506,7 +506,7 @@ namespace simstd {
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::emplace(const_iterator cpos, Args&&... args)
 	{
-		FuncTrace();
+		TraceFunc();
 		return _emplace(cpos, simstd::forward<Args>(args)...);
 	}
 
@@ -514,7 +514,7 @@ namespace simstd {
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::erase(const_iterator cpos)
 	{
-		FuncTrace();
+		TraceFunc();
 		return _erase(cpos, cpos + 1);
 	}
 
@@ -522,21 +522,21 @@ namespace simstd {
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::erase(const_iterator cfirst, const_iterator clast)
 	{
-		FuncTrace();
+		TraceFunc();
 		return _erase(cfirst, clast);
 	}
 
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::push_back(const value_type& value)
 	{
-		FuncTrace();
+		TraceFunc();
 		_emplace_back(value);
 	}
 
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::push_back(value_type&& value)
 	{
-		FuncTrace();
+		TraceFunc();
 		_emplace_back(simstd::move(value));
 	}
 
@@ -544,21 +544,21 @@ namespace simstd {
 	template<typename... Args>
 	void vector<Type, Allocator>::emplace_back(Args&&... args)
 	{
-		FuncTrace();
+		TraceFunc();
 		_emplace_back(simstd::forward<Args>(args)...);
 	}
 
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::pop_back()
 	{
-		FuncTrace();
+		TraceFunc();
 		_erase(cend() - 1, cend());
 	}
 
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::resize(size_type count, const value_type& value)
 	{
-		FuncTrace();
+		TraceFunc();
 		if (size() < count) {
 			_resize_increase(count, value);
 		} else if (count < size()) {
@@ -569,14 +569,14 @@ namespace simstd {
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::resize(size_type count)
 	{
-		FuncTrace();
+		TraceFunc();
 		resize(count, value_type());
 	}
 
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::swap(this_type& other)
 	{
-		FuncTrace();
+		TraceFunc();
 		m_impl.swap(other.m_impl);
 	}
 
@@ -588,7 +588,7 @@ namespace simstd {
 		auto distance = simstd::distance(cbegin(), cpos);
 		iterator pos = simstd::next(begin(), distance);
 		if (m_impl.check_capacity_if_size_grows(1)) {
-			FuncTrace();
+			TraceFunc();
 			if (cpos == cend()) {
 				m_impl.construct(m_impl.end, simstd::forward<Args>(args)...);
 			} else {
@@ -598,7 +598,7 @@ namespace simstd {
 			}
 			++m_impl.end;
 		} else {
-			FuncTrace();
+			TraceFunc();
 			impl_type newImpl(m_impl.get_new_capacity(1), m_impl.allocator);
 			newImpl.end = simstd::uninitialized_copy(simstd::make_move_iterator(m_impl.begin), simstd::make_move_iterator(&*pos), newImpl.end);
 
@@ -643,7 +643,7 @@ namespace simstd {
 	template<typename InputIterator>
 	void vector<Type, Allocator>::_insert_back(InputIterator first, InputIterator last, simstd::input_iterator_tag)
 	{
-		FuncTrace();
+		TraceFunc();
 		simstd::copy(first, last, simstd::back_inserter(*this));
 	}
 
@@ -651,7 +651,7 @@ namespace simstd {
 	template<typename ForwardIterator>
 	void vector<Type, Allocator>::_insert_back(ForwardIterator first, ForwardIterator last, simstd::forward_iterator_tag)
 	{
-		FuncTrace();
+		TraceFunc();
 		m_impl.adjust_capacity(simstd::distance(first, last));
 		m_impl.end = simstd::uninitialized_copy(first, last, m_impl.end);
 	}
@@ -660,7 +660,7 @@ namespace simstd {
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::_insert(const_iterator cpos, size_type n, const value_type& value)
 	{
-		FuncTrace();
+		TraceFunc();
 		simstd::pvt::_value_generator<Type> generator(n, value);
 		return _insert(cpos, generator.begin(), generator.end(), simstd::pvt::iterator_category(generator.begin()));
 	}

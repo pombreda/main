@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include <shared_ptr.hpp>
+#include <basis/simstd/memory>
 
-#include <memory>
+//#include <memory>
 
 class Base {
 public:
@@ -77,21 +77,21 @@ int main() {
 //	stdb = stdd;
 
 	{
-		simstd1::shared_ptr<Derived> sdNull(nullptr);
+		simstd::shared_ptr<Derived> sdNull(nullptr);
 		printf("%s:%d sizeof(sdNull):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdNull));
 		printf("%s:%d get():           %p\n", __PRETTY_FUNCTION__, __LINE__, sdNull.get());
 		sdNull.reset();
 	}
 
 	{
-		simstd1::shared_ptr<Base> sdb(new Derived);
+		simstd::shared_ptr<Base> sdb(new Derived);
 		printf("%s:%d sizeof(sdb):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdb));
 		printf("%s:%d get():       %p\n", __PRETTY_FUNCTION__, __LINE__, sdb.get());
 		sdb.reset();
 	}
 
 	{
-		simstd1::shared_ptr<Derived> sdd(new Derived);
+		simstd::shared_ptr<Derived> sdd(new Derived);
 		printf("%s:%d sizeof(sdd):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdd));
 		printf("%s:%d get():        %p\n", __PRETTY_FUNCTION__, __LINE__, sdd.get());
 		sdd.reset();
@@ -103,21 +103,21 @@ int main() {
 			delete ptr;
 		};
 
-		simstd1::shared_ptr<Derived> sdDeleter(new Derived, deleter);
+		simstd::shared_ptr<Derived> sdDeleter(new Derived, deleter);
 		printf("%s:%d sizeof(sdDeleter):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdDeleter));
 		printf("%s:%d get():              %p\n", __PRETTY_FUNCTION__, __LINE__, sdDeleter.get());
 		sdDeleter.reset();
 	}
 
 	{
-		auto sdAuto1 = simstd1::make_shared<Derived>();
+		auto sdAuto1 = simstd::make_shared<Derived>();
 		printf("%s:%d sizeof(sdAuto1):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdAuto1));
 		printf("%s:%d get():            %p\n", __PRETTY_FUNCTION__, __LINE__, sdAuto1.get());
 		sdAuto1.reset();
 	}
 
 	{
-		auto sdAuto2 = simstd1::allocate_shared<Derived>(simstd::allocator<Derived>());
+		auto sdAuto2 = simstd::allocate_shared<Derived>(simstd::allocator<Derived>());
 		printf("%s:%d sizeof(sdAuto2):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdAuto2));
 		printf("%s:%d get():            %p\n", __PRETTY_FUNCTION__, __LINE__, sdAuto2.get());
 		sdAuto2.reset();
@@ -129,7 +129,7 @@ int main() {
 	printf("%s:%d der: %p\n", __PRETTY_FUNCTION__, __LINE__, der);
 
 	printf("\n%s:%d allocating sd\n", __PRETTY_FUNCTION__, __LINE__);
-	simstd1::shared_ptr<Derived> sd(der);
+	simstd::shared_ptr<Derived> sd(der);
 	printf("%s:%d sizeof(sd):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sd));
 	printf("%s:%d get():       %p\n", __PRETTY_FUNCTION__, __LINE__, sd.get());
 	printf("%s:%d bool():      %d\n", __PRETTY_FUNCTION__, __LINE__, sd.operator bool());
@@ -137,7 +137,7 @@ int main() {
 	printf("%s:%d use_count(): %Id\n", __PRETTY_FUNCTION__, __LINE__, sd.use_count());
 
 	printf("\n%s:%d allocating wd\n", __PRETTY_FUNCTION__, __LINE__);
-	simstd1::weak_ptr<Derived> wd(sd);
+	simstd::weak_ptr<Derived> wd(sd);
 	printf("%s:%d sizeof(wd):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(wd));
 	printf("%s:%d use_count(): %Id\n", __PRETTY_FUNCTION__, __LINE__, wd.use_count());
 	printf("%s:%d expired():   %d\n", __PRETTY_FUNCTION__, __LINE__, wd.expired());
@@ -172,7 +172,7 @@ int main() {
 	printf("%s:%d unique():    %d\n", __PRETTY_FUNCTION__, __LINE__, sd3.unique());
 	printf("%s:%d use_count(): %Id\n", __PRETTY_FUNCTION__, __LINE__, sd3.use_count());
 
-//	simstd1::shared_ptr<Base> b(new Base);
+//	simstd::shared_ptr<Base> b(new Base);
 //	LogNoise(L"sizeof(b): %d\n", sizeof(b));
 
 	printf("%s:%d\n", __PRETTY_FUNCTION__, __LINE__);

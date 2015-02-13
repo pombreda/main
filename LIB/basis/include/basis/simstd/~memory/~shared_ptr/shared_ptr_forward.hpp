@@ -1,7 +1,7 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_FORWARD_HPP_
 #define BASIS_MEMORY_SHARED_PTR_FORWARD_HPP_
 
-namespace simstd1 {
+namespace simstd {
 	namespace pvt {
 
 		enum class LockPolicy: ssize_t {

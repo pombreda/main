@@ -1,7 +1,7 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_INPLACE_HPP_
 #define BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_INPLACE_HPP_
 
-namespace simstd1 {
+namespace simstd {
 
 	namespace pvt {
 

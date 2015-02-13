@@ -9,6 +9,8 @@
 #include <basis/simstd/algorithm>
 #include <basis/simstd/memory>
 
+#include <list>
+
 void test_list()
 {
 	LogAtten(L"\n");
@@ -23,6 +25,40 @@ void test_list()
 	{
 		LogTrace();
 		typedef simstd::list<A, EqAlloc> test_list_type;
+
+		test_list_type tl1;
+		test_list_type tl2;
+
+		auto itl1b = tl1.begin();
+		auto itl1e = tl1.end();
+		auto itl2b = tl2.cbegin();
+		auto itl2e = tl2.cend();
+
+		if (itl1b == itl1e)
+			LogTrace();
+		if (itl1b == itl2b)
+			LogTrace();
+		if (itl1b == itl2e)
+			LogTrace();
+		if (itl1e == itl1b)
+			LogTrace();
+		if (itl1e == itl2b)
+			LogTrace();
+		if (itl1e == itl2e)
+			LogTrace();
+		if (itl2b == itl1b)
+			LogTrace();
+		if (itl2b == itl1e)
+			LogTrace();
+		if (itl2b == itl2e)
+			LogTrace();
+		if (itl2e == itl1b)
+			LogTrace();
+		if (itl2e == itl1e)
+			LogTrace();
+		if (itl2e == itl2b)
+			LogTrace();
+
 		A a;
 
 		test_list_type list1;

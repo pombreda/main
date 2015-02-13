@@ -1,7 +1,7 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_SHARED_COUNT_HPP_
 #define BASIS_MEMORY_SHARED_PTR_SHARED_COUNT_HPP_
 
-namespace simstd1 {
+namespace simstd {
 
 	namespace pvt {
 
@@ -85,7 +85,7 @@ namespace simstd1 {
 				: _M_pi(other._M_pi)
 			{
 				if (_M_pi)
-					_M_pi->use_add_ref();
+					_M_pi->add_use_ref_count();
 			}
 
 			shared_count& operator =(const shared_count& other) noexcept
