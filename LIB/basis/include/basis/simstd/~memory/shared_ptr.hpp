@@ -90,10 +90,10 @@ namespace simstd {
 		{
 		}
 
+		shared_ptr(const weak_ptr<Type>& other, simstd::nothrow_t tag): base_type(other, tag) {}
+
 		template<typename OType, typename Allocator, typename... Args>
 		friend shared_ptr<OType> allocate_shared(const Allocator& allocator, Args&&... args);
-
-		shared_ptr(const weak_ptr<Type>& other, simstd::nothrow_t tag): base_type(other, tag) {}
 
 		friend class weak_ptr<Type>;
 	};
@@ -136,7 +136,6 @@ namespace simstd {
 		{
 			return shared_ptr<Type>(*this, simstd::nothrow);
 		}
-
 	};
 
 	template<typename Type>
@@ -145,7 +144,7 @@ namespace simstd {
 	public:
 		shared_ptr<Type> shared_from_this()
 		{
-			return shared_ptr<Type>(this->_M_weak_this);
+			return shared_ptr<Type>(this->_M_weak_this, simstd::nothrow);
 		}
 
 		shared_ptr<const Type> shared_from_this() const
@@ -161,16 +160,16 @@ namespace simstd {
 
 	private:
 		template<typename OType>
-		void _weak_assign(OType* ptr, const pvt::shared_count<>& __n) const noexcept
+		void weak_assign(OType* ptr, const pvt::shared_count<>& __n) const noexcept
 		{
 			_M_weak_this._M_assign(ptr, __n);
 		}
 
 		template<typename OType>
-		void __enable_shared_from_this_helper(const pvt::shared_count<>& __pn, const enable_shared_from_this* __pe, const OType* px) noexcept
+		void enable_shared_from_this_helper(const pvt::shared_count<>& __pn, const enable_shared_from_this* __pe, const OType* px) noexcept
 		{
 			if (__pe != 0)
-				__pe->_weak_assign(const_cast<OType*>(px), __pn);
+				__pe->weak_assign(const_cast<OType*>(px), __pn);
 		}
 
 		mutable weak_ptr<Type> _M_weak_this;
@@ -250,7 +249,7 @@ namespace simstd {
 	}
 
 	template<typename TypeA, typename TypeB>
-	bool operator>(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
+	bool operator >(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
 	{
 		return rel_ops::operator >(a, b);
 	}
@@ -268,7 +267,7 @@ namespace simstd {
 	}
 
 	template<typename TypeA, typename TypeB>
-	bool operator>=(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
+	bool operator >=(const shared_ptr<TypeA>& a, const shared_ptr<TypeB>& b) noexcept
 	{
 		return rel_ops::operator >=(a, b);
 	}
@@ -296,22 +295,22 @@ namespace simstd {
 	}
 
 	template<typename Type, typename OType>
-	shared_ptr<Type> static_pointer_cast(const shared_ptr<OType>& r) noexcept
+	shared_ptr<Type> static_pointer_cast(const shared_ptr<OType>& other) noexcept
 	{
-		return shared_ptr<Type>(r, static_cast<Type*>(r.get()));
+		return shared_ptr<Type>(other, static_cast<Type*>(other.get()));
 	}
 
 	template<typename Type, typename OType>
-	shared_ptr<Type> const_pointer_cast(const shared_ptr<OType>& r) noexcept
+	shared_ptr<Type> const_pointer_cast(const shared_ptr<OType>& other) noexcept
 	{
-		return shared_ptr<Type>(r, const_cast<Type*>(r.get()));
+		return shared_ptr<Type>(other, const_cast<Type*>(other.get()));
 	}
 
 	template<typename Type, typename OType>
-	shared_ptr<Type> dynamic_pointer_cast(const shared_ptr<OType>& r) noexcept
+	shared_ptr<Type> dynamic_pointer_cast(const shared_ptr<OType>& other) noexcept
 	{
-		if (Type* p = dynamic_cast<Type*>(r.get()))
-			return shared_ptr<Type>(r, p);
+		if (Type* ptr = dynamic_cast<Type*>(other.get()))
+			return shared_ptr<Type>(other, ptr);
 		return shared_ptr<Type>();
 	}
 

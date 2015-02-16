@@ -102,8 +102,8 @@ namespace simstd {
 
 			template<typename OType>
 			explicit shared_ptr_base(const weak_ptr_base<OType, LockPol>& other)
-				: _M_ptr(other._M_ptr)
-				, _M_refcount(other._M_refcount)
+				: _M_refcount(other._M_refcount)
+				, _M_ptr(other._M_ptr)
 			{
 			}
 
@@ -305,8 +305,8 @@ namespace simstd {
 			typedef Type element_type;
 
 			constexpr weak_ptr_base() noexcept
-				: _M_ptr(0)
-				, _M_refcount()
+				: _M_refcount()
+				, _M_ptr(0)
 			{
 			}
 
@@ -445,7 +445,7 @@ namespace simstd {
 			void enable_shared_from_this_helper(const shared_count<LockPol>& __pn, const enable_shared_from_this* __pe, const OType* __px) noexcept
 			{
 				if (__pe != 0)
-				__pe->_M_weak_assign(const_cast<OType*>(__px), __pn);
+					__pe->_M_weak_assign(const_cast<OType*>(__px), __pn);
 			}
 
 			mutable weak_ptr_base<Type, LockPol> _M_weak_this;
