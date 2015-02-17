@@ -1,7 +1,8 @@
-﻿#ifndef BASIS_FUNCTIONAL_HPP_
-#define BASIS_FUNCTIONAL_HPP_
+﻿#ifndef BASIS_SIMSTD_FUNCTIONAL_FUNCTIONAL_HPP_
+#define BASIS_SIMSTD_FUNCTIONAL_FUNCTIONAL_HPP_
 
 namespace simstd {
+
 	template<typename T>
 	struct plus
 	{

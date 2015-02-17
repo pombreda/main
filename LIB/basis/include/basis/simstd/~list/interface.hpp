@@ -2,6 +2,7 @@
 #define BASIS_LIST_INTERFACE_HPP_
 
 #include <basis/simstd/list>
+#include <basis/simstd/~algorithm/base.hpp>
 #include <basis/sys/logger.hpp>
 
 namespace simstd {

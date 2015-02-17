@@ -4,6 +4,7 @@
 #include <basis/simstd/iterator>
 #include <basis/simstd/memory>
 #include <basis/simstd/vector>
+#include <basis/simstd/~algorithm/base.hpp>
 
 namespace simstd {
 	namespace Test {

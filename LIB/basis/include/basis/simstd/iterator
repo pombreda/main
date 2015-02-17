@@ -1,7 +1,8 @@
-﻿#ifndef BASIS_ITERATOR_
-#define BASIS_ITERATOR_
+﻿#ifndef BASIS_SIMSTD_ITERATOR_
+#define BASIS_SIMSTD_ITERATOR_
 
 #include <basis/configure.hpp>
+
 #include <basis/simstd/~iterator/base.hpp>
 #include <basis/simstd/~iterator/back_insert_iterator.hpp>
 #include <basis/simstd/~iterator/front_insert_iterator.hpp>

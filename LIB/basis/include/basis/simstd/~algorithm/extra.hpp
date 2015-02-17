@@ -1,10 +1,8 @@
-﻿#ifndef BASIS_ALGORITHM_EXTRA_HPP_
-#define BASIS_ALGORITHM_EXTRA_HPP_
-
-#include <basis/simstd/~iterator/base.hpp>
-#include <basis/simstd/~utility/pair.hpp>
+﻿#ifndef BASIS_SIMSTD_ALGORITHM_EXTRA_HPP_
+#define BASIS_SIMSTD_ALGORITHM_EXTRA_HPP_
 
 namespace simstd {
+
 	template<typename InputIt, typename UnaryPredicate>
 	bool all_of(InputIt first, InputIt last, UnaryPredicate p)
 	{
@@ -782,6 +780,7 @@ namespace simstd {
 			}
 		}
 	}
+
 }
 
 #endif

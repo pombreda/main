@@ -1,8 +1,6 @@
 ﻿#ifndef BASIS_MEMORY_BASE_HPP_
 #define BASIS_MEMORY_BASE_HPP_
 
-#include <basis/simstd/~utility/pair.hpp>
-
 namespace simstd {
 
 	namespace pvt {

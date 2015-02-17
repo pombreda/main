@@ -1,8 +1,6 @@
 ﻿#ifndef BASIS_MEMORY_ALLOCATOR_TRAITS_HPP_
 #define BASIS_MEMORY_ALLOCATOR_TRAITS_HPP_
 
-#include <basis/simstd/~algorithm/base.hpp>
-
 namespace simstd {
 
 	namespace pvt {

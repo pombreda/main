@@ -1,7 +1,5 @@
-﻿#ifndef BASIS_ALGORITHM_BASE_HPP_
-#define BASIS_ALGORITHM_BASE_HPP_
-
-#include <basis/configure.hpp>
+﻿#ifndef BASIS_SIMSTD_ALGORITHM_BASE_HPP_
+#define BASIS_SIMSTD_ALGORITHM_BASE_HPP_
 
 namespace simstd {
 
@@ -161,6 +159,7 @@ namespace simstd {
 			return i - 1;
 		}
 	}
+
 }
 
 #endif

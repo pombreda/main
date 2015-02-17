@@ -3,6 +3,7 @@
 
 #include <basis/configure.hpp>
 #include <basis/simstd/new>
+#include <basis/simstd/utility>
 
 #include <type_traits>
 namespace defstd = std;
