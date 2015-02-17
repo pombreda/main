@@ -1,7 +1,5 @@
-﻿#ifndef BASIS_ITERATOR_FUNCTIONAL_HPP_
-#define BASIS_ITERATOR_FUNCTIONAL_HPP_
-
-#include <basis/simstd/~iterator/reverse_iterator.hpp>
+﻿#ifndef BASIS_SIMSTD_ITERATOR_FUNCTIONAL_HPP_
+#define BASIS_SIMSTD_ITERATOR_FUNCTIONAL_HPP_
 
 namespace simstd {
 

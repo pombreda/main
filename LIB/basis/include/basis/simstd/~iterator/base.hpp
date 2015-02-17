@@ -1,7 +1,5 @@
-﻿#ifndef BASIS_ITERATOR_BASE_HPP_
-#define BASIS_ITERATOR_BASE_HPP_
-
-#include <basis/sys/console.hpp>
+﻿#ifndef BASIS_SIMSTD_ITERATOR_BASE_HPP_
+#define BASIS_SIMSTD_ITERATOR_BASE_HPP_
 
 namespace simstd
 {

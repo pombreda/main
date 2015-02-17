@@ -3,6 +3,7 @@
 
 #include <basis/ext/pattern.hpp>
 #include <basis/sys/crt.hpp>
+#include <basis/sys/console.hpp>
 #include <basis/simstd/string>
 #include <basis/simstd/iterator>
 #include <basis/simstd/~algorithm/base.hpp>
