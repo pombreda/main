@@ -5,6 +5,16 @@ namespace simstd {
 
 	typedef decltype(nullptr) nullptr_t;
 
+	struct nothrow_t
+	{
+	};
+
+#if defined(__GNUC__) && (__GNUC__ < 3)
+	extern nothrow_t nothrow;
+#else
+	const nothrow_t nothrow;
+#endif
+
 	template<typename Type>
 	Type* addressof(Type& ref) noexcept
 	{
@@ -192,6 +202,17 @@ namespace simstd {
 		typedef int (*aPrintFunc)(const char *, ...);
 		typedef int (*wPrintFunc)(const wchar_t *, ...);
 	}
+}
+
+///=============================================================================== Special placement
+inline void* operator new(size_t, void* p, const simstd::nothrow_t&) throw()
+{
+	return p;
+}
+
+inline void* operator new[](size_t, void* p, const simstd::nothrow_t&) throw()
+{
+	return p;
 }
 
 #endif

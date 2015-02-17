@@ -5,37 +5,36 @@ namespace simstd {
 
 	template<typename Type, typename HeapType>
 	class AllocatorHeap {
-		typedef AllocatorHeap<Type, HeapType> this_type;
-
 	public:
-		typedef Type        value_type;
-		typedef Type*       pointer;
-		typedef const Type* const_pointer;
-		typedef Type&       reference;
-		typedef const Type& const_reference;
-		typedef size_t      size_type;
-		typedef ptrdiff_t   difference_type;
+		using value_type      = Type;
+		using pointer         = Type*;
+		using const_pointer   = const Type*;
+		using reference       = Type&;
+		using const_reference = const Type&;
+		using size_type       = size_t;
+		using difference_type = ptrdiff_t;
 
-		template<typename TypeOther>
+		template<typename OType>
 		struct rebind {
-			typedef AllocatorHeap<TypeOther, HeapType> other;
+			using other = AllocatorHeap<OType, HeapType>;
 		};
 
-		~AllocatorHeap();
+		~AllocatorHeap() = default;
 
-		AllocatorHeap();
-		AllocatorHeap(const this_type& other);
+		template<class OType>
+		AllocatorHeap(const AllocatorHeap<OType, HeapType>& /*other*/) noexcept {}
+		AllocatorHeap() noexcept = default;
+		AllocatorHeap(const AllocatorHeap& other) noexcept = default;
 
-		template<class TypeOther>
-		AllocatorHeap(const AllocatorHeap<TypeOther, HeapType>& other);
-
-		pointer       address(reference r) const;
-		const_pointer address(const_reference r) const;
+		pointer       address(reference r) const noexcept;
+		const_pointer address(const_reference r) const noexcept;
 
 		pointer allocate(size_type cnt, simstd::allocator<void>::const_pointer hint = 0);
 		void    deallocate(pointer ptr, size_type cnt);
+		pointer allocate(size_type cnt, const char* function, int line, allocator<void>::const_pointer hint = nullptr);
+		void    deallocate(pointer ptr, const char* function, int line, size_type cnt);
 
-		size_type max_size() const;
+		size_type max_size() const noexcept;
 
 		template<typename PtrType, typename ... Args>
 		void construct(PtrType* ptr, Args&&... args);
@@ -45,34 +44,13 @@ namespace simstd {
 	};
 
 	template<typename Type, typename HeapType>
-	AllocatorHeap<Type, HeapType>::~AllocatorHeap()
-	{
-	}
-
-	template<typename Type, typename HeapType>
-	AllocatorHeap<Type, HeapType>::AllocatorHeap()
-	{
-	}
-
-	template<typename Type, typename HeapType>
-	AllocatorHeap<Type, HeapType>::AllocatorHeap(const this_type& /*other*/)
-	{
-	}
-
-	template<typename Type, typename HeapType>
-	template<class TypeOther>
-	AllocatorHeap<Type, HeapType>::AllocatorHeap(const AllocatorHeap<TypeOther, HeapType>& /*other*/)
-	{
-	}
-
-	template<typename Type, typename HeapType>
-	typename AllocatorHeap<Type, HeapType>::pointer AllocatorHeap<Type, HeapType>::address(reference r) const
+	typename AllocatorHeap<Type, HeapType>::pointer AllocatorHeap<Type, HeapType>::address(reference r) const noexcept
 	{
 		return simstd::addressof(r);
 	}
 
 	template<typename Type, typename HeapType>
-	typename AllocatorHeap<Type, HeapType>::const_pointer AllocatorHeap<Type, HeapType>::address(const_reference r) const
+	typename AllocatorHeap<Type, HeapType>::const_pointer AllocatorHeap<Type, HeapType>::address(const_reference r) const noexcept
 	{
 		return simstd::addressof(r);
 	}
@@ -90,7 +68,19 @@ namespace simstd {
 	}
 
 	template<typename Type, typename HeapType>
-	typename AllocatorHeap<Type, HeapType>::size_type AllocatorHeap<Type, HeapType>::max_size() const
+	typename AllocatorHeap<Type, HeapType>::pointer AllocatorHeap<Type, HeapType>::allocate(size_type cnt, const char* function, int line, allocator<void>::const_pointer /*hint*/)
+	{
+		return static_cast<pointer>(HostAlloc2(HeapType, sizeof(Type) * cnt, function, line));
+	}
+
+	template<typename Type, typename HeapType>
+	void AllocatorHeap<Type, HeapType>::deallocate(pointer ptr, const char* function, int line, size_type /*cnt*/)
+	{
+		HostFree2(HeapType, ptr, function, line);
+	}
+
+	template<typename Type, typename HeapType>
+	typename AllocatorHeap<Type, HeapType>::size_type AllocatorHeap<Type, HeapType>::max_size() const noexcept
 	{
 		return HeapType::size() / sizeof(Type);
 	}
@@ -110,25 +100,25 @@ namespace simstd {
 	}
 
 	template<typename Type, typename HeapType>
-	inline bool operator==(const AllocatorHeap<Type, HeapType>&, const AllocatorHeap<Type, HeapType>&)
+	bool operator ==(const AllocatorHeap<Type, HeapType>&, const AllocatorHeap<Type, HeapType>&) noexcept
 	{
 		return true;
 	}
 
 	template<typename Type1, typename Type2, typename HeapType>
-	inline bool operator==(const AllocatorHeap<Type1, HeapType>&, const AllocatorHeap<Type2, HeapType>&)
+	bool operator ==(const AllocatorHeap<Type1, HeapType>&, const AllocatorHeap<Type2, HeapType>&) noexcept
 	{
 		return true;
 	}
 
 	template<typename Type, typename HeapType>
-	inline bool operator !=(const AllocatorHeap<Type, HeapType>&, const AllocatorHeap<Type, HeapType>&)
+	bool operator !=(const AllocatorHeap<Type, HeapType>&, const AllocatorHeap<Type, HeapType>&) noexcept
 	{
 		return false;
 	}
 
 	template<typename Type1, typename Type2, typename HeapType>
-	inline bool operator!=(const AllocatorHeap<Type1, HeapType>&, const AllocatorHeap<Type2, HeapType>&)
+	bool operator !=(const AllocatorHeap<Type1, HeapType>&, const AllocatorHeap<Type2, HeapType>&) noexcept
 	{
 		return false;
 	}

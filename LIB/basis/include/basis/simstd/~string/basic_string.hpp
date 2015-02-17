@@ -5,7 +5,6 @@
 #include <basis/sys/crt.hpp>
 #include <basis/simstd/string>
 #include <basis/simstd/iterator>
-#include <basis/simstd/~memory/allocator.hpp>
 
 namespace simstd {
 

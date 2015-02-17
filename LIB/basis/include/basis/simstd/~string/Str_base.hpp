@@ -1,9 +1,6 @@
 ﻿#ifndef BASIS_STRING_STR_BASE_HPP_
 #define BASIS_STRING_STR_BASE_HPP_
 
-#include <basis/simstd/string>
-#include <basis/simstd/~algorithm/base.hpp>
-
 namespace simstd {
 
 	namespace pvt {

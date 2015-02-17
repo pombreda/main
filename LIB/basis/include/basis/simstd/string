@@ -2,6 +2,8 @@
 #define BASIS_STRING_
 
 #include <basis/configure.hpp>
+#include <basis/simstd/memory>
+
 #include <basis/simstd/~string/char_traits.hpp>
 #include <basis/simstd/~string/Str_impl.hpp>
 #include <basis/simstd/~string/Str_base.hpp>

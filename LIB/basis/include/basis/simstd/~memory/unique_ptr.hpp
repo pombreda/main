@@ -5,7 +5,7 @@
 
 namespace simstd {
 
-	template<typename Type, typename Deleter = default_delete<Type>>
+	template<typename Type, typename Deleter>
 	class unique_ptr: private pvt::ebo_helper<0, Deleter> {
 		using helper_type = pvt::ebo_helper<0, Deleter>;
 

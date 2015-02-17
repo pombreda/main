@@ -2,13 +2,11 @@
 #define BASIS_MEMORY_SHARED_PTR_HPP_
 
 #include <basis/configure.hpp>
-#include <basis/simstd/memory>
 
 #ifdef __GXX_RTTI
 #   include <typeinfo>
 #endif
 
-#include <basis/simstd/~memory/~shared_ptr/shared_ptr_forward.hpp>
 #include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_base.hpp>
 #include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_deleter.hpp>
 #include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_ptr_inplace.hpp>

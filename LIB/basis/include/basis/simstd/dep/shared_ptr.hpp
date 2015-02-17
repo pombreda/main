@@ -3,8 +3,6 @@
 
 #include <basis/ext/pattern.hpp>
 
-#include <basis/simstd/~memory/default_deleters.hpp>
-
 namespace simstd {
 
 	template<typename Type>

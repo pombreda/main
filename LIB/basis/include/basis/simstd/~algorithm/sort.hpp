@@ -4,8 +4,7 @@
 #include <basis/simstd/~functional/functional.hpp>
 #include <basis/simstd/~iterator/base.hpp>
 #include <basis/simstd/~utility/pair.hpp>
-#include <basis/simstd/~memory/base.hpp>
-#include <basis/simstd/~memory/functional.hpp>
+#include <basis/simstd/memory>
 
 namespace simstd {
 	template<typename ForwardIt, typename T>

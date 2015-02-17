@@ -2,7 +2,6 @@
 #define BASIS_MEMORY_ALLOCATOR_TRAITS_HPP_
 
 #include <basis/simstd/~algorithm/base.hpp>
-#include <basis/simstd/~memory/allocator.hpp>
 
 namespace simstd {
 
