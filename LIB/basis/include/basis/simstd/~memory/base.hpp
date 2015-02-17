@@ -68,7 +68,7 @@ namespace simstd {
 		template<typename Allocator, typename ForwardIterator>
 		void _destroy(Allocator& allocator, ForwardIterator first, ForwardIterator last)
 		{
-			typedef allocator_traits<Allocator> traits_type;
+			using traits_type = allocator_traits<Allocator>;
 			for (; first != last; ++first)
 				traits_type::destroy(allocator, simstd::addressof(*first));
 		}

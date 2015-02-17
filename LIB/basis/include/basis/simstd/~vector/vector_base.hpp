@@ -33,6 +33,7 @@ namespace simstd {
 
 		public:
 			using allocator_type = Allocator;
+			using traits_type = allocator_traits<allocator_type>;
 
 			~_Vector_base() noexcept {deallocate(impl.begin, impl.end_of_storage - impl.begin);}
 
@@ -51,6 +52,12 @@ namespace simstd {
 					create_storage(other.impl.end - other.impl.begin);
 			}
 
+			void erase_till_end(pointer from) noexcept
+			{
+				simstd::pvt::_destroy(get_base_allocator(), from, impl.end);
+				impl.end = from;
+			}
+
 			pointer allocate(size_t count)
 			{
 				return count == 0 ? nullptr : base_allocator_traits::allocate(impl, count);
@@ -62,6 +69,10 @@ namespace simstd {
 					base_allocator_traits::deallocate(impl, ptr, count);
 			}
 
+			size_t capacity() const noexcept {return impl.end_of_storage - impl.begin;}
+			size_t size() const noexcept {return impl.end - impl.begin;}
+			size_t max_size() const noexcept {return static_cast<size_t>(-1);}
+
 			allocator_type get_allocator() const noexcept {return allocator_type(get_base_allocator());}
 
 			vector_base_impl impl;
@@ -72,9 +83,8 @@ namespace simstd {
 
 			void create_storage(size_t count)
 			{
-				impl.begin = allocate(count);
-				impl.end = impl.begin;
-				impl.end_of_storage = impl.begin + count;
+				impl.end = impl.begin = allocate(count);
+				impl.end_of_storage = impl.begin + (impl.begin ? count : 0);
 			}
 		};
 

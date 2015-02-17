@@ -9,11 +9,7 @@ namespace simstd {
 	{
 	};
 
-#if defined(__GNUC__) && (__GNUC__ < 3)
-	extern nothrow_t nothrow;
-#else
 	const nothrow_t nothrow;
-#endif
 
 	template<typename Type>
 	Type* addressof(Type& ref) noexcept
