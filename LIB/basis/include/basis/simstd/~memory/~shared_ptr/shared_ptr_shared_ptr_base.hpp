@@ -48,11 +48,11 @@ namespace simstd {
 
 			template<typename OType, typename Deleter, typename Allocator>
 			shared_ptr_base(OType* ptr, Deleter deleter, Allocator allocator)
-				: _M_ptr(ptr)
-				, _M_refcount(ptr, deleter, simstd::move(allocator))
+				: _M_refcount(ptr, deleter, simstd::move(allocator))
+				, _M_ptr(ptr)
 			{
 //				__glibcxx_function_requires(_ConvertibleConcept<OType*, Type*>)
-				__enable_shared_from_this_helper(_M_refcount, ptr, ptr);
+				enable_shared_from_this_helper(_M_refcount, ptr, ptr);
 			}
 
 			template<typename Deleter>
@@ -102,7 +102,7 @@ namespace simstd {
 
 			template<typename OType>
 			explicit shared_ptr_base(const weak_ptr_base<OType, LockPol>& other)
-				: _M_refcount(other._M_refcount)
+				: _M_refcount(other._M_refcount, simstd::nothrow)
 				, _M_ptr(other._M_ptr)
 			{
 			}
@@ -114,7 +114,7 @@ namespace simstd {
 //				__glibcxx_function_requires(_ConvertibleConcept<OType*, Type*>)
 				auto __raw = raw_ptr(other.get());
 				_M_refcount = shared_count<LockPol>(simstd::move(other));
-				__enable_shared_from_this_helper(_M_refcount, __raw, __raw);
+				enable_shared_from_this_helper(_M_refcount, __raw, __raw);
 			  }
 
 		/* TODO: use delegating constructor */
@@ -306,7 +306,7 @@ namespace simstd {
 
 			constexpr weak_ptr_base() noexcept
 				: _M_refcount()
-				, _M_ptr(0)
+				, _M_ptr(nullptr)
 			{
 			}
 
@@ -408,7 +408,7 @@ namespace simstd {
 			template<typename OType, LockPolicy _Lp1> friend class weak_ptr_base;
 
 			friend class enable_shared_from_this<Type, LockPol>;
-			friend class enable_shared_from_this<Type>;
+			friend class simstd::enable_shared_from_this<Type>;
 
 			weak_count<LockPol> _M_refcount;
 			Type*               _M_ptr;
@@ -442,7 +442,7 @@ namespace simstd {
 			void _M_weak_assign(OType* __p, const shared_count<LockPol>& __n) const noexcept {_M_weak_this._M_assign(__p, __n);}
 
 			template<typename OType>
-			void enable_shared_from_this_helper(const shared_count<LockPol>& __pn, const enable_shared_from_this* __pe, const OType* __px) noexcept
+			friend void enable_shared_from_this_helper(const shared_count<LockPol>& __pn, const enable_shared_from_this* __pe, const OType* __px) noexcept
 			{
 				if (__pe != 0)
 					__pe->_M_weak_assign(const_cast<OType*>(__px), __pn);

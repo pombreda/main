@@ -162,7 +162,7 @@ namespace simstd {
 			void swap(weak_count<LockPol>& other) noexcept
 			{
 				using simstd::swap;
-				sawp(_M_pi, other._M_pi);
+				swap(_M_pi, other._M_pi);
 			}
 
 			long get_use_count() const noexcept {return _M_pi ? _M_pi->get_use_count() : 0;}

@@ -8,7 +8,10 @@ namespace simstd {
 		template<typename Ptr, LockPolicy LockPol>
 		class counted_ptr final : public counted_base<LockPol> {
 		public:
-			explicit counted_ptr(Ptr ptr) noexcept : ptr(ptr) {}
+			explicit counted_ptr(Ptr ptr) noexcept : ptr(ptr)
+			{
+				static_assert(std::is_pointer<Ptr>::value, "constructed with nonpointer");
+			}
 
 			void dispose() noexcept {delete ptr;}
 

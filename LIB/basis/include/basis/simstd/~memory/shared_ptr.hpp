@@ -144,7 +144,7 @@ namespace simstd {
 	public:
 		shared_ptr<Type> shared_from_this()
 		{
-			return shared_ptr<Type>(this->_M_weak_this, simstd::nothrow);
+			return shared_ptr<Type>(this->_M_weak_this);
 		}
 
 		shared_ptr<const Type> shared_from_this() const
@@ -166,7 +166,7 @@ namespace simstd {
 		}
 
 		template<typename OType>
-		void enable_shared_from_this_helper(const pvt::shared_count<>& __pn, const enable_shared_from_this* __pe, const OType* px) noexcept
+		friend void enable_shared_from_this_helper(const pvt::shared_count<>& __pn, const enable_shared_from_this* __pe, const OType* px) noexcept
 		{
 			if (__pe != 0)
 				__pe->weak_assign(const_cast<OType*>(px), __pn);
