@@ -41,6 +41,23 @@ void Base_deleter(Base* p)
 	delete p;
 }
 
+
+struct Good: simstd::enable_shared_from_this<Good>
+{
+	simstd::shared_ptr<Good> getptr() {
+		return shared_from_this();
+	}
+	~Good() {printf("Good::~Good() called\n");}
+};
+
+struct Bad
+{
+	simstd::shared_ptr<Bad> getptr() {
+		return simstd::shared_ptr<Bad>(this);
+	}
+	~Bad() {printf("Bad::~Bad() called\n");}
+};
+
 int main() {
 	printf("%s:%d\n", __PRETTY_FUNCTION__, __LINE__);
 
@@ -121,6 +138,18 @@ int main() {
 		printf("%s:%d sizeof(sdAuto2):  %Iu\n", __PRETTY_FUNCTION__, __LINE__, sizeof(sdAuto2));
 		printf("%s:%d get():            %p\n", __PRETTY_FUNCTION__, __LINE__, sdAuto2.get());
 		sdAuto2.reset();
+	}
+
+	{
+		// Good: the two shared_ptr's share the same object
+		simstd::shared_ptr<Good> gp1(new Good);
+		simstd::shared_ptr<Good> gp2 = gp1->getptr();
+		printf("%s:%d gp2.use_count():  %Iu\n", __PRETTY_FUNCTION__, __LINE__, gp2.use_count());
+
+		// Bad, each shared_ptr thinks it's the only owner of the object
+		simstd::shared_ptr<Bad> bp1(new Bad);
+//		simstd::shared_ptr<Bad> bp2 = bp1->getptr(); // will crush cause delete twice
+		printf("%s:%d bp1.use_count():  %Iu\n", __PRETTY_FUNCTION__, __LINE__, bp1.use_count());
 	}
 
 	return 0;
