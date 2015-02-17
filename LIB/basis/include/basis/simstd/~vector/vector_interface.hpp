@@ -4,8 +4,9 @@
 namespace simstd {
 
 	template<typename Type, typename Allocator>
-	class vector {
+	class vector: private pvt::vector_base<Type, Allocator> {
 		using this_type = vector;
+		using base_type = pvt::vector_base<Type, Allocator>;
 
 	public:
 		using value_type = Type ;
