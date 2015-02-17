@@ -1,5 +1,5 @@
-﻿#ifndef BASIS_LIST_
-#define BASIS_LIST_
+﻿#ifndef BASIS_SIMSTD_LIST_
+#define BASIS_SIMSTD_LIST_
 
 #include <basis/configure.hpp>
 

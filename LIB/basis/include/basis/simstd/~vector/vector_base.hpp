@@ -1,18 +1,89 @@
-﻿#ifndef BASIS_VECTOR_VECTOR_BASE_HPP_
-#define BASIS_VECTOR_VECTOR_BASE_HPP_
-
-#include <basis/simstd/iterator>
-#include <basis/simstd/memory>
-#include <basis/simstd/vector>
+﻿#ifndef BASIS_SIMSTD_VECTOR_VECTOR_BASE_HPP_
+#define BASIS_SIMSTD_VECTOR_VECTOR_BASE_HPP_
 
 namespace simstd {
 
 	namespace pvt {
+
 		template<typename Type, typename Allocator>
-		struct vector_base
+		class _Vector_base
+		{
+			using base_allocator_type = typename allocator_traits<Allocator>::template rebind<Type>::other;
+			using base_allocator_traits = allocator_traits<base_allocator_type>;
+			using pointer = typename base_allocator_traits::pointer;
+
+			struct vector_base_impl: public base_allocator_type
+			{
+				vector_base_impl() = default;
+				vector_base_impl(const base_allocator_type& allocator) noexcept: base_allocator_type(allocator) {}
+				vector_base_impl(base_allocator_type&& allocator) noexcept: base_allocator_type(simstd::move(allocator)) {}
+
+				void swap_data(vector_base_impl& other) noexcept
+				{
+					using simstd::swap;
+					swap(begin, other.begin);
+					swap(end, other.end);
+					swap(end_of_storage, other.end_of_storage);
+				}
+
+				pointer begin = nullptr;
+				pointer end = nullptr;
+				pointer end_of_storage = nullptr;
+			};
+
+		public:
+			using allocator_type = Allocator;
+
+			~_Vector_base() noexcept {deallocate(impl.begin, impl.end_of_storage - impl.begin);}
+
+			_Vector_base() = default;
+			_Vector_base(const allocator_type& allocator) noexcept: impl(allocator) {}
+			_Vector_base(size_t count) {create_storage(count);}
+			_Vector_base(size_t count, const allocator_type& allocator): impl(allocator) {create_storage(count);}
+			_Vector_base(base_allocator_type&& other) noexcept: impl(simstd::move(other)) {}
+			_Vector_base(_Vector_base&& other) noexcept: impl(simstd::move(other.get_base_allocator())) {impl.swap_data(other.impl);}
+			_Vector_base(_Vector_base&& other, const allocator_type& allocator)
+				: impl(allocator)
+			{
+				if (other.get_allocator() == allocator)
+					impl.swap_data(other.impl);
+				else
+					create_storage(other.impl.end - other.impl.begin);
+			}
+
+			pointer allocate(size_t count)
+			{
+				return count == 0 ? nullptr : base_allocator_traits::allocate(impl, count);
+			}
+
+			void deallocate(pointer ptr, size_t count)
+			{
+				if (ptr)
+					base_allocator_traits::deallocate(impl, ptr, count);
+			}
+
+			allocator_type get_allocator() const noexcept {return allocator_type(get_base_allocator());}
+
+			vector_base_impl impl;
+
+		private:
+			base_allocator_type& get_base_allocator() noexcept {return *static_cast<base_allocator_type*>(&impl);}
+			const base_allocator_type& get_base_allocator() const noexcept {return *static_cast<const base_allocator_type*>(&impl);}
+
+			void create_storage(size_t count)
+			{
+				impl.begin = allocate(count);
+				impl.end = impl.begin;
+				impl.end_of_storage = impl.begin + count;
+			}
+		};
+
+		template<typename Type, typename Allocator>
+		class vector_base
 		{
 			typedef vector_base this_type;
 
+		public:
 			typedef Type value_type;
 			typedef Allocator allocator_type;
 			typedef allocator_traits<allocator_type> traits_type;
@@ -20,9 +91,9 @@ namespace simstd {
 			typedef typename traits_type::pointer pointer;
 
 			allocator_type allocator;
-			pointer begin;
-			pointer end;
-			pointer end_of_storage;
+			pointer begin = nullptr;
+			pointer end = nullptr;
+			pointer end_of_storage = nullptr;
 
 			~vector_base();
 			vector_base(const allocator_type& alloc);
@@ -60,62 +131,44 @@ namespace simstd {
 		}
 
 		template<typename Type, typename Allocator>
-		vector_base<Type, Allocator>::vector_base(const allocator_type& alloc) :
-			allocator(alloc),
-			begin(0),
-			end(0),
-			end_of_storage(0)
+		vector_base<Type, Allocator>::vector_base(const allocator_type& alloc)
+			: allocator(alloc)
 		{
 		}
 
 		template<typename Type, typename Allocator>
-		vector_base<Type, Allocator>::vector_base(size_type capa, const allocator_type& alloc) :
-			allocator(alloc),
-			begin(0),
-			end(0),
-			end_of_storage(0)
+		vector_base<Type, Allocator>::vector_base(size_type capa, const allocator_type& alloc)
+			: allocator(alloc)
 		{
 			create_storage(capa);
 		}
 
 		template<typename Type, typename Allocator>
-		vector_base<Type, Allocator>::vector_base(size_type capa, const this_type& other) :
-			allocator(other.allocator),
-			begin(0),
-			end(0),
-			end_of_storage(0)
+		vector_base<Type, Allocator>::vector_base(size_type capa, const this_type& other)
+			: allocator(other.allocator)
 		{
 			create_storage(simstd::max(capa, other.size()));
 			end = simstd::uninitialized_copy(other.begin, other.end, end);
 		}
 
 		template<typename Type, typename Allocator>
-		vector_base<Type, Allocator>::vector_base(size_type capa, const this_type& other, const allocator_type& alloc) :
-			allocator(alloc),
-			begin(0),
-			end(0),
-			end_of_storage(0)
+		vector_base<Type, Allocator>::vector_base(size_type capa, const this_type& other, const allocator_type& alloc)
+			: allocator(alloc)
 		{
 			create_storage(simstd::max(capa, other.size()));
 			end = simstd::uninitialized_copy(other.begin, other.end, end);
 		}
 
 		template<typename Type, typename Allocator>
-		vector_base<Type, Allocator>::vector_base(this_type&& other) :
-			allocator(simstd::move(other.allocator)),
-			begin(0),
-			end(0),
-			end_of_storage(0)
+		vector_base<Type, Allocator>::vector_base(this_type&& other)
+			: allocator(simstd::move(other.allocator))
 		{
 			swap(other);
 		}
 
 		template<typename Type, typename Allocator>
-		vector_base<Type, Allocator>::vector_base(this_type&& other, const allocator_type& alloc) :
-			allocator(alloc),
-			begin(0),
-			end(0),
-			end_of_storage(0)
+		vector_base<Type, Allocator>::vector_base(this_type&& other, const allocator_type& alloc)
+			: allocator(alloc)
 		{
 			if (allocator == other.allocator) {
 				swap(other);
@@ -212,186 +265,6 @@ namespace simstd {
 				reserve(get_new_capacity(addToSize));
 		}
 
-		///=========================================================================================
-		template<typename Type>
-		struct vector_base<Type, simstd::pvt::movable_allocator<Type> > : private simstd::pvt::movable_allocator<Type>
-		{
-			typedef vector_base<Type, simstd::pvt::movable_allocator<Type> > this_type;
-			typedef Type value_type;
-			typedef simstd::pvt::movable_allocator<Type> allocator_type;
-			typedef typename allocator_traits<allocator_type>::size_type size_type;
-			typedef typename allocator_traits<allocator_type>::pointer pointer;
-			typedef typename allocator_type::movable_handle movable_handle;
-
-			mutable pointer begin;
-			mutable pointer end;
-			mutable pointer end_of_storage;
-
-			~vector_base();
-			vector_base();
-			vector_base(size_type capa);
-			vector_base(size_type capa, pointer first, pointer last);
-			void swap(this_type& other);
-			void destroy(pointer first, pointer last);
-			void reserve(size_type newCapacity);
-			void adjust_capacity(size_type addToSize);
-			bool check_capacity(size_type addToSize) const;
-			size_type get_new_capacity(size_type addToSize) const;
-			size_type capacity() const;
-			size_type size() const;
-			size_type max_size() const;
-
-			void lock() const;
-			void unlock() const;
-
-		private:
-			void create_storage(size_type capa);
-
-			movable_handle handle;
-		};
-
-		template<typename Type>
-		vector_base<Type, simstd::pvt::movable_allocator<Type> >::~vector_base()
-		{
-			if (handle) {
-				lock();
-				while (end != begin)
-					allocator_type::destroy(--end);
-				unlock();
-				allocator_type::deallocate(handle);
-			}
-		}
-
-		template<typename Type>
-		vector_base<Type, simstd::pvt::movable_allocator<Type> >::vector_base() :
-			begin(0),
-			end(0),
-			end_of_storage(0),
-			handle(0)
-		{
-		}
-
-		template<typename Type>
-		vector_base<Type, simstd::pvt::movable_allocator<Type> >::vector_base(size_type capa) :
-			begin(0),
-			end(0),
-			end_of_storage(0),
-			handle(0)
-		{
-			create_storage(capa);
-		}
-
-		template<typename Type>
-		vector_base<Type, simstd::pvt::movable_allocator<Type> >::vector_base(size_type capa, pointer first, pointer last) :
-			begin(0),
-			end(0),
-			end_of_storage(0),
-			handle(0)
-		{
-			create_storage(capa);
-			lock();
-			simstd::uninitialized_copy(first, last, end);
-			end += (last - first);
-			unlock();
-		}
-
-		template<typename Type>
-		void vector_base<Type, simstd::pvt::movable_allocator<Type> >::swap(this_type& other)
-		{
-#if defined(__GNUC__) && (__GNUC__ < 3)
-			simstd::swap(begin, other.begin);
-			simstd::swap(end, other.end);
-			simstd::swap(end_of_storage, other.end_of_storage);
-			simstd::swap(handle, other.handle);
-#else
-			using simstd::swap;
-			swap(begin, other.begin);
-			swap(end, other.end);
-			swap(end_of_storage, other.end_of_storage);
-			swap(handle, other.handle);
-#endif
-		}
-
-		template<typename Type>
-		void vector_base<Type, simstd::pvt::movable_allocator<Type> >::create_storage(size_type capa)
-		{
-			handle = (capa) ? allocator_type::allocate(capa) : 0;
-			end = begin = 0;
-			end_of_storage = begin + (handle ? capa : 0);
-		}
-
-		template<typename Type>
-		void vector_base<Type, simstd::pvt::movable_allocator<Type> >::destroy(pointer first, pointer last)
-		{
-			for (; first != last; ++first)
-				allocator_type::destroy(first);
-		}
-
-		template<typename Type>
-		void vector_base<Type, simstd::pvt::movable_allocator<Type> >::reserve(size_type newCapacity)
-		{
-			if (capacity() < newCapacity) {
-				lock();
-				this_type tmp(newCapacity, begin, end);
-				unlock();
-				tmp.swap(*this);
-			}
-		}
-
-		template<typename Type>
-		typename vector_base<Type, simstd::pvt::movable_allocator<Type> >::size_type vector_base<Type, simstd::pvt::movable_allocator<Type> >::size() const
-		{
-			return end - begin;
-		}
-
-		template<typename Type>
-		typename vector_base<Type, simstd::pvt::movable_allocator<Type> >::size_type vector_base<Type, simstd::pvt::movable_allocator<Type> >::max_size() const
-		{
-			return 0xFFFFFFFFu;
-		}
-
-		template<typename Type>
-		typename vector_base<Type, simstd::pvt::movable_allocator<Type> >::size_type vector_base<Type, simstd::pvt::movable_allocator<Type> >::capacity() const
-		{
-			return end_of_storage - begin;
-		}
-
-		template<typename Type>
-		bool vector_base<Type, simstd::pvt::movable_allocator<Type> >::check_capacity(size_type addToSize) const
-		{
-			if ((size() + addToSize) > capacity())
-				return false;
-			return true;
-		}
-
-		template<typename Type>
-		typename vector_base<Type, simstd::pvt::movable_allocator<Type> >::size_type vector_base<Type, simstd::pvt::movable_allocator<Type> >::get_new_capacity(size_type addToSize) const
-		{
-			return size() + simstd::max(size_type(4), simstd::max(size(), addToSize));
-		}
-
-		template<typename Type>
-		void vector_base<Type, simstd::pvt::movable_allocator<Type> >::adjust_capacity(size_type addToSize)
-		{
-			if (!check_capacity(addToSize))
-				reserve(get_new_capacity(addToSize));
-		}
-
-		template<typename Type>
-		void vector_base<Type, simstd::pvt::movable_allocator<Type> >::lock() const
-		{
-			pointer oldBegin = begin;
-			begin = (pointer)allocator_type::lock(handle);
-			ptrdiff_t diff = begin - oldBegin;
-			end += diff;
-			end_of_storage += diff;
-		}
-
-		template<typename Type>
-		void vector_base<Type, simstd::pvt::movable_allocator<Type> >::unlock() const
-		{
-			allocator_type::unlock(handle);
-		}
 	}
 }
 

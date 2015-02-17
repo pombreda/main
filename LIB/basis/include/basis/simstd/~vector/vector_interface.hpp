@@ -1,17 +1,9 @@
-﻿#ifndef BASIS_VECTOR_INTERFACE_HPP_
-#define BASIS_VECTOR_INTERFACE_HPP_
-
-#include <basis/simstd/iterator>
-#include <basis/simstd/memory>
-#include <basis/simstd/vector>
-#include <basis/simstd/~algorithm/base.hpp>
+﻿#ifndef BASIS_SIMSTD_VECTOR_INTERFACE_HPP_
+#define BASIS_SIMSTD_VECTOR_INTERFACE_HPP_
 
 namespace simstd {
-	namespace Test {
-		ssize_t _vector(wPrintFunc printFunc);
-	}
 
-	template<typename Type, typename Allocator = simstd::allocator<Type>>
+	template<typename Type, typename Allocator>
 	class vector {
 		using this_type = vector;
 
