@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 //
 //	test_crashes();
 //
-	test_list();
+//	test_list();
 //
 //	test_math();
 //
@@ -60,11 +60,11 @@ int main(int argc, char* argv[])
 //
 //	test_threads();
 //
-	test_unique_ptr();
+//	test_unique_ptr();
 //
 //	test_url();
 //
-//	test_vector();
+	test_vector();
 //
 //	test_window();
 //
