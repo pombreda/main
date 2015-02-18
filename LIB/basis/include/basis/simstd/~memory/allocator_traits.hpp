@@ -17,21 +17,19 @@ namespace simstd {
 			using type = decltype(chk_allocator<Allocator, Type>(nullptr));
 		};
 
-		template<typename Allocator, typename Type,
-		bool = allocator_rebind_helper<Allocator, Type>::type::value>
-
+		template<typename Allocator, typename Type, bool = allocator_rebind_helper<Allocator, Type>::type::value>
 		struct allocator_rebind;
 
 		template<typename Allocator, typename Type>
 		struct allocator_rebind<Allocator, Type, true>
 		{
-			typedef typename Allocator::template rebind<Type>::other type;
+			using type = typename Allocator::template rebind<Type>::other;
 		};
 
 		template<template<typename, typename...> class Allocator, typename Type, typename _Up, typename... _Args>
 		struct allocator_rebind<Allocator<_Up, _Args...>, Type, false>
 		{
-			typedef Allocator<Type, _Args...> type;
+			using type = Allocator<Type, _Args...>;
 		};
 	}
 
@@ -53,7 +51,7 @@ namespace simstd {
 		using rebind_alloc = typename pvt::allocator_rebind<Allocator, Type>::type;
 
 		template<typename Type>
-		using rebind_traits = allocator_traits<rebind_alloc<Type>>;
+		using rebind_traits = simstd::allocator_traits<rebind_alloc<Type>>;
 
 		static pointer allocate(Allocator& a, size_type n);
 
@@ -89,10 +87,10 @@ namespace simstd {
 	}
 
 	template<typename Allocator>
-	template<class T, class ... Args>
+	template<class T, class... Args>
 	void allocator_traits<Allocator>::construct(Allocator& a, T* ptr, Args&&... args)
 	{
-		a.construct(ptr, simstd::forward<Args>(args)...); // TODO
+		a.construct(ptr, simstd::forward<Args>(args)...);
 	}
 
 	template<typename Allocator>
