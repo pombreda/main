@@ -20,10 +20,9 @@ void test_vector()
 	{
 		vector_type* vec1 = static_cast<vector_type*>(HostAlloc(heap_type, sizeof(vector_type)));
 		new (vec1, simstd::nothrow) vector_type();
-
 //		vector_type* vec1 = new vector_type;
-		LogReport(L"size: %Iu, capa: %Iu\n", vec1->size(), vec1->capacity());
 
+		LogReport(L"size: %Iu, capa: %Iu\n", vec1->size(), vec1->capacity());
 		vec1->emplace_back(0);
 		vec1->emplace_back(1);
 		vec1->emplace_back(2);
@@ -37,6 +36,7 @@ void test_vector()
 		vec1->emplace_back(9);
 		vec1->emplace_back(10);
 		LogReport(L"size: %Iu, capa: %Iu\n", vec1->size(), vec1->capacity());
+
 //		delete vec1;
 		vec1->~vector();
 		HostFree(heap_type, vec1);
