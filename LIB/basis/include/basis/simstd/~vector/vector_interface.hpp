@@ -28,13 +28,13 @@ namespace simstd {
 	public:
 		~vector();
 
-		vector(): vector(allocator_type()) {}
+		vector();
 		explicit vector(const allocator_type& allocator);
 		vector(size_type n, const value_type& val, const allocator_type& allocator = allocator_type());
 		explicit vector(size_type n, const allocator_type& allocator = allocator_type());
 		template<typename InputIterator>
 		vector(InputIterator first, InputIterator last, const allocator_type& allocator = allocator_type());
-		vector(const this_type& other): vector(other, other.get_allocator()) {}
+		vector(const this_type& other);
 		vector(const this_type& other, const allocator_type& allocator);
 		vector(this_type&& other);
 		vector(this_type&& other, const allocator_type& allocator);
@@ -87,11 +87,11 @@ namespace simstd {
 		iterator insert(const_iterator pos, size_type n, const value_type& value);
 		iterator insert(const_iterator pos, value_type&& value);
 
-		template<typename... Args>
-		iterator emplace(const_iterator pos, Args&&... args);
-
 		iterator erase(const_iterator pos);
 		iterator erase(const_iterator first, const_iterator last);
+
+		template<typename... Args>
+		iterator emplace(const_iterator pos, Args&&... args);
 
 		void     push_back(const value_type& value);
 		void     push_back(value_type&& value);
@@ -107,12 +107,12 @@ namespace simstd {
 		void     swap(this_type& other);
 
 	private:
-		void     _reserve(size_type new_capa);
+		void _reserve(size_type new_capa);
+
+		iterator _erase(const_iterator first, const_iterator last);
 
 		template<typename... Args>
 		iterator _emplace(const_iterator pos, Args&&... args);
-
-		iterator _erase(const_iterator first, const_iterator last);
 
 		template<typename... Args>
 		void _emplace_back(Args&&... args);
@@ -183,6 +183,12 @@ namespace simstd {
 	}
 
 	template<typename Type, typename Allocator>
+	vector<Type, Allocator>::vector()
+		: vector(allocator_type())
+	{
+	}
+
+	template<typename Type, typename Allocator>
 	vector<Type, Allocator>::vector(const allocator_type& allocator)
 		: base_type(allocator)
 	{
@@ -194,7 +200,7 @@ namespace simstd {
 		: base_type(count, allocator)
 	{
 		TraceFunc();
-		impl.end = simstd::uninitialized_fill_n_a(impl.begin, count, value, get_base_allocator());
+		impl.end = simstd::uninitialized_fill_n_a(impl.end, count, value, get_base_allocator());
 	}
 
 	template<typename Type, typename Allocator>
@@ -202,7 +208,7 @@ namespace simstd {
 		: base_type(count, allocator)
 	{
 		TraceFunc();
-		impl.end = simstd::uninitialized_default_n_a(impl.begin, count, get_base_allocator());
+		impl.end = simstd::uninitialized_default_n_a(impl.end, count, get_base_allocator());
 	}
 
 	template<typename Type, typename Allocator>
@@ -212,6 +218,12 @@ namespace simstd {
 	{
 		TraceFunc();
 		_insert_back(first, last, simstd::pvt::iterator_category(first));
+	}
+
+	template<typename Type, typename Allocator>
+	vector<Type, Allocator>::vector(const this_type& other)
+		: vector(other, other.get_allocator())
+	{
 	}
 
 	template<typename Type, typename Allocator>
@@ -246,7 +258,8 @@ namespace simstd {
 	vector<Type, Allocator>::this_type& vector<Type, Allocator>::operator =(const this_type& other)
 	{
 		TraceFunc();
-		this_type(other).swap(*this);
+		if (this != &other)
+			this_type(other).swap(*this);
 		return *this;
 	}
 
@@ -255,7 +268,8 @@ namespace simstd {
 	vector<Type, Allocator>::this_type& vector<Type, Allocator>::operator =(this_type&& other)
 	{
 		TraceFunc();
-		this_type(simstd::move(other)).swap(*this);
+		if (this != &other)
+			this_type(simstd::move(other)).swap(*this);
 		return *this;
 	}
 
@@ -479,7 +493,7 @@ namespace simstd {
 	void vector<Type, Allocator>::clear()
 	{
 		TraceFunc();
-		base_type::erase_till_end(impl.begin);
+		base_type::destroy_till_end(impl.begin);
 	}
 
 	template<typename Type, typename Allocator>
@@ -516,6 +530,33 @@ namespace simstd {
 	}
 
 	template<typename Type, typename Allocator>
+	typename
+	vector<Type, Allocator>::iterator vector<Type, Allocator>::erase(const_iterator cpos)
+	{
+		TraceFunc();
+		return _erase(cpos, cpos + 1);
+	}
+
+	template<typename Type, typename Allocator>
+	typename
+	vector<Type, Allocator>::iterator vector<Type, Allocator>::erase(const_iterator cfirst, const_iterator clast)
+	{
+		TraceFunc();
+		return _erase(cfirst, clast);
+	}
+
+	template<typename Type, typename Allocator>
+	typename
+	vector<Type, Allocator>::iterator vector<Type, Allocator>::_erase(const_iterator cfirst, const_iterator clast)
+	{
+		auto first = simstd::next(impl.begin, simstd::distance(cbegin(), cfirst));
+		auto last = simstd::next(impl.begin, simstd::distance(cbegin(), clast));
+		auto newEnd = simstd::move(last, impl.end, first);
+		base_type::destroy_till_end(newEnd);
+		return iterator(first);
+	}
+
+	template<typename Type, typename Allocator>
 	template<typename... Args>
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::emplace(const_iterator cpos, Args&&... args)
@@ -542,40 +583,12 @@ namespace simstd {
 			}
 		} else {
 			base_type newBase(base_type::get_new_capacity(1), get_base_allocator());
-			newBase.get_base_allocator().construct(newBase.impl.begin + distance, simstd::forward<Args>(args)...);
-			newBase.impl.end = simstd::uninitialized_copy_a(simstd::make_move_iterator(impl.begin), simstd::make_move_iterator(pos.base()), newBase.impl.begin, newBase.get_base_allocator());
-			++newBase.impl.end;
+			newBase.impl.end = simstd::uninitialized_copy_a(simstd::make_move_iterator(impl.begin), simstd::make_move_iterator(pos.base()), newBase.impl.end, newBase.get_base_allocator());
+			newBase.get_base_allocator().construct(newBase.impl.end++, simstd::forward<Args>(args)...);
 			newBase.impl.end = simstd::uninitialized_copy_a(simstd::make_move_iterator(pos.base()), simstd::make_move_iterator(impl.end), newBase.impl.end, newBase.get_base_allocator());
 			newBase.swap(*this);
 		}
 		return iterator(impl.begin + distance);
-	}
-
-	template<typename Type, typename Allocator>
-	typename
-	vector<Type, Allocator>::iterator vector<Type, Allocator>::erase(const_iterator cpos)
-	{
-		TraceFunc();
-		return _erase(cpos, cpos + 1);
-	}
-
-	template<typename Type, typename Allocator>
-	typename
-	vector<Type, Allocator>::iterator vector<Type, Allocator>::erase(const_iterator cfirst, const_iterator clast)
-	{
-		TraceFunc();
-		return _erase(cfirst, clast);
-	}
-
-	template<typename Type, typename Allocator>
-	typename
-	vector<Type, Allocator>::iterator vector<Type, Allocator>::_erase(const_iterator cfirst, const_iterator clast)
-	{
-		auto first = simstd::next(impl.begin, simstd::distance(cbegin(), cfirst));
-		auto last = simstd::next(impl.begin, simstd::distance(cbegin(), clast));
-		auto newEnd = simstd::move(last, impl.end, first);
-		base_type::erase_till_end(newEnd);
-		return iterator(first);
 	}
 
 	template<typename Type, typename Allocator>
@@ -623,7 +636,7 @@ namespace simstd {
 			_reserve(count);
 			impl.end = simstd::uninitialized_default_n_a(impl.end, count - size(), get_base_allocator());
 		} else if (count < size()) {
-			base_type::erase_till_end(impl.begin + count);
+			base_type::destroy_till_end(impl.begin + count);
 		}
 	}
 
@@ -635,7 +648,7 @@ namespace simstd {
 			_reserve(count);
 			impl.end = simstd::uninitialized_fill_n_a(impl.end, count - size(), value, get_base_allocator());
 		} else if (count < size()) {
-			base_type::erase_till_end(impl.begin + count);
+			base_type::destroy_till_end(impl.begin + count);
 		}
 	}
 
@@ -686,7 +699,7 @@ namespace simstd {
 	{
 		auto distance = simstd::distance(cbegin(), cpos);
 		auto n = simstd::distance(first, last);
-		iterator pos = simstd::next(begin(), distance);
+		auto pos = simstd::next(begin(), distance);
 		if (size() + n <= capacity()) {
 			auto elemsToMove = end() - pos;
 			auto old_end = impl.end;

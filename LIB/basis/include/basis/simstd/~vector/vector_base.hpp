@@ -44,7 +44,7 @@ namespace simstd {
 			};
 
 		public:
-			~vector_base() noexcept {erase_till_end(impl.begin); deallocate(impl.begin, impl.end_of_storage - impl.begin);}
+			~vector_base() noexcept {destroy_till_end(impl.begin); deallocate(impl.begin, impl.end_of_storage - impl.begin);}
 
 			vector_base() = default;
 			vector_base(const allocator_type& allocator) noexcept: impl(allocator) {}
@@ -61,7 +61,7 @@ namespace simstd {
 					create_storage(other.impl.end - other.impl.begin);
 			}
 
-			void erase_till_end(pointer from) noexcept
+			void destroy_till_end(pointer from) noexcept
 			{
 				simstd::pvt::_destroy(get_base_allocator(), from, impl.end);
 				impl.end = from;

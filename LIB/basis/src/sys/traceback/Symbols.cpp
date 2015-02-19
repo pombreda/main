@@ -27,14 +27,15 @@ namespace traceback {
 	private:
 		~DebugSymbols()
 		{
+			LogTraceObj();
 			bool ret = os::Dbghelp_dll::inst().SymCleanup(::GetCurrentProcess());
-			LogTraceIf(ret);
 			LogErrorIf(!ret, L"%s\n", totext::api_error().c_str());
 			UNUSED(ret);
 		}
 
 		DebugSymbols(const wchar_t* path)
 		{
+			LogTraceObj();
 			os::Dbghelp_dll::inst().SymSetOptions(os::Dbghelp_dll::inst().SymGetOptions() | /*SYMOPT_DEFERRED_LOADS | */SYMOPT_FAIL_CRITICAL_ERRORS | SYMOPT_LOAD_LINES);
 			bool ret = os::Dbghelp_dll::inst().SymInitializeW(::GetCurrentProcess(), path, TRUE);
 			LogNoiseIf(ret, L"['%s']\n", path);
