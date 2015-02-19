@@ -1,8 +1,9 @@
-#include <A.hpp>
 #include <tests.hpp>
 
 #include <basis/sys/logger.hpp>
 #include <basis/simstd/memory>
+
+#include <basis/tst/A.hpp>
 
 template<typename Type>
 struct Dltr
@@ -36,10 +37,10 @@ void test_unique_ptr()
 	simstd::unique_ptr<int, Dltr<int>> uniq2(new int, Dltr<int>());
 	LogNoise(L"sizeof(uniq2): %d\n", sizeof(uniq2));
 
-	auto uniq3(simstd::make_unique<A>(3));
+	auto uniq3(simstd::make_unique<tst::A>(3));
 	LogNoise(L"sizeof(uniq3): %d\n", sizeof(uniq3));
 
-	auto uniq4(simstd::make_unique<A>(4));
+	auto uniq4(simstd::make_unique<tst::A>(4));
 	LogNoise(L"sizeof(uniq4): %d\n", sizeof(uniq4));
 
 	using simstd::swap;

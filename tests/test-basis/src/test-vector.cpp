@@ -1,5 +1,4 @@
 #include <tests.hpp>
-#include <A.hpp>
 
 #include <basis/sys/console.hpp>
 #include <basis/sys/logger.hpp>
@@ -7,10 +6,12 @@
 #include <basis/simstd/memory>
 #include <basis/simstd/vector>
 
+#include <basis/tst/A.hpp>
+
 namespace {
-	typedef memory::heap::DecoratorStat<memory::heap::Default, memory::heap::StatCount, A> heap_type;
-	typedef simstd::AllocatorHeap<A, heap_type> Allocator;
-	typedef simstd::vector<A, Allocator> vector_type;
+	typedef memory::heap::DecoratorStat<memory::heap::Default, memory::heap::StatCount, tst::A> heap_type;
+	typedef simstd::AllocatorHeap<tst::A, heap_type> Allocator;
+	typedef simstd::vector<tst::A, Allocator> vector_type;
 }
 
 void test_vector()
@@ -18,11 +19,11 @@ void test_vector()
 	LogWarn(L"\n");
 
 	{
-		vector_type* vec1 = static_cast<vector_type*>(HostAlloc(heap_type, sizeof(vector_type)));
-		new (vec1, simstd::nothrow) vector_type();
-//		vector_type* vec1 = new vector_type;
+//		vector_type* vec1 = static_cast<vector_type*>(HostAlloc(heap_type, sizeof(vector_type)));
+//		new (vec1, simstd::nothrow) vector_type();
+		vector_type* vec1 = new vector_type;
 
-		LogReport(L"size: %Iu, capa: %Iu\n", vec1->size(), vec1->capacity());
+		LogReport(L"sizeof: %Iu, size: %Iu, capa: %Iu\n", sizeof(*vec1), vec1->size(), vec1->capacity());
 		vec1->emplace_back(0);
 		vec1->emplace_back(1);
 		vec1->emplace_back(2);
@@ -37,9 +38,9 @@ void test_vector()
 		vec1->emplace_back(10);
 		LogReport(L"size: %Iu, capa: %Iu\n", vec1->size(), vec1->capacity());
 
-//		delete vec1;
-		vec1->~vector();
-		HostFree(heap_type, vec1);
+		delete vec1;
+//		vec1->~vector();
+//		HostFree(heap_type, vec1);
 	}
 
 	{
@@ -48,4 +49,6 @@ void test_vector()
 		LogReport(L"stat free : %I64u, %I64u\n", stat.get_frees(), stat.get_frees_size());
 		LogReport(L"stat diff : %I64d\n", stat.get_allocations_size() - stat.get_frees_size());
 	}
+
+	simstd::Test::_vector(console::wprintf);
 }
