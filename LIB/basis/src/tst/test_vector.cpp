@@ -2,6 +2,7 @@
 #include <basis/simstd/algorithm>
 #include <basis/simstd/vector>
 #include <basis/simstd/iterator>
+#include <basis/tst/A.hpp>
 
 #include <ctime>
 #include <cassert>
@@ -105,71 +106,14 @@ struct MyAllocator: public simstd::allocator<size_t>
 {
 };
 
-class A
-{
-public:
-	~A()
-	{
-		console::printf(L"%S[%d] %Id\n", __PRETTY_FUNCTION__, __LINE__, _i);
-	}
-
-	A():
-		_i()
-	{
-		console::printf(L"%S[%d] %Id\n", __PRETTY_FUNCTION__, __LINE__, _i);
-	}
-
-	A(size_t i):
-		_i(i)
-	{
-		console::printf(L"%S[%d] %Id\n", __PRETTY_FUNCTION__, __LINE__, _i);
-	}
-
-	A(const A& a):
-		_i(a._i)
-	{
-		console::printf(L"%S[%d] %Id\n", __PRETTY_FUNCTION__, __LINE__, _i);
-	}
-
-	A& operator =(const A& a)
-	{
-		A(a).swap(*this);
-		console::printf(L"%S[%d] %Id\n", __PRETTY_FUNCTION__, __LINE__, _i);
-		return *this;
-	}
-
-	A(A&& a):
-		_i()
-	{
-		swap(a);
-		console::printf(L"%S[%d] %Id\n", __PRETTY_FUNCTION__, __LINE__, _i);
-	}
-
-	A& operator =(A&& a)
-	{
-		A(simstd::move(a)).swap(*this);
-		console::printf(L"%S[%d] %Id\n", __PRETTY_FUNCTION__, __LINE__, _i);
-		return *this;
-	}
-
-	void swap(A& a)
-	{
-		using simstd::swap;
-		swap(_i, a._i);
-	}
-
-	ssize_t _i;
-};
-
-
 typedef simstd::vector<Value> vec_t;
 
-void print_cont(const wchar_t* name, const simstd::vector<A>& c, simstd::Test::wPrintFunc printFunc)
+void print_cont(const wchar_t* name, const simstd::vector<tst::A>& c, simstd::Test::wPrintFunc printFunc)
 {
 	using namespace simstd;
 	printFunc(L"%s: capa(): %Id, size(): %Id (", name, c.capacity(), c.size());
 	for (auto it = begin(c); it != end(c); ++it) {
-		printFunc(L" %Id", it->_i);
+		printFunc(L" %Id", it->val());
 	}
 	printFunc(L")\n");
 }
@@ -192,43 +136,43 @@ ssize_t simstd::Test::_vector(simstd::Test::wPrintFunc printFunc)
 	//	}
 	//	printFunc(L"%s end\n", __PRETTY_FUNCTION__);
 	//	return 0;
-	A data[] {44, 45, 46, 47, 48};
+	tst::A data[] {44, 45, 46, 47, 48};
 
 	printFunc(L"\nconstruct v11\n");
-	vector<A> v11;
+	vector<tst::A> v11;
 
 	printFunc(L"\nconstruct v12\n");
-	vector<A> v12 = vector<A>(MyAllocator());
+	vector<tst::A> v12 = vector<tst::A>(MyAllocator());
 
 	printFunc(L"\nconstruct v21\n");
-	vector<A> v21(11);
+	vector<tst::A> v21(11);
 
 	printFunc(L"\nconstruct v22\n");
-	vector<A> v22(11, MyAllocator());
+	vector<tst::A> v22(11, MyAllocator());
 
 	printFunc(L"\nconstruct v31\n");
-	vector<A> v31(11, A(444));
+	vector<tst::A> v31(11, tst::A(444));
 
 	printFunc(L"\nconstruct v32\n");
-	vector<A> v32(11, A(555), MyAllocator());
+	vector<tst::A> v32(11, tst::A(555), MyAllocator());
 
 	printFunc(L"\nconstruct v41\n");
-	vector<A> v41(begin(data), end(data));
+	vector<tst::A> v41(begin(data), end(data));
 
 	printFunc(L"\nconstruct v42\n");
-	vector<A> v42(begin(data), end(data), MyAllocator());
+	vector<tst::A> v42(begin(data), end(data), MyAllocator());
 
 	printFunc(L"\nconstruct v51\n");
-	vector<A> v51(v21);
+	vector<tst::A> v51(v21);
 
 	printFunc(L"\nconstruct v61\n");
-	vector<A> v61(v22, MyAllocator());
+	vector<tst::A> v61(v22, MyAllocator());
 
 	printFunc(L"\nconstruct v71\n");
-	vector<A> v71(simstd::move(v31));
+	vector<tst::A> v71(simstd::move(v31));
 
 	printFunc(L"\nconstruct v81\n");
-	vector<A> v81(simstd::move(v32), MyAllocator());
+	vector<tst::A> v81(simstd::move(v32), MyAllocator());
 
 	printFunc(L"construct end\n");
 
