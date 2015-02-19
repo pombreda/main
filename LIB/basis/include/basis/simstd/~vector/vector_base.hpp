@@ -3,130 +3,6 @@
 
 namespace simstd {
 
-	namespace pvt {
-
-		template<typename Type, typename Allocator>
-		class vector_base
-		{
-		public:
-			using allocator_type = Allocator;
-			using traits_type = allocator_traits<allocator_type>;
-
-		private:
-			using base_allocator_type = typename traits_type::template rebind_alloc<Type>;
-//			using base_allocator_type = typename Allocator::template rebind<Type>::other;
-			using base_allocator_traits = allocator_traits<base_allocator_type>;
-			using pointer = typename base_allocator_traits::pointer;
-
-			struct vector_base_impl: public base_allocator_type
-			{
-				vector_base_impl() = default;
-				vector_base_impl(const base_allocator_type& allocator) noexcept: base_allocator_type(allocator) {}
-				vector_base_impl(base_allocator_type&& allocator) noexcept: base_allocator_type(simstd::move(allocator)) {}
-
-				void swap(vector_base_impl& other) noexcept
-				{
-					using simstd::swap;
-					swap(static_cast<base_allocator_type&>(*this), static_cast<base_allocator_type&>(other));
-					swap_data(other);
-				}
-				void swap_data(vector_base_impl& other) noexcept
-				{
-					using simstd::swap;
-					swap(begin, other.begin);
-					swap(end, other.end);
-					swap(end_of_storage, other.end_of_storage);
-				}
-
-				pointer begin = nullptr;
-				pointer end = nullptr;
-				pointer end_of_storage = nullptr;
-			};
-
-		public:
-			~vector_base() noexcept {destroy_till_end(impl.begin); deallocate(impl.begin, impl.end_of_storage - impl.begin);}
-
-			vector_base() = default;
-			vector_base(const allocator_type& allocator) noexcept: impl(allocator) {}
-			vector_base(size_t count) {create_storage(count);}
-			vector_base(size_t count, const allocator_type& allocator): impl(allocator) {create_storage(count);}
-			vector_base(base_allocator_type&& other) noexcept: impl(simstd::move(other)) {}
-			vector_base(vector_base&& other) noexcept: impl(simstd::move(other.get_base_allocator())) {impl.swap_data(other.impl);}
-			vector_base(vector_base&& other, const allocator_type& allocator)
-				: impl(allocator)
-			{
-				if (other.get_allocator() == allocator)
-					impl.swap_data(other.impl);
-				else
-					create_storage(other.impl.end - other.impl.begin);
-			}
-
-			void destroy_till_end(pointer from) noexcept
-			{
-				simstd::pvt::_destroy(get_base_allocator(), from, impl.end);
-				impl.end = from;
-			}
-
-			size_t capacity() const noexcept {return impl.end_of_storage - impl.begin;}
-			size_t size() const noexcept {return impl.end - impl.begin;}
-			size_t max_size() const noexcept {return static_cast<size_t>(-1);}
-
-			void adjust_capacity(size_t addToSize)
-			{
-				if (!check_capacity_if_size_grows(addToSize))
-					reserve(get_new_capacity(addToSize));
-			}
-
-			bool check_capacity_if_size_grows(size_t addToSize) const
-			{
-				if (addToSize > static_cast<size_t>(impl.end_of_storage - impl.end))
-					return false;
-				return true;
-			}
-
-			void reserve(size_t newCapacity)
-			{
-				if (capacity() < newCapacity) {
-					vector_base tmp(newCapacity, get_base_allocator());
-					tmp.impl.end = simstd::uninitialized_copy_a(simstd::make_move_iterator(impl.begin), simstd::make_move_iterator(impl.end), tmp.impl.end, tmp.get_base_allocator());
-					tmp.swap(*this);
-				}
-			}
-
-			size_t get_new_capacity(size_t addToSize) const
-			{
-				return size() + simstd::max(size_t(4), simstd::max(size(), addToSize));
-			}
-
-			allocator_type get_allocator() const noexcept {return allocator_type(get_base_allocator());}
-			base_allocator_type& get_base_allocator() noexcept {return *static_cast<base_allocator_type*>(&impl);}
-			const base_allocator_type& get_base_allocator() const noexcept {return *static_cast<const base_allocator_type*>(&impl);}
-
-			void swap(vector_base& other)
-			{
-				impl.swap(other.impl);
-			}
-
-			pointer allocate(size_t count)
-			{
-				return count == 0 ? nullptr : base_allocator_traits::allocate(impl, count);
-			}
-
-			void deallocate(pointer ptr, size_t count)
-			{
-				if (ptr)
-					base_allocator_traits::deallocate(impl, ptr, count);
-			}
-
-			void create_storage(size_t count)
-			{
-				impl.end = impl.begin = allocate(count);
-				impl.end_of_storage = impl.begin + (impl.begin ? count : 0);
-			}
-
-			vector_base_impl impl;
-		};
-
 //		template<typename Type, typename Allocator>
 //		class vector_base
 //		{
@@ -314,7 +190,6 @@ namespace simstd {
 //				reserve(get_new_capacity(addToSize));
 //		}
 
-	}
 }
 
 #endif
