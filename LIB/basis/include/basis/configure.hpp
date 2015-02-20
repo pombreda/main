@@ -2,6 +2,7 @@
 #define BASIS_CONFIGURE_HPP_
 
 #include <basis/~configure/defines.hpp>
+#include <basis/~configure/assert.hpp>
 
 #include <basis/~configure/os/windows_prolog.hpp>
 

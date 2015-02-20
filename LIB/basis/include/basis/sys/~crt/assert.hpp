@@ -9,13 +9,4 @@ namespace crt {
 
 }
 
-#ifdef NDEBUG
-#	define CRT_ASSERT(_Expression_) ((void)0)
-#else
-#	define CRT_ASSERT(_Expression_) \
-           (void) \
-           ((!!(_Expression_)) || \
-           (crt::assrt(#_Expression_, __FILE__, __LINE__), 0))
-#endif
-
 #endif

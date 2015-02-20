@@ -61,7 +61,7 @@ namespace simstd {
 
 			void destroy_till_end(pointer from) noexcept
 			{
-				simstd::pvt::_destroy(get_base_allocator(), from, impl.end);
+				simstd::pvt::destroy(get_base_allocator(), from, impl.end);
 				impl.end = from;
 			}
 

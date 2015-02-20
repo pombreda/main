@@ -35,7 +35,7 @@ namespace simstd {
 	template<typename OutputIterator, typename Type>
 	raw_storage_iterator<OutputIterator, Type>& raw_storage_iterator<OutputIterator, Type>::operator =(const Type& element)
 	{
-		simstd::pvt::_construct(simstd::addressof(*_M_iter), element);
+		simstd::pvt::construct(simstd::addressof(*_M_iter), element);
 		return *this;
 	}
 

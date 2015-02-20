@@ -300,7 +300,7 @@ namespace simstd {
 
 				simstd::pvt::merge_sort_buffer<RandomIt, value_type, Compare>(first, last, pBuffer, compare);
 
-				simstd::pvt::_destroy<value_type*, value_type>(pBuffer.first, pBuffer.first + nCount);
+				simstd::pvt::destroy(pBuffer.first, pBuffer.first + nCount);
 				simstd::return_temporary_buffer(pBuffer.first);
 			}
 		}
