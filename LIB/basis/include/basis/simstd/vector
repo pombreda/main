@@ -10,10 +10,8 @@
 #include <basis/simstd/~vector/vector_base.hpp>
 #include <basis/simstd/~vector/vector_interface.hpp>
 
-namespace simstd {
-	namespace Test {
-		ssize_t _vector(wPrintFunc printFunc);
-	}
+namespace tst {
+	ssize_t _vector(aPrintFunc printFunc);
 }
 
 

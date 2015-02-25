@@ -14,14 +14,13 @@ namespace {
 	}
 }
 
-ssize_t simstd::Test::_algorithm(simstd::Test::wPrintFunc printFunc)
+ssize_t tst::_algorithm(tst::wPrintFunc printFunc)
 {
 	ssize_t dim1[] = {-10, 4, 52, -22, 0, 4, 0, 0, 31, -4, 15};
 	size_t size = sizeof(dim1) / sizeof(dim1[0]);
 
 	auto first = dim1;
 	auto last = dim1 + size;
-
 
 	printFunc(L"Test sort:\n");
 	printFunc(L"before: ");

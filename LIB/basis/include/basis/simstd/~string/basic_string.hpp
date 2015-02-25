@@ -10,15 +10,6 @@
 
 namespace simstd {
 
-	namespace Test {
-		ssize_t a_string(aPrintFunc printFunc);
-		ssize_t w_string(wPrintFunc printFunc);
-	}
-
-}
-
-namespace simstd {
-
 	template<typename CharType,
 		typename Traits = simstd::char_traits<CharType>,
 		typename Allocator = simstd::allocator<CharType> >

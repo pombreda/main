@@ -1,8 +1,9 @@
 #include <basis/tst/A.hpp>
 #include <basis/sys/logger.hpp>
-#include <basis/simstd/algorithm>
 
-namespace tst {
+namespace tst
+{
+
 	A::~A()
 	{
 		LogTraceObj();
@@ -48,9 +49,16 @@ namespace tst {
 		return *this;
 	}
 
-	A A::operator +(const A & /*other*/) const
+	A& A::operator +=(const A& other)
 	{
-		return A();
+		m_a += other.m_a;
+		return *this;
+	}
+
+	A A::operator +(const A& other) const
+	{
+		A ret(*this);
+		return ret += other;
 	}
 
 	void A::swap(A& other)
@@ -64,4 +72,5 @@ namespace tst {
 	{
 		return m_a;
 	}
+
 }

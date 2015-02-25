@@ -12,4 +12,9 @@
 #include <basis/simstd/~string/convert_a.hpp>
 #include <basis/simstd/~string/convert_w.hpp>
 
+namespace tst {
+	ssize_t a_string(aPrintFunc printFunc);
+	ssize_t w_string(wPrintFunc printFunc);
+}
+
 #endif

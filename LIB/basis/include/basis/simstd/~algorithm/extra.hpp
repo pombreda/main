@@ -728,22 +728,49 @@ namespace simstd {
 	template<typename BidirIt>
 	bool next_permutation(BidirIt first, BidirIt last)
 	{
+		if (first == last || (first + 1) == last)
+			return false;
+
+		BidirIt i = last - 1;
+		for (;;) {
+			BidirIt __ii = i;
+			--i;
+			if (*i < *__ii) {
+				BidirIt __j = last;
+				while (!(*i < *--__j)) {
+				}
+				simstd::iter_swap(i, __j);
+				simstd::reverse(__ii, last);
+				return true;
+			}
+			if (i == first) {
+				simstd::reverse(first, last);
+				return false;
+			}
+		}
+	}
+
+	template<typename BidirIt, typename Compare>
+	bool next_permutation(BidirIt first, BidirIt last, Compare compare)
+	{
 		if (first == last)
 			return false;
-		BidirIt i = last;
-		if (first == --i)
+		BidirIt i = first;
+		if (++i == last)
 			return false;
 
-		for (;;) {
-			BidirIt i1, i2;
+		i = last;
+		--i;
 
-			i1 = i;
-			if (*--i < *i1) {
-				i2 = last;
-				while (!(*i < *--i2))
-					;
-				simstd::iter_swap(i, i2);
-				simstd::reverse(i1, last);
+		for (;;) {
+			BidirIt __ii = i;
+			--i;
+			if (compare(*i, *__ii)) {
+				BidirIt __j = last;
+				while (!compare(*i, *(--__j))) {
+				}
+				simstd::iter_swap(i, __j);
+				simstd::reverse(__ii, last);
 				return true;
 			}
 			if (i == first) {
