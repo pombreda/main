@@ -39,6 +39,8 @@ namespace simstd {
 		shared_ptr(nullptr_t ptr, Deleter deleter, Allocator allocator): base_type(ptr, deleter, simstd::move(allocator)) {}
 
 		shared_ptr(const this_type&) noexcept = default;
+		template<typename OType>
+		shared_ptr(const shared_ptr<OType>& sptr, Type* ptr) noexcept: base_type(sptr, ptr) {}
 		template<typename OType, typename = typename std::enable_if<std::is_convertible<OType*, Type*>::value>::type>
 		shared_ptr(const shared_ptr<OType>& other) noexcept: base_type(other) {}
 

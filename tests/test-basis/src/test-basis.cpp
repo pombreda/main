@@ -4,6 +4,7 @@
 #include <basis/sys/crt.hpp>
 #include <basis/sys/logger.hpp>
 #include <basis/sys/memory.hpp>
+#include <basis/tst.hpp>
 
 namespace {
 	void setup_logger()
@@ -52,7 +53,7 @@ int main(int argc, char* argv[])
 //
 //	test_memory();
 //
-//	test_shared_ptr();
+	tst::_shared_ptr();
 //
 //	test_string();
 //
@@ -64,7 +65,7 @@ int main(int argc, char* argv[])
 //
 //	test_url();
 //
-	test_vector();
+//	test_vector();
 //
 //	test_window();
 //

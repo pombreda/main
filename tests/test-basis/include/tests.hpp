@@ -25,8 +25,6 @@ void test_math();
 
 void test_memory();
 
-void test_shared_ptr();
-
 void test_string();
 
 void test_threads();

@@ -11,12 +11,16 @@ namespace tst
 	}
 
 	A::A() :
+		j(),
+		i(),
 		m_a()
 	{
 		LogTraceObj();
 	}
 
 	A::A(int a) :
+		j(),
+		i(),
 		m_a(a)
 	{
 		LogTraceObj();
@@ -24,12 +28,16 @@ namespace tst
 	}
 
 	A::A(const A& other) :
+		j(),
+		i(),
 		m_a(other.m_a)
 	{
 		LogTraceObj();
 	}
 
 	A::A(A&& other) :
+		j(),
+		i(),
 		m_a(simstd::move(other.m_a))
 	{
 		LogTraceObj();

@@ -7,6 +7,9 @@ namespace simstd {
 	template<typename Type, typename OType>
 	void enable_shared_from_this_helper(const pvt::shared_count<>&, const enable_shared_from_this<Type>*, const OType*) noexcept;
 
+	template<typename Deleter, typename Type, pvt::LockPolicy OLockPol>
+	Deleter* get_deleter(const pvt::shared_ptr_base<Type, OLockPol>&) noexcept;
+
 	namespace pvt {
 
 		// Friend of enable_shared_from_this.
@@ -57,15 +60,15 @@ namespace simstd {
 
 			template<typename Deleter>
 			shared_ptr_base(nullptr_t ptr, Deleter deleter)
-				: _M_ptr(0)
-				, _M_refcount(ptr, deleter)
+				: _M_refcount(ptr, deleter)
+				, _M_ptr(0)
 			{
 			}
 
 			template<typename Deleter, typename Allocator>
 			shared_ptr_base(nullptr_t ptr, Deleter deleter, Allocator allocator)
-				: _M_ptr(0)
-				, _M_refcount(ptr, deleter, simstd::move(allocator))
+				: _M_refcount(ptr, deleter, simstd::move(allocator))
+				, _M_ptr(0)
 			{
 			}
 
@@ -73,15 +76,15 @@ namespace simstd {
 
 			template<typename OType>
 			shared_ptr_base(const shared_ptr_base<OType, LockPol>& other, Type* ptr) noexcept
-				: _M_ptr(ptr)
-				, _M_refcount(other._M_refcount)
+				: _M_refcount(other._M_refcount)
+				, _M_ptr(ptr)
 			{
 			}
 
 			template<typename OType, typename = typename std::enable_if<std::is_convertible<OType*, Type*>::value>::type>
 			shared_ptr_base(const shared_ptr_base<OType, LockPol>& other) noexcept
-				: _M_ptr(other._M_ptr)
-				, _M_refcount(other._M_refcount)
+				: _M_refcount(other._M_refcount)
+				, _M_ptr(other._M_ptr)
 			{
 			}
 
@@ -110,35 +113,34 @@ namespace simstd {
 			template<typename OType, typename Deleter>
 			shared_ptr_base(simstd::unique_ptr<OType, Deleter>&& other)
 				: _M_ptr(other.get())
-			  {
+			{
 //				__glibcxx_function_requires(_ConvertibleConcept<OType*, Type*>)
 				auto __raw = raw_ptr(other.get());
 				_M_refcount = shared_count<LockPol>(simstd::move(other));
 				enable_shared_from_this_helper(_M_refcount, __raw, __raw);
-			  }
+			}
 
-		/* TODO: use delegating constructor */
-		constexpr shared_ptr_base(nullptr_t) noexcept
-			: _M_refcount()
-			, _M_ptr(0)
-		{
-		}
+			constexpr shared_ptr_base(nullptr_t) noexcept
+				: _M_refcount()
+				, _M_ptr(0)
+			{
+			}
 
-		shared_ptr_base& operator =(const shared_ptr_base&) noexcept = default;
+			shared_ptr_base& operator =(const shared_ptr_base&) noexcept = default;
 
-		template<typename OType>
-		shared_ptr_base& operator =(const shared_ptr_base<OType, LockPol>& __r) noexcept
-		{
-			_M_ptr = __r._M_ptr;
-			_M_refcount = __r._M_refcount; // __shared_count::op= doesn't throw
-			return *this;
-		}
+			template<typename OType>
+			shared_ptr_base& operator =(const shared_ptr_base<OType, LockPol>& __r) noexcept
+			{
+				_M_refcount = __r._M_refcount; // __shared_count::op= doesn't throw
+				_M_ptr = __r._M_ptr;
+				return *this;
+			}
 
-		shared_ptr_base& operator =(shared_ptr_base&& __r) noexcept
-		{
-			shared_ptr_base(simstd::move(__r)).swap(*this);
-			return *this;
-		}
+			shared_ptr_base& operator =(shared_ptr_base&& __r) noexcept
+			{
+				shared_ptr_base(simstd::move(__r)).swap(*this);
+				return *this;
+			}
 
 		template<class OType>
 		shared_ptr_base& operator =(shared_ptr_base<OType, LockPol>&& __r) noexcept
@@ -147,20 +149,20 @@ namespace simstd {
 			return *this;
 		}
 
-		template<typename OType, typename _Del>
-		shared_ptr_base& operator =(simstd::unique_ptr<OType, _Del>&& __r)
+		template<typename OType, typename Deleter>
+		shared_ptr_base& operator =(simstd::unique_ptr<OType, Deleter>&& __r)
 		{
 			shared_ptr_base(simstd::move(__r)).swap(*this);
 			return *this;
 		}
 
-		void
-		reset() noexcept
-		{	shared_ptr_base().swap(*this);}
+		void reset() noexcept
+		{
+			shared_ptr_base().swap(*this);
+		}
 
 		template<typename OType>
-		void
-		reset(OType* __p) // OType must be complete.
+		void reset(OType* __p) // OType must be complete.
 		{
 			// Catch self-reset errors.
 			_GLIBCXX_DEBUG_ASSERT(__p == 0 || __p != _M_ptr);
@@ -288,8 +290,8 @@ namespace simstd {
 			template<typename OType, LockPolicy OLockPol> friend class shared_ptr_base;
 			template<typename OType, LockPolicy OLockPol> friend class weak_ptr_base;
 
-			template<typename _Del, typename OType, LockPolicy OLockPol>
-			friend _Del* get_deleter(const shared_ptr_base<OType, OLockPol>&) noexcept;
+			template<typename Deleter, typename OType, LockPolicy OLockPol>
+			friend Deleter* get_deleter(const shared_ptr_base<OType, OLockPol>&) noexcept;
 
 			shared_count<LockPol> _M_refcount;
 			element_type*         _M_ptr;
@@ -453,6 +455,18 @@ namespace simstd {
 
 
 	}
+
+	template<typename Deleter, typename Type, pvt::LockPolicy LockPol>
+	Deleter* get_deleter(const pvt::shared_ptr_base<Type, LockPol>& sptr) noexcept
+	{
+#ifdef __GXX_RTTI
+		return static_cast<Deleter*>(sptr.get_deleter(typeid(Deleter)));
+#else
+		UNUSED(sptr);
+		return 0;
+#endif
+	}
+
 }
 
 #endif

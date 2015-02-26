@@ -23,6 +23,9 @@ namespace tst {
 
 		int val() const;
 
+		int j;
+		int i;
+
 	private:
 		int m_a;
 	};

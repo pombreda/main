@@ -43,7 +43,7 @@ namespace simstd {
 			{
 #ifdef __GXX_RTTI
 				if (ti == typeid(make_shared_tag))
-					return const_cast<typename std::remove_cv<Type>::type*>(get_ptr());
+					return const_cast<typename simstd::remove_cv<Type>::type*>(get_ptr());
 #endif
 				return nullptr;
 			}
