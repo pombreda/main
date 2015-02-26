@@ -15,7 +15,7 @@ namespace tst {
 	ssize_t _vector(aPrintFunc printFunc);
 }
 
-#include <basis/tst/A.hpp>
-#include <basis/tst/BaseDerived.hpp>
+#include <basis/~tst/A.hpp>
+#include <basis/~tst/BaseDerived.hpp>
 
 #endif
