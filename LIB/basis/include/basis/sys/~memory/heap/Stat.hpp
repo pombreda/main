@@ -112,7 +112,7 @@ namespace memory {
 		template<typename HeapType, typename StatType, typename TagType>
 		typename DecoratorStat<HeapType, StatType, TagType>::stat_type& DecoratorStat<HeapType, StatType, TagType>::get_stat_impl()
 		{
-			TraceFunc();
+//			TraceFunc();
 			static stat_type stat;
 			return stat;
 		}

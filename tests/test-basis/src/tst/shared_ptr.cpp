@@ -12,6 +12,12 @@ namespace tst
 		delete p;
 	}
 
+	void A_deleter2(A* p)
+	{
+		TestFuncPlaceFormat("A_deleter called\n");
+		delete p;
+	}
+
 	void Base_deleter(Base* p)
 	{
 		TestFuncPlaceFormat("Base_deleter called\n");
@@ -38,6 +44,20 @@ namespace tst
 ssize_t tst::_shared_ptr()
 {
 	TestFuncPlaceFormat("begin\n");
+
+	{
+		auto sdAuto2 = simstd::allocate_shared<Derived>(simstd::allocator<Derived>());
+		TestFuncPlaceFormat("sizeof(sdAuto2):  %Iu\n", sizeof(sdAuto2));
+		TestFuncPlaceFormat("get():            %p\n",  sdAuto2.get());
+		sdAuto2.reset();
+	}
+
+	{
+		auto sdAuto1 = simstd::make_shared<Derived>();
+		TestFuncPlaceFormat("sizeof(sdAuto1):  %Iu\n", sizeof(sdAuto1));
+		TestFuncPlaceFormat("get():            %p\n",  sdAuto1.get());
+		sdAuto1.reset();
+	}
 
 	{
 		simstd::shared_ptr<int> aptr1, aptr2;
@@ -117,20 +137,6 @@ ssize_t tst::_shared_ptr()
 		TestFuncPlaceFormat("sizeof(sdDeleter):  %Iu\n", sizeof(sdDeleter));
 		TestFuncPlaceFormat("get():              %p\n",  sdDeleter.get());
 		sdDeleter.reset();
-	}
-
-	{
-		auto sdAuto1 = simstd::make_shared<Derived>();
-		TestFuncPlaceFormat("sizeof(sdAuto1):  %Iu\n", sizeof(sdAuto1));
-		TestFuncPlaceFormat("get():            %p\n",  sdAuto1.get());
-		sdAuto1.reset();
-	}
-
-	{
-		auto sdAuto2 = simstd::allocate_shared<Derived>(simstd::allocator<Derived>());
-		TestFuncPlaceFormat("sizeof(sdAuto2):  %Iu\n", sizeof(sdAuto2));
-		TestFuncPlaceFormat("get():            %p\n",  sdAuto2.get());
-		sdAuto2.reset();
 	}
 
 	{

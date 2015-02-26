@@ -8,14 +8,12 @@ namespace simstd {
 		template<typename Type, typename Allocator, LockPolicy LockPol>
 		class counted_ptr_inplace final : public counted_base<LockPol>
 		{
-			class Impl: private simstd::pvt::ebo_helper<0, Allocator>
+			struct Impl: private simstd::pvt::ebo_helper<0, Allocator>
 			{
 				using base_type = simstd::pvt::ebo_helper<0, Allocator>;
-			public:
 				explicit Impl(Allocator allocator) noexcept: base_type(allocator) {}
 				Allocator& get_allocator() noexcept {return base_type::get(*this);}
-				Type _M_storage;
-//				__gnu_cxx::__aligned_buffer<Type> _M_storage;
+				aligned_buffer<Type> storage;
 			};
 
 		public:
@@ -49,8 +47,7 @@ namespace simstd {
 			}
 
 		private:
-//			Type* get_ptr() noexcept {return impl._M_storage._M_ptr();}
-			Type* get_ptr() noexcept {return &impl._M_storage;}
+			Type* get_ptr() noexcept {return impl.storage.ptr();}
 
 			Impl impl;
 		};

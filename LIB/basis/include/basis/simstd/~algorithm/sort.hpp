@@ -104,28 +104,28 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt, typename Compare>
-	OutputIt merge(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
+	OutputIt merge(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
 	{
-		for (; first1 != last1; ++d_first) {
+		for (; first != last; ++d_first) {
 			if (first2 == last2) {
-				return simstd::copy(first1, last1, d_first);
+				return simstd::copy(first, last, d_first);
 			}
-			if (comp(*first2, *first1)) {
+			if (comp(*first2, *first)) {
 				*d_first = *first2;
 				++first2;
 			} else {
-				*d_first = *first1;
-				++first1;
+				*d_first = *first;
+				++first;
 			}
 		}
 		return simstd::copy(first2, last2, d_first);
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt>
-	OutputIt merge(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt result)
+	OutputIt merge(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt result)
 	{
 		typedef simstd::less<typename simstd::iterator_traits<InputIt1>::value_type> less;
-		return simstd::merge<InputIt1, InputIt2, OutputIt, less>(first1, last1, first2, last2, result, less());
+		return simstd::merge<InputIt1, InputIt2, OutputIt, less>(first, last, first2, last2, result, less());
 	}
 
 	namespace pvt {

@@ -183,6 +183,64 @@ namespace simstd {
 
 }
 
+namespace simstd
+{
+	namespace pvt
+	{
+		template<typename Type>
+		struct alignment_of: public integral_constant<size_t, __alignof__(Type)>
+		{
+		};
+
+//		template<size_t Length>
+//		struct aligned_storage_msa
+//		{
+//			union type
+//			{
+//				unsigned char data[Length];
+//				struct __attribute__((__aligned__)) {} __align;
+//			};
+//		};
+
+//		template<size_t Length, size_t Align = __alignof__(typename aligned_storage_msa<Length>::type)>
+		template<size_t Length, size_t Align>
+		struct aligned_storage
+		{
+			union type
+			{
+				unsigned char data[Length];
+				struct __attribute__((__aligned__((Align)))) {} align;
+			};
+		};
+
+		template<typename Type>
+		struct aligned_buffer: aligned_storage<sizeof(Type), alignment_of<Type>::value>
+		{
+			void* addr() noexcept
+			{
+				return static_cast<void*>(&storage);
+			}
+
+			const void* addr() const noexcept
+			{
+				return static_cast<const void*>(&storage);
+			}
+
+			Type* ptr() noexcept
+			{
+				return static_cast<Type*>(addr());
+			}
+
+			const Type* ptr() const noexcept
+			{
+				return static_cast<const Type*>(addr());
+			}
+
+			typename aligned_storage<sizeof(Type), alignment_of<Type>::value>::type storage;
+		};
+	}
+}
+
 //#ifdef __x86_64__
 //	typedef long long unsigned int size_t;
 //	typedef long long int ssize_t;

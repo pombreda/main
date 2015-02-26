@@ -51,6 +51,7 @@ namespace simstd
 			shared_count(make_shared_tag, Type*, const Allocator& allocator, Args&&... args)
 				: counter()
 			{
+				TraceFunc();
 				using counter_type = counted_ptr_inplace<Type, Allocator, LockPol>;
 				using allocator_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counter_type>;
 

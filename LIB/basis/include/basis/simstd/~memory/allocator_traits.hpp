@@ -90,6 +90,7 @@ namespace simstd {
 	template<class T, class... Args>
 	void allocator_traits<Allocator>::construct(Allocator& a, T* ptr, Args&&... args)
 	{
+		TraceFunc();
 		a.construct(ptr, simstd::forward<Args>(args)...);
 	}
 

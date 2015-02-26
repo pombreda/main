@@ -32,7 +32,7 @@ namespace simstd {
 		template<typename OType, typename Deleter, typename Allocator>
 		shared_ptr(OType* ptr, Deleter deleter, Allocator allocator): base_type(ptr, deleter, simstd::move(allocator)) {}
 
-		constexpr shared_ptr(nullptr_t) noexcept;
+		constexpr shared_ptr(nullptr_t) noexcept {}
 		template<typename Deleter>
 		shared_ptr(nullptr_t ptr, Deleter deleter): base_type(ptr, deleter) {}
 		template<typename Deleter, typename Allocator>
@@ -88,6 +88,7 @@ namespace simstd {
 		shared_ptr(pvt::make_shared_tag tag, const Allocator& allocator, Args&&... args)
 			: base_type(tag, allocator, simstd::forward<Args>(args)...)
 		{
+			TraceFunc();
 		}
 
 		shared_ptr(const weak_ptr<Type>& other, simstd::nothrow_t tag): base_type(other, tag) {}
@@ -96,11 +97,6 @@ namespace simstd {
 		friend shared_ptr<OType> allocate_shared(const Allocator& allocator, Args&&... args);
 
 		friend class weak_ptr<Type>;
-	};
-
-	template<typename Type>
-	constexpr shared_ptr<Type>::shared_ptr(nullptr_t) noexcept
-	{
 	};
 
 	template<typename Type>
@@ -317,12 +313,14 @@ namespace simstd {
 	template<typename Type, typename Allocator, typename... Args>
 	shared_ptr<Type> allocate_shared(const Allocator& allocator, Args&&... args)
 	{
+		TraceFunc();
 		return shared_ptr<Type>(pvt::make_shared_tag(), allocator, simstd::forward<Args>(args)...);
 	}
 
 	template<typename Type, typename... Args>
 	shared_ptr<Type> make_shared(Args&&... args)
 	{
+		TraceFunc();
 		return allocate_shared<Type>(allocator<remove_const_t<Type>>(), simstd::forward<Args>(args)...);
 	}
 

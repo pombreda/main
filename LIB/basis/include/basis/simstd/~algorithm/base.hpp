@@ -11,19 +11,19 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2>
-	bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2)
+	bool equal(InputIt1 first, InputIt1 last, InputIt2 first2)
 	{
-		for (; first1 != last1; ++first1, ++first2)
-			if (!(*first1 == *first2))
+		for (; first != last; ++first, ++first2)
+			if (!(*first == *first2))
 				return false;
 		return true;
 	}
 
 	template<typename InputIt1, typename InputIt2, typename Compare>
-	bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2, Compare comp)
+	bool equal(InputIt1 first, InputIt1 last, InputIt2 first2, Compare comp)
 	{
-		for (; first1 != last1; ++first1, ++first2)
-			if (!comp(*first1, *first2))
+		for (; first != last; ++first, ++first2)
+			if (!comp(*first, *first2))
 				return false;
 		return true;
 	}
@@ -111,27 +111,27 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2, typename Compare>
-	bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, Compare comp)
+	bool lexicographical_compare(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, Compare comp)
 	{
-		for (; (first1 != last1) && (first2 != last2); ++first1, ++first2) {
-			if (comp(*first1, *first2))
+		for (; (first != last) && (first2 != last2); ++first, ++first2) {
+			if (comp(*first, *first2))
 				return true;
-			if (comp(*first2, *first1))
+			if (comp(*first2, *first))
 				return false;
 		}
-		return (first1 == last1) && (first2 != last2);
+		return (first == last) && (first2 != last2);
 	}
 
 	template<typename InputIt1, typename InputIt2>
-	bool lexicographical_compare(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2)
+	bool lexicographical_compare(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2)
 	{
-		for (; (first1 != last1) && (first2 != last2); ++first1, ++first2) {
-			if (*first1 < *first2)
+		for (; (first != last) && (first2 != last2); ++first, ++first2) {
+			if (*first < *first2)
 				return true;
-			if (*first2 < *first1)
+			if (*first2 < *first)
 				return false;
 		}
-		return (first1 == last1) && (first2 != last2);
+		return (first == last) && (first2 != last2);
 	}
 
 	template<typename BidirIt>

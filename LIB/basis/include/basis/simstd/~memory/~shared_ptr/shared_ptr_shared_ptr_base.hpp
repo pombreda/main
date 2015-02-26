@@ -226,14 +226,15 @@ namespace simstd {
 #ifdef __GXX_RTTI
 	protected:
 		// This constructor is non-standard, it is used by allocate_shared.
-		template<typename _Alloc, typename... _Args>
-		shared_ptr_base(make_shared_tag __tag, const _Alloc& __a, _Args&&... __args)
-			: _M_refcount(__tag, (Type*)0, __a, simstd::forward<_Args>(__args)...)
+		template<typename Allocator, typename... Args>
+		shared_ptr_base(make_shared_tag tag, const Allocator& allocator, Args&&... args)
+			: _M_refcount(tag, (Type*)nullptr, allocator, simstd::forward<Args>(args)...)
 			, _M_ptr()
 		{
+			TraceFunc();
 			// _M_ptr needs to point to the newly constructed object.
 			// This relies on _Sp_counted_ptr_inplace::_M_get_deleter.
-			void* __p = _M_refcount.get_deleter(typeid(__tag));
+			void* __p = _M_refcount.get_deleter(typeid(tag));
 			_M_ptr = static_cast<Type*>(__p);
 			enable_shared_from_this_helper(_M_refcount, _M_ptr, _M_ptr);
 		}
@@ -291,7 +292,7 @@ namespace simstd {
 			template<typename OType, LockPolicy OLockPol> friend class weak_ptr_base;
 
 			template<typename Deleter, typename OType, LockPolicy OLockPol>
-			friend Deleter* get_deleter(const shared_ptr_base<OType, OLockPol>&) noexcept;
+			friend Deleter* simstd::get_deleter(const pvt::shared_ptr_base<OType, OLockPol>& sptr) noexcept;
 
 			shared_count<LockPol> _M_refcount;
 			element_type*         _M_ptr;
@@ -452,7 +453,6 @@ namespace simstd {
 
 			mutable weak_ptr_base<Type, LockPol> _M_weak_this;
 		};
-
 
 	}
 
