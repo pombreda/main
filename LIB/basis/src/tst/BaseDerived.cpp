@@ -1,4 +1,4 @@
-#include <basis/tst/BaseDerived.hpp>
+#include <basis/tst.hpp>
 #include <basis/sys/logger.hpp>
 
 namespace tst

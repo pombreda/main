@@ -3,7 +3,7 @@
 #include <basis/simstd/algorithm>
 #include <basis/simstd/iterator>
 #include <basis/simstd/vector>
-#include <basis/tst/A.hpp>
+#include <basis/tst.hpp>
 
 #include <ctime>
 #include <cassert>

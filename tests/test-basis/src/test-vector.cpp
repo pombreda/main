@@ -6,7 +6,7 @@
 #include <basis/simstd/memory>
 #include <basis/simstd/vector>
 
-#include <basis/tst/A.hpp>
+#include <basis/tst.hpp>
 
 namespace {
 	typedef memory::heap::DecoratorStat<memory::heap::Default, memory::heap::StatCount, tst::A> heap_type;

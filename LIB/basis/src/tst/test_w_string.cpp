@@ -1,5 +1,6 @@
 ﻿#include <basis/sys/cstr.hpp>
 #include <basis/simstd/string>
+#include <basis/tst.hpp>
 
 //#include <cassert>
 //#include <string>

@@ -7,7 +7,7 @@
 #include <basis/simstd/algorithm>
 #include <basis/simstd/memory>
 
-#include <basis/tst/A.hpp>
+#include <basis/tst.hpp>
 
 #include <list>
 

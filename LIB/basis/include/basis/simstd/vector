@@ -10,9 +10,4 @@
 #include <basis/simstd/~vector/vector_base.hpp>
 #include <basis/simstd/~vector/vector_interface.hpp>
 
-namespace tst {
-	ssize_t _vector(aPrintFunc printFunc);
-}
-
-
 #endif

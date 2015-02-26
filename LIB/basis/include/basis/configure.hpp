@@ -25,7 +25,6 @@
 #include <basis/~configure/simstd/algorithm.hpp>
 #include <basis/~configure/simstd/rel_ops.hpp>
 #include <basis/~configure/simstd/ebo.hpp>
-#include <basis/~configure/obligatory/array.hpp>
 #include <basis/~configure/obligatory/constants.hpp>
 #include <basis/~configure/obligatory/make_ll.hpp>
 #include <basis/~configure/obligatory/safe.hpp>

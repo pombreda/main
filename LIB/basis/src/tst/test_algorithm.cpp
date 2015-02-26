@@ -1,6 +1,5 @@
 ﻿#include <basis/simstd/algorithm>
-
-#include <cassert>
+#include <basis/tst.hpp>
 
 namespace {
 	template <typename ForwardIt, typename PrintFunc>

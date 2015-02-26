@@ -3,7 +3,7 @@
 #include <basis/sys/logger.hpp>
 #include <basis/simstd/memory>
 
-#include <basis/tst/A.hpp>
+#include <basis/tst.hpp>
 
 template<typename Type>
 struct Dltr

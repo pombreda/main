@@ -193,11 +193,6 @@ namespace simstd {
 //	typedef int ptrdiff_t;
 //#endif
 
-namespace tst {
-	typedef int (*aPrintFunc)(const char *, ...);
-	typedef int (*wPrintFunc)(const wchar_t *, ...);
-}
-
 ///=============================================================================== Special placement
 inline void* operator new(size_t, void* p, const simstd::nothrow_t&) throw()
 {

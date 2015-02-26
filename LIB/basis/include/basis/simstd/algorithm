@@ -13,8 +13,4 @@
 #include <basis/simstd/~algorithm/heap.hpp>
 #include <basis/simstd/~algorithm/sort.hpp>
 
-namespace tst {
-	ssize_t _algorithm(wPrintFunc);
-}
-
 #endif

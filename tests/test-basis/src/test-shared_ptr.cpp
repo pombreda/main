@@ -2,7 +2,7 @@
 
 #include <basis/sys/logger.hpp>
 #include <basis/simstd/memory>
-#include <basis/tst/BaseDerived.hpp>
+#include <basis/tst.hpp>
 
 #include <memory>
 
