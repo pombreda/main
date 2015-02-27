@@ -134,7 +134,7 @@ namespace simstd {
 
 		void push_back(value_type ch);
 
-		void pop_back();
+		void pop_back() noexcept;
 
 		this_type & append(size_type count, value_type ch);
 		this_type & append(const this_type & str);
@@ -684,13 +684,13 @@ namespace simstd {
 	template<typename C, typename T, typename A>
 	void basic_string<C, T, A>::push_back(value_type ch)
 	{
-		// TODO
+		append(1, ch);
 	}
 
 	template<typename C, typename T, typename A>
-	void basic_string<C, T, A>::pop_back()
+	void basic_string<C, T, A>::pop_back() noexcept
 	{
-		// TODO
+		erase(size()-1, 1);
 	}
 
 	template<typename C, typename T, typename A>

@@ -142,32 +142,30 @@ namespace simstd {
 				return *this;
 			}
 
-		template<class OType>
-		shared_ptr_base& operator =(shared_ptr_base<OType, LockPol>&& __r) noexcept
-		{
-			shared_ptr_base(simstd::move(__r)).swap(*this);
-			return *this;
-		}
+			template<class OType>
+			shared_ptr_base& operator =(shared_ptr_base<OType, LockPol>&& __r) noexcept
+			{
+				shared_ptr_base(simstd::move(__r)).swap(*this);
+				return *this;
+			}
 
-		template<typename OType, typename Deleter>
-		shared_ptr_base& operator =(simstd::unique_ptr<OType, Deleter>&& __r)
-		{
-			shared_ptr_base(simstd::move(__r)).swap(*this);
-			return *this;
-		}
+			template<typename OType, typename Deleter>
+			shared_ptr_base& operator =(simstd::unique_ptr<OType, Deleter>&& __r)
+			{
+				shared_ptr_base(simstd::move(__r)).swap(*this);
+				return *this;
+			}
 
-		void reset() noexcept
-		{
-			shared_ptr_base().swap(*this);
-		}
+			void reset() noexcept
+			{
+				shared_ptr_base().swap(*this);
+			}
 
-		template<typename OType>
-		void reset(OType* __p) // OType must be complete.
-		{
-			// Catch self-reset errors.
-			_GLIBCXX_DEBUG_ASSERT(__p == 0 || __p != _M_ptr);
-			shared_ptr_base(__p).swap(*this);
-		}
+			template<typename OType>
+			void reset(OType* ptr)
+			{
+				shared_ptr_base(ptr).swap(*this);
+			}
 
 		template<typename OType, typename _Deleter>
 		void
