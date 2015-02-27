@@ -19,35 +19,42 @@ struct Dltr
 		TestFuncPlaceFormat("[deleter called]\n");
 		delete ptr;
 	}
+
+	int i = int();
 };
 
 ssize_t tst::_unique_ptr()
 {
-	TestFuncPlaceFormat("\n");
+	TestFuncPlaceFormat("BEGIN\n");
 
-	auto deleter = [](int* ptr){
+	auto deleter = [](Base* ptr){
 		TestFuncPlaceFormat("[deleter called]\n");
 		delete ptr;
 	};
 
-	simstd::unique_ptr<int, decltype(deleter)> uniq1(new int, deleter);
+	simstd::unique_ptr<Derived, decltype(deleter)> uniq1(new Derived, deleter);
+	   std::unique_ptr<Derived, decltype(deleter)> uniq1s(new Derived, deleter);
 	TestFuncPlaceFormat("sizeof(uniq1): %d\n", sizeof(uniq1));
+	TestFuncPlaceFormat("sizeof(uniq1s): %d\n", sizeof(uniq1s));
 
-	simstd::unique_ptr<int, Dltr<int>> uniq2(new int, Dltr<int>());
+	simstd::unique_ptr<Base, Dltr<Base>> uniq2(new Base, Dltr<Base>());
+	   std::unique_ptr<Base, Dltr<Base>> uniq2s(new Base, Dltr<Base>());
 	TestFuncPlaceFormat("sizeof(uniq2): %d\n", sizeof(uniq2));
+	TestFuncPlaceFormat("sizeof(uniq2s): %d\n", sizeof(uniq2s));
 
 	auto uniq3(simstd::make_unique<tst::A>(3));
-	TestFuncPlaceFormat("sizeof(uniq3): %d\n", sizeof(uniq3));
+	TestFuncPlaceFormat("sizeof(uniq3): %d, get: %p\n", sizeof(uniq3), uniq3.get());
 
 	auto uniq4(simstd::make_unique<tst::A>(4));
-	TestFuncPlaceFormat("sizeof(uniq4): %d\n", sizeof(uniq4));
+	TestFuncPlaceFormat("sizeof(uniq4): %d, get: %p\n", sizeof(uniq4), uniq4.get());
 
 	using simstd::swap;
 	swap(uniq3, uniq4);
 
-	TestFuncPlaceFormat("uniq1 %s\n", uniq1 ? L"not empty" : L"empty");
+	TestFuncPlaceFormat("uniq1 %s\n", uniq1 ? "not empty" : "empty");
 	uniq1.reset();
-	TestFuncPlaceFormat("uniq %s\n", uniq1 ? L"not empty" : L"empty");
+	TestFuncPlaceFormat("uniq1 %s\n", uniq1 ? "not empty" : "empty");
 
+	TestFuncPlaceFormat("END\n");
 	return 0;
 }

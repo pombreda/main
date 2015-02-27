@@ -1,0 +1,249 @@
+#ifndef BASIS_SIMSTD_TUPLE_TUPLE_HPP_
+#define BASIS_SIMSTD_TUPLE_TUPLE_HPP_
+
+namespace simstd
+{
+	struct allocator_arg_t
+	{
+	};
+
+	template<typename ... Elements>
+	class tuple;
+
+	template<>
+	class tuple<>
+	{
+	public:
+		void swap(tuple&) noexcept
+		{
+		}
+	};
+
+	template<typename Type1, typename Type2>
+	class tuple<Type1, Type2> :
+	    public _Tuple_impl<0, Type1, Type2>
+	{
+		using base_type = _Tuple_impl<0, Type1, Type2>;
+
+	public:
+		constexpr tuple() :
+			base_type()
+		{
+		}
+
+		explicit constexpr tuple(const Type1& a, const Type2& b) :
+			base_type(a, b)
+		{
+		}
+
+		template<typename OType1, typename OType2, typename = typename enable_if<__and_ <is_convertible<OType1, Type1>, is_convertible<OType2, Type2>>::value>::type>
+		explicit
+		constexpr tuple(OType1&& a, OType2&& b) :
+			base_type(simstd::forward<OType1>(a), simstd::forward<OType2>(b))
+		{
+		}
+
+		constexpr tuple(const tuple&) = default;
+
+		constexpr tuple(tuple&&) = default;
+
+		template<typename OType1, typename OType2, typename = typename enable_if<__and_ <is_convertible<const OType1&, Type1>, is_convertible<const OType2&, Type2>>::value>::type>
+		constexpr tuple(const tuple<OType1, OType2>& other) :
+			base_type(static_cast<const _Tuple_impl<0, OType1, OType2>&>(other))
+		{
+		}
+
+		template<typename OType1, typename OType2, typename = typename enable_if<__and_ <is_convertible<OType1, Type1>, is_convertible<OType2, Type2>>::value>::type>
+		constexpr tuple(tuple<OType1, OType2> && other) :
+			base_type(static_cast<_Tuple_impl<0, OType1, OType2> &&>(other))
+		{
+		}
+
+		template<typename OType1, typename OType2, typename = typename enable_if<__and_ <is_convertible<const OType1&, Type1>, is_convertible<const OType2&, Type2>>::value>::type>
+		constexpr tuple(const pair<OType1, OType2>& other) :
+			base_type(other.first, other.second)
+		{
+		}
+
+		template<typename OType1, typename OType2, typename = typename enable_if<__and_ <is_convertible<OType1, Type1>, is_convertible<OType2, Type2>>::value>::type>
+		constexpr tuple(pair<OType1, OType2> && other) :
+			base_type(simstd::forward<OType1>(other.first), simstd::forward<OType2>(other.second))
+		{
+		}
+
+		template<typename Allocator>
+		tuple(allocator_arg_t tag, const Allocator& allocator) :
+			base_type(tag, allocator)
+		{
+		}
+
+		template<typename Allocator>
+		tuple(allocator_arg_t tag, const Allocator& allocator, const Type1& a, const Type2& b) :
+			base_type(tag, allocator, a, b)
+		{
+		}
+
+		template<typename Allocator, typename OType1, typename OType2>
+		tuple(allocator_arg_t tag, const Allocator& allocator, OType1&& a, OType2&& b) :
+			base_type(tag, allocator, simstd::forward<OType1>(a), simstd::forward<OType2>(b))
+		{
+		}
+
+		template<typename Allocator>
+		tuple(allocator_arg_t tag, const Allocator& allocator, const tuple& other) :
+			base_type(tag, allocator, static_cast<const base_type&>(other))
+		{
+		}
+
+		template<typename Allocator>
+		tuple(allocator_arg_t tag, const Allocator& allocator, tuple&& other) :
+			base_type(tag, allocator, static_cast<base_type&&>(other))
+		{
+		}
+
+		template<typename Allocator, typename OType1, typename OType2>
+		tuple(allocator_arg_t tag, const Allocator& allocator, const tuple<OType1, OType2>& other) :
+			base_type(tag, allocator, static_cast<const _Tuple_impl<0, OType1, OType2>&>(other))
+		{
+		}
+
+		template<typename Allocator, typename OType1, typename OType2>
+		tuple(allocator_arg_t tag, const Allocator& allocator, tuple<OType1, OType2> && other) :
+			base_type(tag, allocator, static_cast<_Tuple_impl<0, OType1, OType2> &&>(other))
+		{
+		}
+
+		template<typename Allocator, typename OType1, typename OType2>
+		tuple(allocator_arg_t tag, const Allocator& allocator, const pair<OType1, OType2>& other) :
+			base_type(tag, allocator, other.first, other.second)
+		{
+		}
+
+		template<typename Allocator, typename OType1, typename OType2>
+		tuple(allocator_arg_t tag, const Allocator& allocator, pair<OType1, OType2> && other) :
+			base_type(tag, allocator, simstd::forward<OType1>(other.first), simstd::forward<OType2>(other.second))
+		{
+		}
+
+		tuple& operator =(const tuple& other)
+		{
+			static_cast<base_type&>(*this) = other;
+			return *this;
+		}
+
+		tuple& operator =(tuple&& other) noexcept(is_nothrow_move_assignable<base_type>::value)
+		{
+			static_cast<base_type&>(*this) = simstd::move(other);
+			return *this;
+		}
+
+		template<typename OType1, typename OType2>
+		tuple& operator =(const tuple<OType1, OType2>& other)
+		{
+			static_cast<base_type&>(*this) = other;
+			return *this;
+		}
+
+		template<typename OType1, typename OType2>
+		tuple& operator =(tuple<OType1, OType2> && other)
+		{
+			static_cast<base_type&>(*this) = simstd::move(other);
+			return *this;
+		}
+
+		template<typename OType1, typename OType2>
+		tuple& operator =(const pair<OType1, OType2>& other)
+		{
+			this->_M_head(*this) = other.first;
+			this->_M_tail(*this)._M_head(*this) = other.second;
+			return *this;
+		}
+
+		template<typename OType1, typename OType2>
+		tuple& operator =(pair<OType1, OType2>&& other)
+		{
+			this->_M_head(*this) = simstd::forward<OType1>(other.first);
+			this->_M_tail(*this)._M_head(*this) = simstd::forward<OType2>(other.second);
+			return *this;
+		}
+
+		void swap(tuple& other) noexcept(noexcept(other._M_swap(other)))
+		{
+			base_type::_M_swap(other);
+		}
+	};
+
+	template<size_t Index, typename Type>
+	struct tuple_element;
+
+	/**
+	 * Recursive case for tuple_element: strip off the first element in
+	 * the tuple and retrieve the (i-1)th element of the remaining tuple.
+	 */
+	template<size_t Index, typename Head, typename... Tail>
+	struct tuple_element<Index, tuple<Head, Tail...>> :
+	    tuple_element<Index - 1, tuple<Tail...>>
+	{
+	};
+
+	/**
+	 * Basis case for tuple_element: The first element is the one we're seeking.
+	 */
+	template<typename Head, typename... Tail>
+	struct tuple_element<0, tuple<Head, Tail...>>
+	{
+		using type = Head;
+	};
+
+	template<size_t Index, typename Type>
+	struct tuple_element<Index, const Type>
+	{
+		using type = typename add_const<typename tuple_element<Index, Type>::type>::type;
+	};
+
+	template<size_t Index, typename Type>
+	struct tuple_element<Index, volatile Type>
+	{
+		using type = typename add_volatile<typename tuple_element<Index, Type>::type>::type;
+	};
+
+	template<size_t Index, typename Type>
+	struct tuple_element<Index, const volatile Type>
+	{
+		using type = typename add_cv<typename tuple_element<Index, Type>::type>::type;
+	};
+
+	template<size_t Index, typename Type>
+	using tuple_element_t = typename tuple_element<Index, Type>::type;
+
+	template<typename Type>
+	struct tuple_size;
+
+	template<typename Type>
+	struct tuple_size<const Type> :
+	    public integral_constant<size_t, tuple_size<Type>::value>
+	{
+	};
+
+	template<typename Type>
+	struct tuple_size<volatile Type> :
+		public integral_constant<size_t, tuple_size<Type>::value>
+	{
+	};
+
+	template<typename Type>
+	struct tuple_size<const volatile Type> :
+		public integral_constant<size_t, tuple_size<Type>::value>
+	{
+	};
+
+	template<typename... Elements>
+	struct tuple_size<tuple<Elements...>> :
+		public integral_constant<size_t, sizeof...(Elements)>
+	{
+	};
+
+
+}
+
+#endif

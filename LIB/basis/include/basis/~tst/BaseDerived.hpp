@@ -5,7 +5,7 @@ namespace tst {
 
 	class Base {
 	public:
-		~Base();
+		virtual ~Base();
 		Base();
 	};
 

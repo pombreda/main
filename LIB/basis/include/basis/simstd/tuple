@@ -1,0 +1,7 @@
+#ifndef BASIS_SIMSTD_TUPLE_
+#define BASIS_SIMSTD_TUPLE_
+
+#include <basis/configure.hpp>
+#include <basis/simstd/~tuple/tuple.hpp>
+
+#endif

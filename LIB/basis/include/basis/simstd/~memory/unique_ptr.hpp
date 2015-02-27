@@ -68,6 +68,7 @@ namespace simstd {
 	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>::~unique_ptr() noexcept
 	{
+		TraceObj();
 		if (get() != pointer())
 			get_deleter()(get());
 		m_ptr = pointer();
@@ -92,16 +93,18 @@ namespace simstd {
 		: helper_type(deleter_type())
 		, m_ptr(ptr)
 	{
+		TraceObj();
 		static_assert(!simstd::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
 	}
 
 	template<typename Type, typename Deleter>
-//		template<typename OType, typename ODeleter, typename = defstd::_Require<defstd::is_convertible<typename unique_ptr<OType, ODeleter>::pointer, pointer>,defstd::__not_<defstd::is_array<OType>>, typename defstd::conditional<defstd::is_reference<Deleter>::value, defstd::is_same<ODeleter, Deleter>, defstd::is_convertible<ODeleter, Deleter>>::type>>
+//	template<typename OType, typename ODeleter, typename = defstd::_Require<defstd::is_convertible<typename unique_ptr<OType, ODeleter>::pointer, pointer>,defstd::__not_<defstd::is_array<OType>>, typename defstd::conditional<defstd::is_reference<Deleter>::value, defstd::is_same<ODeleter, Deleter>, defstd::is_convertible<ODeleter, Deleter>>::type>>
 	template<typename OType, typename ODeleter>
 	unique_ptr<Type, Deleter>::unique_ptr(unique_ptr<OType, ODeleter>&& other) noexcept
 		: helper_type(simstd::forward<ODeleter>(other.get_deleter()))
 		, m_ptr(other.release())
 	{
+		TraceObj();
 	}
 
 	template<typename Type, typename Deleter>
@@ -109,6 +112,7 @@ namespace simstd {
 		: helper_type(dltr)
 		, m_ptr(ptr)
 	{
+		TraceObj();
 	}
 
 	template<typename Type, typename Deleter>
@@ -116,6 +120,7 @@ namespace simstd {
 		: helper_type(simstd::move(dltr))
 		, m_ptr(ptr)
 	{
+		TraceObj();
 		static_assert(!simstd::is_reference<deleter_type>::value, "rvalue deleter bound to reference");
 	}
 
@@ -124,12 +129,14 @@ namespace simstd {
 		: helper_type(simstd::forward<deleter_type>(other.get_deleter()))
 		, m_ptr(other.release())
 	{
+		TraceObj();
 	}
 
 	template<typename Type, typename Deleter>
 	template<typename OType, typename ODeleter>
 	unique_ptr<Type, Deleter>& unique_ptr<Type, Deleter>::operator =(unique_ptr<OType, ODeleter> && other) noexcept
 	{
+		TraceObj();
 		reset(other.release());
 		get_deleter() = simstd::forward<ODeleter>(other.get_deleter());
 		return *this;
@@ -146,6 +153,7 @@ namespace simstd {
 	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>& unique_ptr<Type, Deleter>::operator =(unique_ptr&& other) noexcept
 	{
+		TraceObj();
 		reset(other.release());
 		get_deleter() = simstd::forward<deleter_type>(other.get_deleter());
 		return *this;
@@ -191,14 +199,17 @@ namespace simstd {
 	template<typename Type, typename Deleter>
 	typename unique_ptr<Type, Deleter>::pointer unique_ptr<Type, Deleter>::release() noexcept
 	{
-		pointer ptr = get();
-		m_ptr = pointer();
+		TraceObj();
+		using simstd::swap;
+		pointer ptr = pointer();
+		swap(m_ptr, ptr);
 		return ptr;
 	}
 
 	template<typename Type, typename Deleter>
 	void unique_ptr<Type, Deleter>::reset(pointer ptr) noexcept
 	{
+		TraceObj();
 		using simstd::swap;
 		swap(m_ptr, ptr);
 		if (ptr != pointer())
@@ -208,6 +219,7 @@ namespace simstd {
 	template<typename Type, typename Deleter>
 	void unique_ptr<Type, Deleter>::swap(unique_ptr& other) noexcept
 	{
+		TraceObj();
 		using simstd::swap;
 		swap(m_ptr, other.m_ptr);
 		swap(static_cast<helper_type&>(*this), static_cast<helper_type&>(other));
@@ -332,10 +344,10 @@ namespace simstd {
 		return rel_ops::operator >=(nullptr, b);
 	}
 
-	template<class Type, class ... Args>
+	template<typename Type, typename... Args>
 	unique_ptr<Type> make_unique(Args&&... args)
 	{
-		return simstd::move(unique_ptr<Type>(new Type(args...)));
+		return unique_ptr<Type>(new Type(simstd::forward<Args>(args)...));
 	}
 
 }
