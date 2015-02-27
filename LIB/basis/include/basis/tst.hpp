@@ -16,6 +16,7 @@ namespace tst {
 	ssize_t _shared_ptr();
 	ssize_t a_string(aPrintFunc printFunc);
 	ssize_t w_string(wPrintFunc printFunc);
+	ssize_t _unique_ptr();
 	ssize_t _vector(aPrintFunc printFunc);
 }
 

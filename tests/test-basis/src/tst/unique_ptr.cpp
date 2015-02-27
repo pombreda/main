@@ -1,9 +1,8 @@
-#include <tests.hpp>
-
-#include <basis/sys/logger.hpp>
-#include <basis/simstd/memory>
-
 #include <basis/tst.hpp>
+#include <basis/sys/console.hpp>
+
+#include <basis/simstd/memory>
+#include <memory>
 
 template<typename Type>
 struct Dltr
@@ -16,37 +15,39 @@ struct Dltr
 	}
 
 	void operator ()(Type* ptr) const noexcept
-		{
-		LogNoise(L"[deleter called]\n");
+	{
+		TestFuncPlaceFormat("[deleter called]\n");
 		delete ptr;
-		}
+	}
 };
 
-void test_unique_ptr()
+ssize_t tst::_unique_ptr()
 {
-	LogWarn(L"\n");
+	TestFuncPlaceFormat("\n");
 
 	auto deleter = [](int* ptr){
-		LogNoise(L"[deleter called]\n");
+		TestFuncPlaceFormat("[deleter called]\n");
 		delete ptr;
 	};
 
 	simstd::unique_ptr<int, decltype(deleter)> uniq1(new int, deleter);
-	LogNoise(L"sizeof(uniq1): %d\n", sizeof(uniq1));
+	TestFuncPlaceFormat("sizeof(uniq1): %d\n", sizeof(uniq1));
 
 	simstd::unique_ptr<int, Dltr<int>> uniq2(new int, Dltr<int>());
-	LogNoise(L"sizeof(uniq2): %d\n", sizeof(uniq2));
+	TestFuncPlaceFormat("sizeof(uniq2): %d\n", sizeof(uniq2));
 
 	auto uniq3(simstd::make_unique<tst::A>(3));
-	LogNoise(L"sizeof(uniq3): %d\n", sizeof(uniq3));
+	TestFuncPlaceFormat("sizeof(uniq3): %d\n", sizeof(uniq3));
 
 	auto uniq4(simstd::make_unique<tst::A>(4));
-	LogNoise(L"sizeof(uniq4): %d\n", sizeof(uniq4));
+	TestFuncPlaceFormat("sizeof(uniq4): %d\n", sizeof(uniq4));
 
 	using simstd::swap;
 	swap(uniq3, uniq4);
 
-	LogNoise(L"uniq1 %s\n", uniq1 ? L"not empty" : L"empty");
+	TestFuncPlaceFormat("uniq1 %s\n", uniq1 ? L"not empty" : L"empty");
 	uniq1.reset();
-	LogNoise(L"uniq %s\n", uniq1 ? L"not empty" : L"empty");
+	TestFuncPlaceFormat("uniq %s\n", uniq1 ? L"not empty" : L"empty");
+
+	return 0;
 }

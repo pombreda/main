@@ -23,6 +23,11 @@ namespace simstd {
 		using base_type = pvt::shared_ptr_base<Type>;
 
 	public:
+		~shared_ptr() noexcept
+		{
+			TraceObj();
+		}
+
 		constexpr shared_ptr() noexcept = default;
 
 		template<typename OType>
