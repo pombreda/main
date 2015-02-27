@@ -33,21 +33,21 @@
 namespace far3 {
 
 	struct helper_t {
-		static helper_t & inst();
+		static helper_t& inst();
 
 		~helper_t();
 
-		helper_t & init(GlobalInfo_i * gi);
+		helper_t& init(GlobalInfo_i* gi);
 
-		const GUID * get_guid() const;
+		const GUID* get_guid() const;
 
-		const PluginStartupInfo & psi() const;
+		const PluginStartupInfo& psi() const;
 
-		const FarStandardFunctions & fsf() const;
+		const FarStandardFunctions& fsf() const;
 
-		GlobalInfo_i * get_global_info() const;
+		GlobalInfo_i* get_global_info() const;
 
-		Plugin_i * get_plugin() const;
+		Plugin_i* get_plugin() const;
 
 	private:
 		helper_t();
@@ -60,12 +60,12 @@ namespace far3 {
 		return helper_t::inst().get_guid();
 	}
 
-	inline const PluginStartupInfo & psi()
+	inline const PluginStartupInfo& psi()
 	{
 		return helper_t::inst().psi();
 	}
 
-	inline const FarStandardFunctions & fsf()
+	inline const FarStandardFunctions& fsf()
 	{
 		return helper_t::inst().fsf();
 	}

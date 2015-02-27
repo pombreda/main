@@ -1,8 +1,6 @@
 ﻿#ifndef BASIS_TYPE_TRAITS_IS_TYPE_HPP_
 #define BASIS_TYPE_TRAITS_IS_TYPE_HPP_
 
-#include <basis/simstd/type_traits>
-
 namespace simstd {
 
 	namespace pvt {
@@ -131,16 +129,6 @@ namespace simstd {
 		{
 		};
 
-		template<typename >
-		struct is_pointer: public false_type
-		{
-		};
-
-		template<typename Type>
-		struct is_pointer<Type*> : public true_type
-		{
-		};
-
 	}
 
 	template<typename >
@@ -194,7 +182,7 @@ namespace simstd {
 	};
 
 	template<typename Type>
-	struct is_pointer: public integral_constant<bool, pvt::is_pointer<typename remove_cv<Type>::type>::value>
+	struct is_pointer: public integral_constant<bool, is_pointer<typename remove_cv<Type>::type>::value>
 	{
 	};
 

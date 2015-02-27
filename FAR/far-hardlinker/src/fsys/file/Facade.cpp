@@ -6,20 +6,18 @@
 #include <basis/sys/logger.hpp>
 #include <basis/simstd/string>
 
-#include "../Stat.hpp"
-
 namespace {
 
 	struct Facade_impl: public fsys::file::Facade_i, private pattern::Uncopyable {
 		~Facade_impl();
 
-		Facade_impl(const ustring& path, const fsys::file::OpenOptions & options);
+		Facade_impl(const ustring& path, const fsys::file::OpenOptions& options);
 
 		bool is_valid() const;
 
 		ustring path() const override;
 
-		fsys::Stat stat() const override;
+		fsys::StatEx stat() const override;
 
 		bool size(uint64_t & size) const override;
 
@@ -78,9 +76,9 @@ namespace {
 		return m_path;
 	}
 
-	fsys::Stat Facade_impl::stat() const
+	fsys::StatEx Facade_impl::stat() const
 	{
-		return fsys::stat(m_hndl);
+		return fsys::stat_ex(m_hndl);
 	}
 
 	bool Facade_impl::size(uint64_t & size) const
@@ -187,21 +185,13 @@ namespace {
 
 }
 
-namespace fsys {
+fsys::file::OpenOptions::OpenOptions():
+	write(false)
+{
+}
 
-	namespace file {
-
-		OpenOptions::OpenOptions():
-			write(false)
-		{
-		}
-
-		///=============================================================================================================
-		Facade open(const ustring& path, const OpenOptions & options)
-		{
-			simstd::unique_ptr<Facade_impl> tmp(new Facade_impl(path, options));
-			return tmp->is_valid() ? Facade(simstd::move(tmp)) : Facade();
-		}
-
-	}
+fsys::file::Facade fsys::file::open(const ustring& path, const fsys::file::OpenOptions& options)
+{
+	auto tmp(simstd::make_unique<Facade_impl>(path, options));
+	return tmp->is_valid() ? Facade(simstd::move(tmp)) : Facade();
 }

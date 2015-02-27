@@ -1,11 +1,9 @@
-﻿#ifndef BASIS_ITERATOR_REVERSE_ITERATOR_HPP_
-#define BASIS_ITERATOR_REVERSE_ITERATOR_HPP_
-
-#include <basis/simstd/~iterator/base.hpp>
-#include <basis/simstd/utility>
+﻿#ifndef BASIS_SIMSTD_ITERATOR_REVERSE_ITERATOR_HPP_
+#define BASIS_SIMSTD_ITERATOR_REVERSE_ITERATOR_HPP_
 
 namespace simstd
 {
+
 	template<typename Pointer>
 	class reverse_iterator
 	{
@@ -101,6 +99,7 @@ namespace simstd
 	{
 		return rhs.base() - lhs.base();
 	}
+
 }
 
 #endif

@@ -1,10 +1,11 @@
 ﻿#include <basis/sys/cstr.hpp>
 #include <basis/simstd/string>
+#include <basis/tst.hpp>
 
 //#include <cassert>
 //#include <string>
 
-ssize_t simstd::Test::w_string(simstd::Test::wPrintFunc /*printFunc*/)
+ssize_t tst::w_string(tst::wPrintFunc /*printFunc*/)
 {
 /*
 	wstring str1(5, L'h');

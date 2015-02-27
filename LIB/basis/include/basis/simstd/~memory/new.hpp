@@ -3,18 +3,6 @@
 
 #include <basis/sys/memory.hpp>
 
-namespace simstd {
-	struct nothrow_t
-	{
-	};
-
-#if defined(__GNUC__) && (__GNUC__ < 3)
-	extern nothrow_t nothrow;
-#else
-	const nothrow_t nothrow;
-#endif
-}
-
 ///=========================================================================== no exception versions
 //inline void* operator new(size_t size, const simstd::nothrow_t&) throw()
 //{
@@ -97,16 +85,5 @@ inline void operator delete[](void * ptr)
 //inline void operator delete [](void*, void*) throw()
 //{
 //}
-
-///=============================================================================== Special placement
-inline void* operator new(size_t, void* p, const simstd::nothrow_t&) throw()
-{
-	return p;
-}
-
-inline void* operator new[](size_t, void* p, const simstd::nothrow_t&) throw()
-{
-	return p;
-}
 
 #endif

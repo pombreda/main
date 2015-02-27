@@ -1,22 +1,8 @@
-﻿#ifndef BASIS_IOSFWD_
-#define BASIS_IOSFWD_
+﻿#ifndef BASIS_SIMSTD_IOSFWD_
+#define BASIS_SIMSTD_IOSFWD_
 
 #include <basis/configure.hpp>
-#include <basis/simstd/~memory/allocator.hpp>
-
-namespace simstd {
-	template<typename CharType>
-	struct char_traits;
-
-	template<typename CharType, typename Traits, typename Allocator>
-	class basic_string;
-
-	typedef simstd::basic_string<char, simstd::char_traits<char>, simstd::allocator<char>>          string;
-	typedef simstd::basic_string<wchar_t, simstd::char_traits<wchar_t>, simstd::allocator<wchar_t>> wstring;
-
-}
-
-typedef simstd::basic_string<char, simstd::char_traits<char>, simstd::allocator<char>>          astring;
-typedef simstd::basic_string<wchar_t, simstd::char_traits<wchar_t>, simstd::allocator<wchar_t>> ustring;
+#include <basis/simstd/~memory/memory_fwd.hpp>
+#include <basis/simstd/~string/string_fwd.hpp>
 
 #endif

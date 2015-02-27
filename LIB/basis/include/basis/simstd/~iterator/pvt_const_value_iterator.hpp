@@ -1,7 +1,5 @@
-﻿#ifndef BASIS_ITERATOR_CONST_VALUE_ITERATOR_HPP_
-#define BASIS_ITERATOR_CONST_VALUE_ITERATOR_HPP_
-
-#include <basis/simstd/~iterator/base.hpp>
+﻿#ifndef BASIS_SIMSTD_ITERATOR_CONST_VALUE_ITERATOR_HPP_
+#define BASIS_SIMSTD_ITERATOR_CONST_VALUE_ITERATOR_HPP_
 
 namespace simstd
 {
@@ -98,23 +96,23 @@ namespace simstd
 		template<typename Type>
 		class _value_generator
 		{
-			typedef _value_generator<Type> this_type;
-			typedef Type value_type;
-			typedef size_t size_type;
-			typedef const Type* const_pointer;
-			typedef _const_value_iterator<const_pointer> const_iterator;
+			using this_type = _value_generator;
+			using value_type = Type;
+			using size_type = size_t;
+			using const_pointer = const Type*;
+			using const_iterator = _const_value_iterator<const_pointer>;
 
 		public:
-			explicit _value_generator(size_type n, const value_type & v) :
-				value(v),
-				begin_(0),
-				end_(begin_ + n)
+			explicit _value_generator(size_type n, const value_type& v)
+				: value(v)
+				, begin_(0)
+				, end_(begin_ + n)
 			{
 			}
-			_value_generator(const this_type & other) :
-				value(other.value),
-				begin_(other.begin_),
-				end_(other.end_)
+			_value_generator(const this_type& other)
+				: value(other.value)
+				, begin_(other.begin_)
+				, end_(other.end_)
 			{
 			}
 
@@ -128,9 +126,9 @@ namespace simstd
 			}
 
 		private:
-			value_type value;
-			const_pointer begin_;
-			const_pointer end_;
+			const value_type& value;
+			const_pointer     begin_;
+			const_pointer     end_;
 		};
 	}
 }

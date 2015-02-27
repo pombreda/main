@@ -1,5 +1,5 @@
-﻿#ifndef BASIS_MUTEX_
-#define BASIS_MUTEX_
+﻿#ifndef BASIS_SIMSTD_MUTEX_
+#define BASIS_SIMSTD_MUTEX_
 
 #include <basis/configure.hpp>
 #include <basis/simstd/~mutex/types.hpp>

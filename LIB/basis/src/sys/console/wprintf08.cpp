@@ -2,10 +2,6 @@
 #include <basis/sys/cstr.hpp>
 #include <basis/sys/memory.hpp>
 
-namespace {
-	const size_t DEFAULT_PRINTF_BUFFER = 16 * 1024;
-}
-
 namespace console {
 
 	size_t fvprintf(HANDLE hndl, const wchar_t* format, va_list vl)

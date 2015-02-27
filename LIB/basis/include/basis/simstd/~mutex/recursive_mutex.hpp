@@ -7,10 +7,10 @@ namespace simstd {
 
 	class recursive_mutex: private sync::Mutex
 	{
-		typedef sync::Mutex base_type;
+		using base_type = sync::Mutex;
 
 	public:
-		typedef base_type::native_handle_type native_handle_type;
+		using native_handle_type = base_type::native_handle_type;
 
 		using base_type::lock;
 
@@ -21,6 +21,6 @@ namespace simstd {
 		using base_type::native_handle;
 	};
 
-}    // namespace simstd
+}
 
 #endif

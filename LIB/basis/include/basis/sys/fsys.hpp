@@ -2,6 +2,9 @@
 #define BASIS_SYS_FSYS_HPP_
 
 #include <basis/configure.hpp>
+
+#include <basis/simstd/memory>
+
 #include <basis/sys/~fsys/attributes.hpp>
 #include <basis/sys/~fsys/direcrory.hpp>
 #include <basis/sys/~fsys/file.hpp>

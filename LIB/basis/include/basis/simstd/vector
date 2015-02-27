@@ -1,9 +1,13 @@
-﻿#ifndef BASIS_VECTOR_
-#define BASIS_VECTOR_
+﻿#ifndef BASIS_SIMSTD_VECTOR_
+#define BASIS_SIMSTD_VECTOR_
 
 #include <basis/configure.hpp>
+#include <basis/simstd/algorithm>
+#include <basis/simstd/iterator>
+#include <basis/simstd/memory>
+
+#include <basis/simstd/~vector/vector_fwd.hpp>
 #include <basis/simstd/~vector/vector_base.hpp>
-#include <basis/simstd/~vector/interface.hpp>
-#include <basis/simstd/~vector/movable_vector.hpp>
+#include <basis/simstd/~vector/vector_interface.hpp>
 
 #endif

@@ -1,18 +1,23 @@
-﻿#ifndef BASIS_MEMORY_
-#define BASIS_MEMORY_
+﻿#ifndef BASIS_SIMSTD_MEMORY_
+#define BASIS_SIMSTD_MEMORY_
 
 #include <basis/configure.hpp>
+#include <basis/simstd/functional>
+#include <basis/simstd/new>
+#include <basis/simstd/utility>
+
+#include <type_traits>
+namespace defstd = std;
+
+#include <basis/simstd/~memory/memory_fwd.hpp>
 #include <basis/simstd/~memory/allocator.hpp>
 #include <basis/simstd/~memory/AllocatorHeap.hpp>
-#include <basis/simstd/~memory/AllocatorHeapLogged.hpp>
 #include <basis/simstd/~memory/allocator_traits.hpp>
 #include <basis/simstd/~memory/base.hpp>
-#include <basis/simstd/~memory/auto_ptr.hpp>
-#include <basis/simstd/~memory/functional.hpp>
 #include <basis/simstd/~memory/movable_allocator.hpp>
 #include <basis/simstd/~memory/raw_storage_iterator.hpp>
 #include <basis/simstd/~memory/default_deleters.hpp>
-#include <basis/simstd/~memory/shared_ptr.hpp>
 #include <basis/simstd/~memory/unique_ptr.hpp>
+#include <basis/simstd/~memory/shared_ptr.hpp>
 
 #endif

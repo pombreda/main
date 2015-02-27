@@ -67,13 +67,13 @@ namespace simstd {
 		template<typename Type>
 		void movable_allocator<Type>::construct(pointer ptr, const_reference val)
 		{
-			simstd::pvt::_construct(ptr, val);
+			simstd::pvt::construct(ptr, val);
 		}
 
 		template<typename Type>
 		void movable_allocator<Type>::destroy(pointer ptr)
 		{
-			simstd::pvt::_destroy(ptr);
+			simstd::pvt::destroy(ptr);
 		}
 	}
 

@@ -2,12 +2,12 @@
 
 namespace fsys {
 
-	Attributes get_attr_nt(const wchar_t* path)
+	Attr get_attr_nt(const wchar_t* path)
 	{
 		return ::GetFileAttributesW(path);
 	}
 
-	bool set_attr_nt(const wchar_t* path, Attributes attr)
+	bool set_attr_nt(const wchar_t* path, Attr attr)
 	{
 		return ::SetFileAttributesW(path, attr);
 	}

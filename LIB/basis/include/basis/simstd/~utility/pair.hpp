@@ -1,7 +1,5 @@
-﻿#ifndef BASIS_PAIR_HPP_
-#define BASIS_PAIR_HPP_
-
-#include <basis/simstd/~algorithm/base.hpp>
+﻿#ifndef BASIS_SIMSTD_UTILITY_PAIR_HPP_
+#define BASIS_SIMSTD_UTILITY_PAIR_HPP_
 
 namespace simstd {
 
@@ -59,14 +57,9 @@ namespace simstd {
 	template<typename T1, typename T2>
 	void pair<T1, T2>::swap(pair& other)
 	{
-#if defined(__GNUC__) && (__GNUC__ < 3)
-		simstd::swap(first, other.first);
-		simstd::swap(second, other.second);
-#else
 		using simstd::swap;
 		swap(first, other.first);
 		swap(second, other.second);
-#endif
 	}
 
 	///=============================================================================================

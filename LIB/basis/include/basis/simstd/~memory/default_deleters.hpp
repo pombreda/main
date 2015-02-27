@@ -10,12 +10,12 @@ namespace simstd {
 	{
 		constexpr default_delete() noexcept = default;
 
-		template<typename _Up, typename = typename std::enable_if<std::is_convertible<_Up*, Type*>::value>::type>
-		default_delete(const default_delete<_Up>&) noexcept
+		template<typename OType, typename = typename defstd::enable_if<defstd::is_convertible<OType*, Type*>::value>::type>
+		default_delete(const default_delete<OType>&) noexcept
 		{
 		}
 
-		void operator ()(Type * ptr) const
+		void operator ()(Type* ptr) const noexcept
 		{
 			delete ptr;
 		}
@@ -24,7 +24,7 @@ namespace simstd {
 	template<>
 	struct default_delete<nullptr_t>
 	{
-		void operator ()(nullptr_t) const
+		void operator ()(nullptr_t) const noexcept
 		{
 		}
 	};
@@ -32,7 +32,7 @@ namespace simstd {
 	template<typename Type>
 	struct default_delete<Type[]>
 	{
-		void operator ()(Type * ptr) const
+		void operator ()(Type* ptr) const noexcept
 		{
 			delete [] ptr;
 		}

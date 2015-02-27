@@ -4,10 +4,6 @@
 
 namespace sstr {
 
-	namespace {
-		const size_t default_buffer_size = 4 * 1024;
-	}
-
 	astring format(const char* fmt, ...)
 	{
 		Va_list args;
@@ -17,7 +13,7 @@ namespace sstr {
 
 	astring format(const char* fmt, va_list args)
 	{
-		char buf[default_buffer_size];
+		char buf[DEFAULT_PRINTF_BUFFER];
 		safe_vsnprintf(buf, lengthof(buf), fmt, args);
 		return astring(buf);
 	}

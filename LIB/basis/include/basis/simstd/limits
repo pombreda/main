@@ -1,5 +1,5 @@
-﻿#ifndef BASIS_LIMITS_
-#define BASIS_LIMITS_
+﻿#ifndef BASIS_SIMSTD_LIMITS_
+#define BASIS_SIMSTD_LIMITS_
 
 //#include <bits/c++config.h>
 

@@ -26,9 +26,11 @@
 #   define HostDelete(Ptr)                  ::operator delete(Ptr, simstd::nothrow, "", 0);
 #endif
 
-#define HostAlloc2(HostType, Size, Func, Line) HostType::alloc(Size, Func, Line)
+#define HostAlloc2(HostType, Size, Func, Line)        HostType::alloc(Size, Func, Line)
 #define HostRealloc2(HostType, Ptr, Size, Func, Line) HostType::realloc(Ptr, Size, Func, Line)
-#define HostFree2(HostType, Ptr, Func, Line) HostType::free(Ptr, Func, Line)
+#define HostFree2(HostType, Ptr, Func, Line)          HostType::free(Ptr, Func, Line)
+#define HostNew2(Size, Func, Line)                    ::operator new(Size, simstd::nothrow, Func, Line)
+#define HostDelete2(Ptr, Func, Line)                  ::operator delete(Ptr, simstd::nothrow, Func, Line);
 
 namespace memory {
 	namespace heap {

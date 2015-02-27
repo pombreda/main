@@ -20,6 +20,21 @@ namespace math {
 	ssize_t nod(ssize_t left, ssize_t right);
 
 	struct fraction;
+
+	template<unsigned long N>
+	struct bin {
+		enum {
+			value = (N % 10) + 2 * bin<N / 10>::value
+		};
+	};
+
+	template<>
+	struct bin<0> {
+		enum {
+			value = 0
+		};
+	};
+
 }
 
 #include <basis/~math/fixed.hpp>

@@ -1,8 +1,5 @@
-﻿#ifndef BASIS_ALGORITHM_HEAP_HPP_
-#define BASIS_ALGORITHM_HEAP_HPP_
-
-#include <basis/simstd/~functional/functional.hpp>
-#include <basis/simstd/~iterator/base.hpp>
+﻿#ifndef BASIS_SIMSTD_ALGORITHM_HEAP_HPP_
+#define BASIS_SIMSTD_ALGORITHM_HEAP_HPP_
 
 namespace simstd {
 

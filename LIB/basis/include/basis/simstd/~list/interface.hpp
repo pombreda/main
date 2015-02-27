@@ -2,15 +2,16 @@
 #define BASIS_LIST_INTERFACE_HPP_
 
 #include <basis/simstd/list>
+#include <basis/simstd/~algorithm/base.hpp>
 #include <basis/sys/logger.hpp>
 
 namespace simstd {
 
-	template<typename Type, typename Allocator = simstd::allocator<Type> >
+	template<typename Type, typename Allocator>
 	class list: private pvt::List_base<Type, Allocator> {
-		typedef list                                   this_type;
-		typedef pvt::List_base<Type, Allocator>        base_type;
-		typedef typename base_type::NodeAllocator      NodeAllocator;
+		typedef list                                    this_type;
+		typedef pvt::List_base<Type, Allocator>         base_type;
+		typedef typename base_type::node_allocator_type NodeAllocator;
 
 	public:
 		typedef Allocator allocator_type;
@@ -20,8 +21,8 @@ namespace simstd {
 		typedef typename alloc_traits::value_type      value_type;
 		typedef typename alloc_traits::pointer         pointer;
 		typedef typename alloc_traits::const_pointer   const_pointer;
-		typedef typename alloc_traits::reference       reference;
-		typedef typename alloc_traits::const_reference const_reference;
+		typedef value_type&                            reference;
+		typedef const value_type&                      const_reference;
 		typedef typename alloc_traits::difference_type difference_type;
 
 		typedef simstd::pvt::List_iterator<value_type>       iterator;
@@ -492,7 +493,7 @@ namespace simstd {
 	{
 		LogTraceObj();
 		auto tmp = base_type::new_node(simstd::forward<Args>(args)...);
-		tmp->hook(pos.m_node);
+		tmp->hook(pos.pnode);
 		return iterator(tmp);
 	}
 
@@ -501,11 +502,11 @@ namespace simstd {
 	list<Type, Allocator>::iterator list<Type, Allocator>::erase(const_iterator pos)
 	{
 		LogTraceObj();
-		iterator ret(pos.m_node->m_next);
+		iterator ret(pos.pnode->m_next);
 
 		iterator it(pos.iterator_cast());
-		it.m_node->unhook();
-		base_type::delete_node(it.m_node);
+		it.pnode->unhook();
+		base_type::delete_node(it.pnode);
 
 		return ret;
 	}
@@ -860,7 +861,7 @@ namespace simstd {
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::_transfer(const_iterator pos, const_iterator first, const_iterator last)
 	{
-		pos.m_node->transfer(first.m_node, last.m_node);
+		pos.pnode->transfer(first.pnode, last.pnode);
 	}
 
 	template<typename Type, typename Allocator>

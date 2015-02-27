@@ -1,5 +1,6 @@
 #include <fsys.hpp>
 
+#include <basis/sys/logger.hpp>
 #include <basis/simstd/algorithm>
 
 namespace {
@@ -22,17 +23,17 @@ const wchar_t* to_str(fsys::Sequence::FiltersBunch::Type type)
 	return ret;
 }
 
-fsys::Sequence::Filter::ByAttr::ByAttr(Attr include, Size exclude):
-	include(include),
-	exclude(exclude)
+fsys::Sequence::Filter::ByAttr::ByAttr(Attr exclude, Attr include)
+	: exclude(exclude)
+	, include(include)
 {
 }
 
-bool fsys::Sequence::Filter::ByAttr::operator ()(const FindStat& stat) const
+bool fsys::Sequence::Filter::ByAttr::operator ()(const Stat_i& stat) const
 {
-	bool passed = (stat.attr() | include) == stat.attr() && (stat.attr() & exclude) == Attr();
+	bool passed = (stat.attr() & exclude) == Attr() && (include == ~Attr() || (stat.attr() & include) == include);
 
-	LogConsoleDebug2(-1, L"    %s [attr: 0x%08X %% (0x%08X && !0x%08X)]\n", matched_or_not(passed), stat.attr(), include, exclude);
+	LogConsoleDebug2(-1, L"    %s [attr: 0x%08X %% (!0x%08X && 0x%08X)]\n", matched_or_not(passed), stat.attr(), exclude, include);
 
 	return passed;
 }
@@ -47,17 +48,17 @@ fsys::Sequence::Filter* fsys::Sequence::Filter::ByAttr::clone() const
 	return new this_type(*this);
 }
 
-fsys::Sequence::Filter::BySize::BySize(fsys::Sequence::Size from, fsys::Sequence::Size to):
+fsys::Sequence::Filter::BySize::BySize(fsys::Size from, fsys::Size to):
 	minSize(from),
 	maxSize(to)
 {
 }
 
-bool fsys::Sequence::Filter::BySize::operator ()(const Sequence::FindStat& stat) const
+bool fsys::Sequence::Filter::BySize::operator ()(const fsys::Stat_i& stat) const
 {
 	bool passed = simstd::between(minSize, stat.size(), maxSize);
 
-	LogConsoleDebug2(-1, L"    %s [size: %I64u %% (%I64d, %I64d)]\n", matched_or_not(passed), stat.size(), minSize, maxSize);
+	LogConsoleDebug2(-1, L"    %s [size: %I64u %% (%I64u, %I64u)]\n", matched_or_not(passed), stat.size(), minSize, maxSize);
 
 	return passed;
 }
@@ -77,7 +78,7 @@ fsys::Sequence::Filter::ByMask::ByMask(const ustring& mask):
 {
 }
 
-bool fsys::Sequence::Filter::ByMask::operator ()(const Sequence::FindStat& /*stat*/) const
+bool fsys::Sequence::Filter::ByMask::operator ()(const fsys::Stat_i& /*stat*/) const
 {//FIXME
 	bool passed = true;
 
@@ -102,7 +103,7 @@ fsys::Sequence::Filter::ByWrTime::ByWrTime(Time from, Time to):
 {
 }
 
-bool fsys::Sequence::Filter::ByWrTime::operator ()(const FindStat& stat) const
+bool fsys::Sequence::Filter::ByWrTime::operator ()(const Stat_i& stat) const
 {
 	bool passed = simstd::between(minTime, stat.mtime(), maxTime);
 
@@ -127,7 +128,7 @@ fsys::Sequence::Filter::ByCrTime::ByCrTime(Time from, Time to):
 {
 }
 
-bool fsys::Sequence::Filter::ByCrTime::operator ()(const FindStat& stat) const
+bool fsys::Sequence::Filter::ByCrTime::operator ()(const Stat_i& stat) const
 {
 	bool passed = simstd::between(minTime, stat.ctime(), maxTime);
 
@@ -152,7 +153,7 @@ fsys::Sequence::Filter::ByAcTime::ByAcTime(Time from, Time to):
 {
 }
 
-bool fsys::Sequence::Filter::ByAcTime::operator ()(const FindStat& stat) const
+bool fsys::Sequence::Filter::ByAcTime::operator ()(const Stat_i& stat) const
 {
 	bool passed = simstd::between(minTime, stat.atime(), maxTime);
 
@@ -185,7 +186,7 @@ fsys::Sequence::FiltersBunch::FiltersBunch(Type type, const ustring& name):
 		(*it)->destroy();
 }
 
-bool fsys::Sequence::FiltersBunch::operator ()(const FindStat& stat, Statistics& /*statistics*/) const
+bool fsys::Sequence::FiltersBunch::operator ()(const Stat_i& stat, Statistics& /*statistics*/) const
 { // return true if skip this item
 	LogConsoleDebug2(-1, L"   appply filter [%s, '%s'] on '%s'\n", to_str(type), name.c_str(), stat.name());
 

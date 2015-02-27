@@ -4,8 +4,6 @@
 
 namespace logger {
 
-	const size_t default_buffer_size = 4 * 1024;
-
 	///================================================================================== ModuleImpl
 	ModuleImpl::~ModuleImpl()
 	{
@@ -90,7 +88,7 @@ namespace logger {
 	{
 		TraceFunc();
 		if (m_enabled && lvl >= m_lvl) {
-			wchar_t buff[default_buffer_size];
+			wchar_t buff[DEFAULT_PRINTF_BUFFER];
 			auto pend = add_prefix(lvl, buff, lengthof(buff));
 			Va_list args;
 			va_start(args, format);
@@ -114,7 +112,7 @@ namespace logger {
 	{
 		TraceFunc();
 		if (m_enabled && m_lvl <= lvl) {
-			wchar_t buff[default_buffer_size];
+			wchar_t buff[DEFAULT_PRINTF_BUFFER];
 			auto pend = add_prefix(lvl, buff, lengthof(buff));
 			pend = add_place(pend, lengthof(buff) - (pend - buff), file, line, func);
 			Va_list args;
@@ -161,7 +159,7 @@ namespace logger {
 		TraceFunc();
 		size_t written = 0;
 		if (m_prefix & Prefix::Place) {
-			written += safe_snprintf(buff + written, size - written, L"%14.14S:%5d ", filename_only(file), line);
+			written += safe_snprintf(buff + written, size - written, L"%16.16S:%-5d ", filename_only(file), line);
 		}
 		if (m_prefix & Prefix::Function) {
 			written += safe_snprintf(buff + written, size - written, L"%S() ", funcname_only(func));
@@ -191,7 +189,7 @@ namespace logger {
 	}
 
 	///=============================================================================================
-	ModuleImpl * create_Module_impl(const wchar_t* name, const Target_t & tgt, Level lvl)
+	ModuleImpl* create_Module_impl(const wchar_t* name, const Target_t & tgt, Level lvl)
 	{
 		return new ModuleImpl(name, tgt, lvl);
 	}

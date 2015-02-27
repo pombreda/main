@@ -3,18 +3,10 @@
 
 #include <basis/ext/pattern.hpp>
 #include <basis/sys/crt.hpp>
+#include <basis/sys/console.hpp>
 #include <basis/simstd/string>
 #include <basis/simstd/iterator>
-#include <basis/simstd/~memory/allocator.hpp>
-
-namespace simstd {
-
-	namespace Test {
-		ssize_t a_string(aPrintFunc printFunc);
-		ssize_t w_string(wPrintFunc printFunc);
-	}
-
-}
+#include <basis/simstd/~algorithm/base.hpp>
 
 namespace simstd {
 
@@ -22,7 +14,7 @@ namespace simstd {
 		typename Traits = simstd::char_traits<CharType>,
 		typename Allocator = simstd::allocator<CharType> >
 	class basic_string: private pvt::StrBase<CharType, Allocator> {
-		typedef basic_string                               this_type;
+		typedef basic_string                                this_type;
 		typedef pvt::StrBase<CharType, Allocator>           base_type;
 
 	public:

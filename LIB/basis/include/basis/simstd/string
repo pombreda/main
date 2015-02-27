@@ -1,7 +1,9 @@
-﻿#ifndef BASIS_STRING_
-#define BASIS_STRING_
+﻿#ifndef BASIS_SIMSTD_STRING_
+#define BASIS_SIMSTD_STRING_
 
 #include <basis/configure.hpp>
+#include <basis/simstd/memory>
+
 #include <basis/simstd/~string/char_traits.hpp>
 #include <basis/simstd/~string/Str_impl.hpp>
 #include <basis/simstd/~string/Str_base.hpp>

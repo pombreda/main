@@ -1,6 +1,7 @@
 #include <fsys.hpp>
 
 #include <basis/sys/cstr.hpp>
+#include <basis/sys/logger.hpp>
 
 fsys::Sequence::Options::Options()
 {
@@ -12,11 +13,11 @@ fsys::Sequence::FiltersBunch& fsys::Sequence::Options::add_filter_bunch(FiltersB
 	return filters.back();
 }
 
-bool fsys::Sequence::Options::apply_filters(const FindStat& stat) const
+bool fsys::Sequence::Options::apply_filters(const Stat_i& stat) const
 {
 	bool skip = false;
 
-	LogConsoleDebug(-1, L"  %s: 0x%08X, %I64u, '%s'\n", L"found", stat.attr(), stat.size(), stat.name());
+	LogConsoleDebug(-1, L"  %s: 0x%08IX, %I64u, '%s'\n", L"found", stat.attr(), stat.size(), stat.name());
 	if (cstr::compare(stat.name(), L".") == 0 || cstr::compare(stat.name(), L"..") == 0) {
 //		LogConsoleDebug(FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN, L"  ignored [invalid]: '%s'\n", stat.name());
 		skip = true;
@@ -30,6 +31,6 @@ bool fsys::Sequence::Options::apply_filters(const FindStat& stat) const
 		}
 	}
 
-	LogConsoleDebug(-1, L"  %s: 0x%08X, %I64u, '%s'\n", skip ? L"skipped" : L"accepted", stat.attr(), stat.size(), stat.name());
+	LogConsoleDebug(-1, L"  %s: 0x%08IX, %I64u, '%s'\n", skip ? L"skipped" : L"accepted", stat.attr(), stat.size(), stat.name());
 	return skip;
 }

@@ -1,7 +1,5 @@
-﻿#ifndef BASIS_ITERATOR_MOVE_ITERATOR_HPP_
-#define BASIS_ITERATOR_MOVE_ITERATOR_HPP_
-
-#include <basis/simstd/~iterator/base.hpp>
+﻿#ifndef BASIS_SIMSTD_ITERATOR_MOVE_ITERATOR_HPP_
+#define BASIS_SIMSTD_ITERATOR_MOVE_ITERATOR_HPP_
 
 namespace simstd
 {

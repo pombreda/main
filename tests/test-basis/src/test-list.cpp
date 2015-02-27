@@ -1,6 +1,4 @@
 #include <tests.hpp>
-#include <A.hpp>
-
 #include <basis/sys/console.hpp>
 #include <basis/sys/logger.hpp>
 #include <basis/sys/memory.hpp>
@@ -9,21 +7,59 @@
 #include <basis/simstd/algorithm>
 #include <basis/simstd/memory>
 
+#include <basis/tst.hpp>
+
+#include <list>
+
 void test_list()
 {
 	LogAtten(L"\n");
 
-	A ma[7];
+	tst::A ma[7];
 
 	struct HeapTag {};
 	typedef memory::heap::DecoratorStat<memory::heap::Special<HeapTag>, memory::heap::StatLog, HeapTag> heap_type;
-	typedef simstd::AllocatorHeap<A, heap_type> EqAlloc;
+	typedef simstd::AllocatorHeap<tst::A, heap_type> EqAlloc;
 
 	heap_type::init();
 	{
 		LogTrace();
-		typedef simstd::list<A, EqAlloc> test_list_type;
-		A a;
+		typedef simstd::list<tst::A, EqAlloc> test_list_type;
+
+		test_list_type tl1;
+		test_list_type tl2;
+
+		auto itl1b = tl1.begin();
+		auto itl1e = tl1.end();
+		auto itl2b = tl2.cbegin();
+		auto itl2e = tl2.cend();
+
+		if (itl1b == itl1e)
+			LogTrace();
+		if (itl1b == itl2b)
+			LogTrace();
+		if (itl1b == itl2e)
+			LogTrace();
+		if (itl1e == itl1b)
+			LogTrace();
+		if (itl1e == itl2b)
+			LogTrace();
+		if (itl1e == itl2e)
+			LogTrace();
+		if (itl2b == itl1b)
+			LogTrace();
+		if (itl2b == itl1e)
+			LogTrace();
+		if (itl2b == itl2e)
+			LogTrace();
+		if (itl2e == itl1b)
+			LogTrace();
+		if (itl2e == itl1e)
+			LogTrace();
+		if (itl2e == itl2b)
+			LogTrace();
+
+		tst::A a;
 
 		test_list_type list1;
 		LogReport(L"1:size(): %Iu\n", list1.size());

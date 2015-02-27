@@ -1,9 +1,6 @@
 ﻿#ifndef BASIS_STRING_STR_BASE_HPP_
 #define BASIS_STRING_STR_BASE_HPP_
 
-#include <basis/simstd/string>
-#include <basis/simstd/~algorithm/base.hpp>
-
 namespace simstd {
 
 	namespace pvt {
@@ -51,7 +48,6 @@ namespace simstd {
 		StrBase<T, A>::StrBase(const A& alloc, size_t capa) :
 			m_impl(nullptr)
 		{
-//			console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
 			m_impl = new_impl(simstd::max(MIN_CAPACITY, capa), alloc);
 		}
 
@@ -103,14 +99,12 @@ namespace simstd {
 		template<typename T, typename A>
 		typename StrBase<T, A>::impl_type* StrBase<T, A>::new_impl(size_t capa, const A& alloc)
 		{
-//			console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
 			RawAllocator rawAlloc(alloc);
 			size_t size = capa * sizeof(T) + sizeof(impl_type);
 			auto ret = reinterpret_cast<StrBase<T, A>::impl_type*>(rawAlloc.allocate(size));
 
 			ImpAllocator implAlloc(alloc);
 			implAlloc.construct(ret, capa, alloc);
-//			console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
 			return ret;
 		}
 

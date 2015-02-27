@@ -13,7 +13,7 @@ namespace fsys {
 		++global::statistics().fileObjectsDestroyed;
 	}
 
-	File::File(const fsys::Sequence::FindStat& info, Node_t parent)
+	File::File(const fsys::Stat_i& info, Node_t parent)
 		: Node(info.name(), parent)
 		, m_size(info.size())
 		, m_mtime(info.mtime())
@@ -26,14 +26,13 @@ namespace fsys {
 		++global::statistics().fileObjectsCreated;
 	}
 
-	File::File(const ustring& path, const ustring& name)
-		: Node(name)
+	File::File(const ustring& name, Node_t parent)
+		: Node(name, parent)
 		, m_size()
 		, m_mtime()
 		, m_attr()
 		, m_volume_sn()
 		, m_inode()
-		, m_full_path(path + PATH_SEPARATOR + name)
 	{
 		LogTraceObj();
 		LogNoise(L"'%s'\n", m_name.c_str());
@@ -62,7 +61,7 @@ namespace fsys {
 		return m_inode;
 	}
 
-	const File::hash_type & File::get_head_hash() const
+	const File::hash_type& File::get_head_hash() const
 	{
 		if (m_headHash.empty()) {
 			if (count_hash(m_headHash, get_full_path(), 0, global::options().firstBlockHash))
@@ -73,7 +72,7 @@ namespace fsys {
 		return m_headHash;
 	}
 
-	const File::hash_type & File::get_tail_hash() const
+	const File::hash_type& File::get_tail_hash() const
 	{
 		if (m_tailHash.empty()) {
 			if (count_hash(m_tailHash, get_full_path(), size() - global::options().firstBlockHash, size()))
@@ -84,7 +83,7 @@ namespace fsys {
 		return m_tailHash;
 	}
 
-	const File::hash_type & File::get_whole_hash() const
+	const File::hash_type& File::get_whole_hash() const
 	{
 		if (m_wholeHash.empty()) {
 			if (count_hash(m_wholeHash, get_full_path(), 0, size()))
@@ -97,7 +96,7 @@ namespace fsys {
 
 	void File::refresh_handle_info(bool basicInfo) const
 	{
-		fsys::Stat stat(fsys::stat(get_full_path().c_str()));
+		auto stat(fsys::stat_ex(get_full_path().c_str()));
 		if (stat) {
 			m_volume_sn = stat->volume_sn();
 			m_inode     = stat->inode();
@@ -106,12 +105,13 @@ namespace fsys {
 				m_size = stat->size();
 				m_mtime = stat->mtime();
 				m_attr = stat->attr();
+				LogDebug(L"size: %I64u, attr: 0x%08IX, mtime: %I64u\n", m_size, m_attr, m_mtime);
 			}
 		}
 		LogDebug(L"vol: 0x%08X, inode: 0x%016X '%s'\n", m_volume_sn, m_inode, m_name.c_str());
 	}
 
-	bool File::count_hash(hash_type & out, ustring path, uint64_t first, uint64_t last)
+	bool File::count_hash(hash_type& out, ustring path, uint64_t first, uint64_t last)
 	{
 		auto file(fsys::file::open(path));
 		if (file && file->set_position(static_cast<int64_t>(first), fsys::file::Seek::FromBeginOfFile)) {
@@ -136,22 +136,22 @@ namespace fsys {
 		return false;
 	}
 
-	bool compare_head_hash(const File & file1, const File & file2)
+	bool compare_head_hash(const File& file1, const File& file2)
 	{
 		return !file1.get_head_hash().empty() && file1.get_head_hash() == file2.get_head_hash();
 	}
 
-	bool compare_tail_hash(const File & file1, const File & file2)
+	bool compare_tail_hash(const File& file1, const File& file2)
 	{
 		return !file1.get_tail_hash().empty() && file1.get_tail_hash() == file2.get_tail_hash();
 	}
 
-	bool compare_whole_hash(const File & file1, const File & file2)
+	bool compare_whole_hash(const File& file1, const File& file2)
 	{
 		return !file1.get_whole_hash().empty() && file1.get_whole_hash() == file2.get_whole_hash();
 	}
 
-	bool compare_hash(const File & file1, const File & file2)
+	bool compare_hash(const File& file1, const File& file2)
 	{
 		if (file1.size() <= (global::options().firstBlockHash * 16))
 			return compare_whole_hash(file1, file2);

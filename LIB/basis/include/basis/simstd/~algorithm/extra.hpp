@@ -1,10 +1,8 @@
-﻿#ifndef BASIS_ALGORITHM_EXTRA_HPP_
-#define BASIS_ALGORITHM_EXTRA_HPP_
-
-#include <basis/simstd/~iterator/base.hpp>
-#include <basis/simstd/~utility/pair.hpp>
+﻿#ifndef BASIS_SIMSTD_ALGORITHM_EXTRA_HPP_
+#define BASIS_SIMSTD_ALGORITHM_EXTRA_HPP_
 
 namespace simstd {
+
 	template<typename InputIt, typename UnaryPredicate>
 	bool all_of(InputIt first, InputIt last, UnaryPredicate p)
 	{
@@ -61,21 +59,21 @@ namespace simstd {
 	}
 
 	template<class InputIt1, class InputIt2, class BinaryPredicate>
-	simstd::pair<InputIt1, InputIt2> mismatch(InputIt1 first1, InputIt1 last1, InputIt2 first2, BinaryPredicate p)
+	simstd::pair<InputIt1, InputIt2> mismatch(InputIt1 first, InputIt1 last, InputIt2 first2, BinaryPredicate p)
 	{
-		while (first1 != last1 && p(*first1, *first2)) {
-			++first1, ++first2;
+		while (first != last && p(*first, *first2)) {
+			++first, ++first2;
 		}
-		return simstd::make_pair(first1, first2);
+		return simstd::make_pair(first, first2);
 	}
 
 	template<class InputIt1, class InputIt2>
-	simstd::pair<InputIt1, InputIt2> mismatch(InputIt1 first1, InputIt1 last1, InputIt2 first2)
+	simstd::pair<InputIt1, InputIt2> mismatch(InputIt1 first, InputIt1 last, InputIt2 first2)
 	{
-		while (first1 != last1 && *first1 == *first2) {
-			++first1, ++first2;
+		while (first != last && *first == *first2) {
+			++first, ++first2;
 		}
-		return simstd::make_pair(first1, first2);
+		return simstd::make_pair(first, first2);
 	}
 
 	template<typename InputIt, typename T>
@@ -224,23 +222,23 @@ namespace simstd {
 	}
 
 	template<typename InputIt, typename OutputIt, typename UnaryOperation>
-	OutputIt transform(InputIt first1, InputIt last1, OutputIt d_first, UnaryOperation unary_op)
+	OutputIt transform(InputIt first, InputIt last, OutputIt d_first, UnaryOperation unary_op)
 	{
-		while (first1 != last1) {
-			*d_first = unary_op(*first1);
+		while (first != last) {
+			*d_first = unary_op(*first);
 			++d_first;
-			++first1;
+			++first;
 		}
 		return d_first;
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt, typename BinaryOperation>
-	OutputIt transform(InputIt1 first1, InputIt1 last1, InputIt2 first2, OutputIt d_first, BinaryOperation binary_op)
+	OutputIt transform(InputIt1 first, InputIt1 last, InputIt2 first2, OutputIt d_first, BinaryOperation binary_op)
 	{
-		while (first1 != last1) {
-			*d_first = binary_op(*first1, *first2);
+		while (first != last) {
+			*d_first = binary_op(*first, *first2);
 			++d_first;
-			++first1;
+			++first;
 			++first2;
 		}
 		return d_first;
@@ -350,11 +348,11 @@ namespace simstd {
 	}
 
 	template<typename ForwardIt1, typename ForwardIt2>
-	ForwardIt1 swap_ranges(ForwardIt1 first1, ForwardIt1 last1, ForwardIt2 first2)
+	ForwardIt1 swap_ranges(ForwardIt1 first, ForwardIt1 last, ForwardIt2 first2)
 	{
-		while (first1 != last1) {
-			simstd::iter_swap(first1, first2);
-			++first1;
+		while (first != last) {
+			simstd::iter_swap(first, first2);
+			++first;
 			++first2;
 		}
 		return first2;
@@ -464,43 +462,43 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2, typename Compare>
-	bool includes(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, Compare comp)
+	bool includes(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, Compare comp)
 	{
-		for (; first2 != last2; ++first1) {
-			if (first1 == last1 || comp(*first2, *first1))
+		for (; first2 != last2; ++first) {
+			if (first == last || comp(*first2, *first))
 				return false;
-			if (!comp(*first1, *first2))
+			if (!comp(*first, *first2))
 				++first2;
 		}
 		return true;
 	}
 
 	template<typename InputIt1, typename InputIt2>
-	bool includes(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2)
+	bool includes(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2)
 	{
-		for (; first2 != last2; ++first1) {
-			if (first1 == last1 || *first2 < *first1)
+		for (; first2 != last2; ++first) {
+			if (first == last || *first2 < *first)
 				return false;
-			if (!(*first1 < *first2))
+			if (!(*first < *first2))
 				++first2;
 		}
 		return true;
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt, typename Compare>
-	OutputIt set_difference(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
+	OutputIt set_difference(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
 	{
-		while (first1 != last1) {
+		while (first != last) {
 			if (first2 == last2)
-				return simstd::copy(first1, last1, d_first);
+				return simstd::copy(first, last, d_first);
 
-			if (comp(*first1, *first2)) {
-				*d_first = *first1;
+			if (comp(*first, *first2)) {
+				*d_first = *first;
 				++d_first;
-				++first1;
+				++first;
 			} else {
-				if (!comp(*first2, *first1)) {
-					++first1;
+				if (!comp(*first2, *first)) {
+					++first;
 				}
 				++first2;
 			}
@@ -509,19 +507,19 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt>
-	OutputIt set_difference(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first)
+	OutputIt set_difference(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt d_first)
 	{
-		while (first1 != last1) {
+		while (first != last) {
 			if (first2 == last2)
-				return simstd::copy(first1, last1, d_first);
+				return simstd::copy(first, last, d_first);
 
-			if (*first1 < *first2) {
-				*d_first = *first1;
+			if (*first < *first2) {
+				*d_first = *first;
 				++d_first;
-				++first1;
+				++first;
 			} else {
-				if (!(*first2 < *first1)) {
-					++first1;
+				if (!(*first2 < *first)) {
+					++first;
 				}
 				++first2;
 			}
@@ -530,16 +528,16 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt, typename Compare>
-	OutputIt set_intersection(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
+	OutputIt set_intersection(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
 	{
-		while (first1 != last1 && first2 != last2) {
-			if (comp(*first1, *first2)) {
-				++first1;
+		while (first != last && first2 != last2) {
+			if (comp(*first, *first2)) {
+				++first;
 			} else {
-				if (!comp(*first2, *first1)) {
-					*d_first = *first1;
+				if (!comp(*first2, *first)) {
+					*d_first = *first;
 					++d_first;
-					++first1;
+					++first;
 				}
 				++first2;
 			}
@@ -548,16 +546,16 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt>
-	OutputIt set_intersection(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first)
+	OutputIt set_intersection(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt d_first)
 	{
-		while (first1 != last1 && first2 != last2) {
-			if (*first1 < *first2) {
-				++first1;
+		while (first != last && first2 != last2) {
+			if (*first < *first2) {
+				++first;
 			} else {
-				if (!(*first2 < *first1)) {
-					*d_first = *first1;
+				if (!(*first2 < *first)) {
+					*d_first = *first;
 					++d_first;
-					++first1;
+					++first;
 				}
 				++first2;
 			}
@@ -566,22 +564,22 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt, typename Compare>
-	OutputIt set_symmetric_difference(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
+	OutputIt set_symmetric_difference(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
 	{
-		while (first1 != last1) {
+		while (first != last) {
 			if (first2 == last2)
-				return simstd::copy(first1, last1, d_first);
+				return simstd::copy(first, last, d_first);
 
-			if (comp(*first1, *first2)) {
-				*d_first = *first1;
+			if (comp(*first, *first2)) {
+				*d_first = *first;
 				++d_first;
-				++first1;
+				++first;
 			} else {
-				if (comp(*first2, *first1)) {
+				if (comp(*first2, *first)) {
 					*d_first = *first2;
 					++d_first;
 				} else {
-					++first1;
+					++first;
 				}
 				++first2;
 			}
@@ -590,22 +588,22 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt>
-	OutputIt set_symmetric_difference(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first)
+	OutputIt set_symmetric_difference(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt d_first)
 	{
-		while (first1 != last1) {
+		while (first != last) {
 			if (first2 == last2)
-				return simstd::copy(first1, last1, d_first);
+				return simstd::copy(first, last, d_first);
 
-			if (*first1 < *first2) {
-				*d_first = *first1;
+			if (*first < *first2) {
+				*d_first = *first;
 				++d_first;
-				++first1;
+				++first;
 			} else {
-				if (*first2 < *first1) {
+				if (*first2 < *first) {
 					*d_first = *first2;
 					++d_first;
 				} else {
-					++first1;
+					++first;
 				}
 				++first2;
 			}
@@ -614,38 +612,38 @@ namespace simstd {
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt, typename Compare>
-	OutputIt set_union(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
+	OutputIt set_union(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt d_first, Compare comp)
 	{
-		for (; first1 != last1; ++d_first) {
+		for (; first != last; ++d_first) {
 			if (first2 == last2)
-				return simstd::copy(first1, last1, d_first);
-			if (comp(*first2, *first1)) {
+				return simstd::copy(first, last, d_first);
+			if (comp(*first2, *first)) {
 				*d_first = *first2;
 				++first2;
 			} else {
-				*d_first = *first1;
-				if (!comp(*first1, *first2))
+				*d_first = *first;
+				if (!comp(*first, *first2))
 					++first2;
-				++first1;
+				++first;
 			}
 		}
 		return simstd::copy(first2, last2, d_first);
 	}
 
 	template<typename InputIt1, typename InputIt2, typename OutputIt>
-	OutputIt set_union(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt2 last2, OutputIt d_first)
+	OutputIt set_union(InputIt1 first, InputIt1 last, InputIt2 first2, InputIt2 last2, OutputIt d_first)
 	{
-		for (; first1 != last1; ++d_first) {
+		for (; first != last; ++d_first) {
 			if (first2 == last2)
-				return simstd::copy(first1, last1, d_first);
-			if (*first2 < *first1) {
+				return simstd::copy(first, last, d_first);
+			if (*first2 < *first) {
 				*d_first = *first2;
 				++first2;
 			} else {
-				*d_first = *first1;
-				if (!(*first1 < *first2))
+				*d_first = *first;
+				if (!(*first < *first2))
 					++first2;
-				++first1;
+				++first;
 			}
 		}
 		return simstd::copy(first2, last2, d_first);
@@ -730,22 +728,49 @@ namespace simstd {
 	template<typename BidirIt>
 	bool next_permutation(BidirIt first, BidirIt last)
 	{
+		if (first == last || (first + 1) == last)
+			return false;
+
+		BidirIt i = last - 1;
+		for (;;) {
+			BidirIt __ii = i;
+			--i;
+			if (*i < *__ii) {
+				BidirIt __j = last;
+				while (!(*i < *--__j)) {
+				}
+				simstd::iter_swap(i, __j);
+				simstd::reverse(__ii, last);
+				return true;
+			}
+			if (i == first) {
+				simstd::reverse(first, last);
+				return false;
+			}
+		}
+	}
+
+	template<typename BidirIt, typename Compare>
+	bool next_permutation(BidirIt first, BidirIt last, Compare compare)
+	{
 		if (first == last)
 			return false;
-		BidirIt i = last;
-		if (first == --i)
+		BidirIt i = first;
+		if (++i == last)
 			return false;
 
-		for (;;) {
-			BidirIt i1, i2;
+		i = last;
+		--i;
 
-			i1 = i;
-			if (*--i < *i1) {
-				i2 = last;
-				while (!(*i < *--i2))
-					;
-				simstd::iter_swap(i, i2);
-				simstd::reverse(i1, last);
+		for (;;) {
+			BidirIt __ii = i;
+			--i;
+			if (compare(*i, *__ii)) {
+				BidirIt __j = last;
+				while (!compare(*i, *(--__j))) {
+				}
+				simstd::iter_swap(i, __j);
+				simstd::reverse(__ii, last);
 				return true;
 			}
 			if (i == first) {
@@ -782,6 +807,7 @@ namespace simstd {
 			}
 		}
 	}
+
 }
 
 #endif
