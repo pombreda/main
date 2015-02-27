@@ -3,8 +3,6 @@
 
 #include <basis/configure.hpp>
 #include <basis/simstd/~type_traits/integral_constant.hpp>
-#include <basis/simstd/~type_traits/remove_cv.hpp>
-#include <basis/simstd/~type_traits/conditional.hpp>
 #include <basis/simstd/~type_traits/type.hpp>
 
 namespace simstd {
@@ -98,26 +96,21 @@ namespace simstd {
 	// Composite type categories.
 
 	/// is_reference
-	template<typename _Tp>
-	struct is_reference: public __or_<is_lvalue_reference<_Tp>, is_rvalue_reference<_Tp>>::type
-	{
-	};
-
 	/// is_arithmetic
 	template<typename _Tp>
-	struct is_arithmetic: public __or_<is_integral<_Tp>, is_floating_point<_Tp>>::type
+	struct is_arithmetic: public _or_<is_integral<_Tp>, is_floating_point<_Tp>>::type
 	{
 	};
 
 	/// is_fundamental
 	template<typename _Tp>
-	struct is_fundamental: public __or_<is_arithmetic<_Tp>, is_void<_Tp>, __is_nullptr_t <_Tp>>::type
+	struct is_fundamental: public _or_<is_arithmetic<_Tp>, is_void<_Tp>, __is_nullptr_t <_Tp>>::type
 	{
 	};
 
 	/// is_object
 	template<typename _Tp>
-	struct is_object: public __not_<__or_ <is_function<_Tp>, is_reference<_Tp>, is_void<_Tp>>> ::type
+	struct is_object: public _not_<_or_ <is_function<_Tp>, is_reference<_Tp>, is_void<_Tp>>> ::type
 	{};
 
 	template<typename >
@@ -125,7 +118,7 @@ namespace simstd {
 
 	/// is_scalar
 	template<typename _Tp>
-	struct is_scalar: public __or_<is_arithmetic<_Tp>, is_enum<_Tp>, is_pointer<_Tp>, is_member_pointer<_Tp>, __is_nullptr_t <_Tp>>::type
+	struct is_scalar: public _or_<is_arithmetic<_Tp>, is_enum<_Tp>, is_pointer<_Tp>, is_member_pointer<_Tp>, __is_nullptr_t <_Tp>>::type
 	{
 	};
 
@@ -219,7 +212,7 @@ namespace simstd {
 
 	/// is_unsigned
 	template<typename _Tp>
-	struct is_unsigned: public __and_<is_arithmetic<_Tp>, __not_ <is_signed<_Tp>>> ::type
+	struct is_unsigned: public _and_<is_arithmetic<_Tp>, _not_ <is_signed<_Tp>>> ::type
 	{};
 
 	// Destructible and constructible type properties.
@@ -246,7 +239,7 @@ namespace simstd {
 	};
 
 	template<typename _Tp>
-	struct __is_array_unknown_bounds: public __and_<is_array<_Tp>, __not_ <extent<_Tp>>> ::type
+	struct __is_array_unknown_bounds: public _and_<is_array<_Tp>, _not_ <extent<_Tp>>> ::type
 	{};
 
 	// In N3290 is_destructible does not say anything about function
@@ -269,7 +262,7 @@ namespace simstd {
 		typedef decltype(__test<_Tp>(0)) type;
 	};
 
-	template<typename _Tp, bool = __or_<is_void<_Tp>, __is_array_unknown_bounds <_Tp>, is_function<_Tp>>::value, bool = __or_<is_reference<_Tp>, is_scalar<_Tp>>::value>
+	template<typename _Tp, bool = _or_<is_void<_Tp>, __is_array_unknown_bounds <_Tp>, is_function<_Tp>>::value, bool = _or_<is_reference<_Tp>, is_scalar<_Tp>>::value>
 	struct __is_destructible_safe;
 
 	template<typename _Tp>
@@ -313,7 +306,7 @@ namespace simstd {
 		typedef decltype(__test<_Tp>(0)) type;
 	};
 
-	template<typename _Tp, bool = __or_<is_void<_Tp>, __is_array_unknown_bounds <_Tp>, is_function<_Tp>>::value, bool = __or_<is_reference<_Tp>, is_scalar<_Tp>>::value>
+	template<typename _Tp, bool = _or_<is_void<_Tp>, __is_array_unknown_bounds <_Tp>, is_function<_Tp>>::value, bool = _or_<is_reference<_Tp>, is_scalar<_Tp>>::value>
 	struct __is_nt_destructible_safe;
 
 	template<typename _Tp>
@@ -353,7 +346,7 @@ namespace simstd {
 	};
 
 	template<typename _Tp>
-	struct __is_default_constructible_atom: public __and_<__not_ <is_void<_Tp>>, __is_default_constructible_impl <_Tp>>::type
+	struct __is_default_constructible_atom: public _and_<_not_ <is_void<_Tp>>, __is_default_constructible_impl <_Tp>>::type
 	{
 	};
 
@@ -366,7 +359,7 @@ namespace simstd {
 	// constructed, if the element type is default-constructible, but
 	// arrays with unknown bounds are not.
 	template<typename _Tp>
-	struct __is_default_constructible_safe<_Tp, true> : public __and_<__is_array_known_bounds <_Tp>, __is_default_constructible_atom <typename remove_all_extents<_Tp>::type>>::type
+	struct __is_default_constructible_safe<_Tp, true> : public _and_<__is_array_known_bounds <_Tp>, __is_default_constructible_atom <typename remove_all_extents<_Tp>::type>>::type
 	{
 	};
 
@@ -439,7 +432,7 @@ namespace simstd {
 	};
 
 	template<typename _Tp, typename _Arg>
-	struct __is_direct_constructible_new_safe: public __and_<is_destructible<_Tp>, __is_direct_constructible_impl <_Tp, _Arg>>::type
+	struct __is_direct_constructible_new_safe: public _and_<is_destructible<_Tp>, __is_direct_constructible_impl <_Tp, _Arg>>::type
 	{
 	};
 
@@ -452,7 +445,7 @@ namespace simstd {
 	template<typename >
 	struct remove_reference;
 
-	template<typename _From, typename _To, bool = __not_<__or_ <is_void<_From>, is_function<_From>>> ::value>
+	template<typename _From, typename _To, bool = _not_<_or_ <is_void<_From>, is_function<_From>>> ::value>
 	struct __is_base_to_derived_ref;
 
 	// Detect whether we have a downcast situation during
@@ -462,7 +455,7 @@ namespace simstd {
 	{
 		typedef typename remove_cv<typename remove_reference<_From>::type>::type __src_t;
 		typedef typename remove_cv<typename remove_reference<_To>::type>::type __dst_t;
-		typedef __and_< __not_ <is_same<__src_t, __dst_t>>,
+		typedef _and_< _not_ <is_same<__src_t, __dst_t>>,
 		is_base_of<__src_t, __dst_t>> type;
 		static constexpr bool value = type::value;
 	};
@@ -472,7 +465,7 @@ namespace simstd {
 	{
 	};
 
-	template<typename _From, typename _To, bool = __and_<is_lvalue_reference<_From>, is_rvalue_reference<_To>>::value>
+	template<typename _From, typename _To, bool = _and_<is_lvalue_reference<_From>, is_rvalue_reference<_To>>::value>
 	struct __is_lvalue_to_rvalue_ref;
 
 	// Detect whether we have an lvalue of non-function type
@@ -482,8 +475,8 @@ namespace simstd {
 	{
 		typedef typename remove_cv<typename remove_reference<_From>::type>::type __src_t;
 		typedef typename remove_cv<typename remove_reference<_To>::type>::type __dst_t;
-		typedef __and_< __not_ <is_function<__src_t>>,
-		__or_<is_same<__src_t, __dst_t>,
+		typedef _and_< _not_ <is_function<__src_t>>,
+		_or_<is_same<__src_t, __dst_t>,
 		is_base_of<__dst_t, __src_t>>> type;
 		static constexpr bool value = type::value;
 	};
@@ -500,7 +493,7 @@ namespace simstd {
 	//    b) An lvalue to an rvalue-reference of reference-compatible
 	//       types that are not functions
 	template<typename _Tp, typename _Arg>
-	struct __is_direct_constructible_ref_cast: public __and_<__is_static_castable <_Arg, _Tp>, __not_< __or_< __is_base_to_derived_ref <_Arg, _Tp>,
+	struct __is_direct_constructible_ref_cast: public _and_<__is_static_castable <_Arg, _Tp>, _not_< _or_< __is_base_to_derived_ref <_Arg, _Tp>,
 	__is_lvalue_to_rvalue_ref<_Arg, _Tp>
 	>>>::type
 	{};
@@ -610,7 +603,7 @@ namespace simstd {
 	struct __is_nt_default_constructible_impl;
 
 	template<typename _Tp>
-	struct __is_nt_default_constructible_impl<_Tp, true> : public __and_<__is_array_known_bounds <_Tp>, __is_nt_default_constructible_atom <typename remove_all_extents<_Tp>::type>>::type
+	struct __is_nt_default_constructible_impl<_Tp, true> : public _and_<__is_array_known_bounds <_Tp>, __is_nt_default_constructible_atom <typename remove_all_extents<_Tp>::type>>::type
 	{
 	};
 
@@ -621,7 +614,7 @@ namespace simstd {
 
 	/// is_nothrow_default_constructible
 	template<typename _Tp>
-	struct is_nothrow_default_constructible: public __and_<is_default_constructible<_Tp>, __is_nt_default_constructible_impl <_Tp>>::type
+	struct is_nothrow_default_constructible: public _and_<is_default_constructible<_Tp>, __is_nt_default_constructible_impl <_Tp>>::type
 	{
 	};
 
@@ -642,7 +635,7 @@ namespace simstd {
 
 	/// is_nothrow_constructible
 	template<typename _Tp, typename ... _Args>
-	struct is_nothrow_constructible: public __and_<is_constructible<_Tp, _Args...>, __is_nt_constructible_impl <_Tp, _Args...>>::type
+	struct is_nothrow_constructible: public _and_<is_constructible<_Tp, _Args...>, __is_nt_constructible_impl <_Tp, _Args...>>::type
 	{
 	};
 
@@ -748,7 +741,7 @@ namespace simstd {
 
 	/// is_nothrow_assignable
 	template<typename _Tp, typename _Up>
-	struct is_nothrow_assignable: public __and_<is_assignable<_Tp, _Up>, __is_nt_assignable_impl <_Tp, _Up>>::type
+	struct is_nothrow_assignable: public _and_<is_assignable<_Tp, _Up>, __is_nt_assignable_impl <_Tp, _Up>>::type
 	{
 	};
 
@@ -806,7 +799,7 @@ namespace simstd {
 
 	/// is_trivially_destructible
 	template<typename _Tp>
-	struct is_trivially_destructible: public __and_<is_destructible<_Tp>, integral_constant<bool, __has_trivial_destructor(_Tp)>>::type
+	struct is_trivially_destructible: public _and_<is_destructible<_Tp>, integral_constant<bool, __has_trivial_destructor(_Tp)>>::type
 	{
 	};
 
@@ -893,7 +886,7 @@ namespace simstd {
 	{
 	};
 
-	template<typename _From, typename _To, bool = __or_<is_void<_From>, is_function<_To>, is_array<_To>>::value>
+	template<typename _From, typename _To, bool = _or_<is_void<_From>, is_function<_To>, is_array<_To>>::value>
 	struct __is_convertible_helper
 	{
 		static constexpr bool value = is_void<_To>::value;
@@ -963,7 +956,7 @@ namespace simstd {
 		typedef _Tp type;
 	};
 
-	template<typename _Tp, bool = __and_<__not_ <is_reference<_Tp>>, __not_ <is_void<_Tp>>> ::value,
+	template<typename _Tp, bool = _and_<_not_ <is_reference<_Tp>>, _not_ <is_void<_Tp>>> ::value,
 	bool = is_rvalue_reference<_Tp>::value>
 	struct __add_lvalue_reference_helper
 	{	typedef _Tp type;};
@@ -986,7 +979,7 @@ namespace simstd {
 	{
 	};
 
-	template<typename _Tp, bool = __and_<__not_ <is_reference<_Tp>>, __not_ <is_void<_Tp>>> ::value>
+	template<typename _Tp, bool = _and_<_not_ <is_reference<_Tp>>, _not_ <is_void<_Tp>>> ::value>
 	struct __add_rvalue_reference_helper
 	{	typedef _Tp type;};
 
@@ -1402,7 +1395,7 @@ namespace simstd {
 	};
 
 	template<typename ... _Cond>
-	using _Require = typename enable_if<__and_<_Cond...>::value>::type;
+	using _Require = typename enable_if<_and_<_Cond...>::value>::type;
 
 	/// common_type
 	template<typename ... _Tp>
@@ -1578,7 +1571,7 @@ namespace simstd {
 	{
 		typedef typename remove_cv<typename remove_reference<_Arg>::type>::type _Argval;
 		typedef _Res _Class::* _MemPtr;
-		typedef typename conditional<__or_<is_same<_Argval, _Class>, is_base_of<_Class, _Argval>>::value, __result_of_memobj_ref <_MemPtr, _Arg>, __result_of_memobj_deref <_MemPtr, _Arg> >::type::type type;
+		typedef typename conditional<_or_<is_same<_Argval, _Class>, is_base_of<_Class, _Argval>>::value, __result_of_memobj_ref <_MemPtr, _Arg>, __result_of_memobj_deref <_MemPtr, _Arg> >::type::type type;
 	};
 
 	template<typename _MemPtr, typename _Arg, typename ... _Args>
@@ -1589,7 +1582,7 @@ namespace simstd {
 	{
 		typedef typename remove_cv<typename remove_reference<_Arg>::type>::type _Argval;
 		typedef _Res _Class::* _MemPtr;
-		typedef typename conditional<__or_<is_same<_Argval, _Class>, is_base_of<_Class, _Argval>>::value, __result_of_memfun_ref <_MemPtr, _Arg, _Args...>,
+		typedef typename conditional<_or_<is_same<_Argval, _Class>, is_base_of<_Class, _Argval>>::value, __result_of_memfun_ref <_MemPtr, _Arg, _Args...>,
 		    __result_of_memfun_deref <_MemPtr, _Arg, _Args...> >::type::type type;
 	};
 

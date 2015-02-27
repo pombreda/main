@@ -1,8 +1,6 @@
 ﻿#ifndef BASIS_MEMORY_UNIQUE_PTR_HPP_
 #define BASIS_MEMORY_UNIQUE_PTR_HPP_
 
-#include <basis/simstd/~functional/functional.hpp>
-
 namespace simstd {
 
 	template<typename Type, typename Deleter>
@@ -10,13 +8,13 @@ namespace simstd {
 		using helper_type = pvt::ebo_helper<0, Deleter>;
 
 	public:
-		using pointer = typename simstd::pvt::RecognizePointer<Type, Deleter>::type;
+		using pointer = typename pvt::RecognizePointer<Type, Deleter>::type;
 		using element_type = Type;
 		using deleter_type = Deleter;
 
 	private:
-		using condition_type_r = typename defstd::conditional<defstd::is_reference<deleter_type>::value, deleter_type, const deleter_type&>::type;
-		using condition_type_ur = typename simstd::remove_reference<deleter_type>::type&&;
+		using condition_type_r = typename conditional<is_reference<deleter_type>::value, deleter_type, const deleter_type&>::type;
+		using condition_type_ur = remove_reference_t<deleter_type>&&;
 
 	public:
 		~unique_ptr() noexcept;
@@ -80,7 +78,7 @@ namespace simstd {
 		: helper_type(deleter_type())
 		, m_ptr()
 	{
-		static_assert(!defstd::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
+		static_assert(!simstd::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
 	}
 
 	template<typename Type, typename Deleter>
@@ -94,7 +92,7 @@ namespace simstd {
 		: helper_type(deleter_type())
 		, m_ptr(ptr)
 	{
-		static_assert(!defstd::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
+		static_assert(!simstd::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
 	}
 
 	template<typename Type, typename Deleter>
@@ -118,7 +116,7 @@ namespace simstd {
 		: helper_type(simstd::move(dltr))
 		, m_ptr(ptr)
 	{
-		static_assert(!defstd::is_reference<deleter_type>::value, "rvalue deleter bound to reference");
+		static_assert(!simstd::is_reference<deleter_type>::value, "rvalue deleter bound to reference");
 	}
 
 	template<typename Type, typename Deleter>
@@ -141,7 +139,7 @@ namespace simstd {
 //	operator = (unique_ptr<OType, ODeleter>&& other) noexcept
 //	{
 //		reset(other.release());
-//		get_deleter() = defstd::forward<ODeleter>(other.get_deleter());
+//		get_deleter() = simstd::forward<ODeleter>(other.get_deleter());
 //		return *this;
 //	}
 

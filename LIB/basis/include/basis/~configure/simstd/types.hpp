@@ -161,7 +161,6 @@ namespace simstd {
 }
 
 namespace simstd {
-
 	template<typename Type, Type Val>
 	struct integral_constant
 	{
@@ -180,6 +179,101 @@ namespace simstd {
 	typedef integral_constant<bool, true> true_type;
 
 	typedef integral_constant<bool, false> false_type;
+}
+
+namespace simstd
+{
+	template<bool Condition, typename IfTrue, typename IfFalse>
+	struct conditional;
+
+	template<typename IfTrue, typename IfFalse>
+	struct conditional<true, IfTrue, IfFalse>
+	{
+		using type = IfTrue;
+	};
+
+	template<typename IfTrue, typename IfFalse>
+	struct conditional<false, IfTrue, IfFalse>
+	{
+		using type = IfFalse;
+	};
+
+	template<typename...>
+	struct _or_;
+
+	template<>
+	struct _or_<> : public false_type
+	{
+	};
+
+	template<typename Type>
+	struct _or_<Type> : public Type
+	{
+	};
+
+	template<typename Type1, typename Type2>
+	struct _or_<Type1, Type2> : public conditional<Type1::value, Type1, Type2>::type
+	{
+	};
+
+	template<typename Type1, typename Type2, typename Type3, typename ... TypeN>
+	struct _or_<Type1, Type2, Type3, TypeN...> : public conditional<Type1::value, Type1, _or_ <Type2, Type3, TypeN...>>::type
+	{
+	};
+
+	template<typename ...>
+	struct _and_;
+
+	template<>
+	struct _and_<> : public true_type
+	{
+	};
+
+	template<typename Type1>
+	struct _and_<Type1> : public Type1
+	{
+	};
+
+	template<typename Type1, typename Type2>
+	struct _and_<Type1, Type2> : public conditional<Type1::value, Type2, Type1>::type
+	{
+	};
+
+	template<typename Type1, typename Type2, typename Type3, typename ... TypeN>
+	struct _and_<Type1, Type2, Type3, TypeN...> : public conditional<Type1::value, _and_ <Type2, Type3, TypeN...>, Type1>::type
+	{
+	};
+
+	template<typename Type>
+	struct _not_: public integral_constant<bool, !Type::value>
+	{
+	};
+}
+
+namespace simstd
+{
+	template<typename>
+	struct is_pointer : public false_type {};
+
+	template<typename Type>
+	struct is_pointer<Type*> : public true_type {};
+
+	template<typename>
+	struct is_lvalue_reference : public false_type {};
+
+	template<typename Type>
+	struct is_lvalue_reference<Type&> : public true_type {};
+
+	template<typename>
+	struct is_rvalue_reference : public false_type {};
+
+	template<typename Type>
+	struct is_rvalue_reference<Type&&> : public true_type {};
+
+	template<typename Type>
+	struct is_reference: public _or_<is_lvalue_reference<Type>, is_rvalue_reference<Type>>::type
+	{
+	};
 
 }
 
