@@ -39,7 +39,7 @@ namespace far3 {
 			ItemBinding(min_width),
 			m_value(value)
 		{
-			LogTrace();
+			LogTraceObj();
 		}
 
 		void PluginEditFieldBinding::save() const

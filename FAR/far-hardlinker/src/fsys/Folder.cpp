@@ -9,6 +9,7 @@ namespace fsys {
 	{
 		LogTraceObj();
 		LogNoise(L"'%s'\n", m_name.c_str());
+		LogNoise2If(m_parent, L"'%s'\n", get_full_path().c_str());
 		++global::statistics().folderObjectsDestroyed;
 	}
 

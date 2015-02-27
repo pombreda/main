@@ -4,6 +4,11 @@
 
 namespace global {
 
+	Statistics::~Statistics()
+	{
+		LogTraceObj();
+	}
+
 	Statistics::Statistics()
 	{
 		LogTraceObj();

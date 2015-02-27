@@ -25,6 +25,7 @@
 
 #include <basis/ext/pattern.hpp>
 #include <basis/simstd/string>
+#include <basis/math.hpp>
 
 struct FarGlobalInfo: public far3::GlobalInfo_i, private pattern::Uncopyable {
 	~FarGlobalInfo();
@@ -52,12 +53,12 @@ struct FarGlobalInfo: public far3::GlobalInfo_i, private pattern::Uncopyable {
 	wchar_t prefix[32];
 
 	enum class CheckBoxMasks: uint64_t {
-		Operation        = bin<000000000000000000000111>::value, // 0b000000000000000000000111,
-		PathMask         = bin<000000000000000000001000>::value,  // 0b000000000000000000001000,
-		DoHardlink       = bin<000000000000000000010000>::value,  // 0b000000000000000000010000,
-		DoRecursive      = bin<000000000000000000100000>::value,  // 0b000000000000000000100000,
-		AskConfirmation  = bin<000000000000000001000000>::value,  // 0b000000000000000001000000,
-		Euristic         = bin<000000000000000010000000>::value,  // 0b000000000000000010000000,
+		Operation        = math::bin<000000000000000000000111>::value,  // 0b000000000000000000000111,
+		PathMask         = math::bin<000000000000000000001000>::value,  // 0b000000000000000000001000,
+		DoHardlink       = math::bin<000000000000000000010000>::value,  // 0b000000000000000000010000,
+		DoRecursive      = math::bin<000000000000000000100000>::value,  // 0b000000000000000000100000,
+		AskConfirmation  = math::bin<000000000000000001000000>::value,  // 0b000000000000000001000000,
+		Euristic         = math::bin<000000000000000010000000>::value,  // 0b000000000000000010000000,
 	};
 
 	int64_t m_cbOperation;

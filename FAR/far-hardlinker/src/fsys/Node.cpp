@@ -3,6 +3,7 @@
 
 #include <basis/sys/logger.hpp>
 #include <basis/sys/cstr.hpp>
+#include <basis/sys/path.hpp>
 
 namespace fsys {
 
@@ -17,13 +18,16 @@ namespace fsys {
 
 	ustring Node::get_full_path() const
 	{
+		auto ret = m_name;
 		if (m_parent) {
 			ustring path = m_parent->get_full_path();
 			path += PATH_SEPARATOR;
 			path += m_name;
-			return path;
+
+			using simstd::swap;
+			swap(path, ret);
 		}
-		return m_name;
+		return path::inplace::ensure_no_end_separator(ret);
 	}
 
 }

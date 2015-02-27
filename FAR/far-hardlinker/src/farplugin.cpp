@@ -70,7 +70,7 @@ void FarPlugin::destroy() const
 
 void FarPlugin::GetPluginInfo(PluginInfo * info)
 {
-	LogTrace();
+	LogTraceObj();
 	info->Flags = PF_EDITOR | PF_VIEWER | PF_DIALOG;
 
 	static GUID PluginMenuGuids[] = {MenuGuid,};
@@ -114,7 +114,7 @@ namespace far3 {
 far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 {
 	UNUSED(info);
-	LogTrace();
+	LogTraceObj();
 
 	using namespace far3;
 	auto fgi = get_global_info();
@@ -158,7 +158,7 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 	//	dialog->add_item(dialog::create_checkbox(fgi->cbValue_AsEmpty, cbAsEmpty, (fgi->get_block_type() != BTYPE_COLUMN) ? DIF_DISABLE : 0));
 		dialog->add_item(dialog::create_separator());
 		dialog->add_OKCancel(message::get(message::txtBtnOk), message::get(message::txtBtnCancel));
-		LogTrace();
+		LogTraceObj();
 		if (dialog->show() == 0) {
 			fgi->save_settings();
 
@@ -166,20 +166,19 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 				auto apanel = far3::open_panel(true);
 //				auto ppanel = far3::open_panel(false);
 				if (apanel) {
+					auto api = apanel->get_info();
+					auto curDir = apanel->get_current_directory();
+					LogNoise(L"pi->curr_dir: '%s'\n", curDir);
+					LogNoise(L"pi->StructSize: %Iu\n", api->StructSize);
+					LogNoise(L"pi->PluginHandle: %p\n", api->PluginHandle);
+					LogNoise(L"pi->Flags: %I64X\n", api->Flags);
+					LogNoise(L"pi->ItemsNumber: %Iu\n", api->ItemsNumber);
+					LogNoise(L"pi->SelectedItemsNumber: %Iu\n", api->SelectedItemsNumber);
+					LogNoise(L"pi->CurrentItem: %Iu\n", api->CurrentItem);
+					LogNoise(L"pi->TopPanelItem: %Iu\n", api->TopPanelItem);
 					auto appi = apanel->get_current();
 					auto afileName = appi->FileName;
-					auto api = apanel->get_info();
-					LogNoise(L"pi->StructSize: '%Iu'\n", api->StructSize);
-					LogNoise(L"pi->PluginHandle: '%p'\n", api->PluginHandle);
-					LogNoise(L"pi->Flags: '%I64X'\n", api->Flags);
-					LogNoise(L"pi->ItemsNumber: '%Iu'\n", api->ItemsNumber);
-					LogNoise(L"pi->SelectedItemsNumber: '%Iu'\n", api->SelectedItemsNumber);
-					LogNoise(L"pi->CurrentItem: '%Iu'\n", api->CurrentItem);
-					LogNoise(L"pi->TopPanelItem: '%Iu'\n", api->TopPanelItem);
-
-					LogNoise(L"pi->curr_dir: '%s'\n", apanel->get_current_directory());
-					LogNoise(L"pi->FileName: '%s'\n", afileName);
-					LogNoise(L"ppi->FileName: '%s'\n", afileName);
+					LogNoise(L"appi->FileName: '%s'\n", afileName);
 //					if (cstr::find(fileName, PATH_SEPARATORS)) {
 //						cstr::copy(buf2, fileName, lengthof(buf2));
 //					} else {
@@ -205,16 +204,18 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 //					LogNoise(L"pi->FileName: '%s'\n", pfileName);
 //					LogNoise(L"ppi->FileName: '%s'\n", pfileName);
 
-					auto acurrent_dir = fsys::Node_t(new fsys::Folder(apanel->get_current_directory()));
-
+//					auto acurrent_dir = fsys::Node_t(new fsys::Folder(curDir));
+					auto acurrent_dir = simstd::make_shared<fsys::Folder>(curDir);
 					apanel->start_selection();
 					for (size_t i = apanel->selected(); i; --i) {
 						auto item = apanel->get_selected(0);
 						if (item) {
 							if (fsys::is_dir(item->FileAttributes))
-								global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(item->FileName, acurrent_dir)));
+//								global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(item->FileName, acurrent_dir)));
+								global::vars().folders.emplace_back(simstd::make_shared<fsys::Folder>(item->FileName, acurrent_dir));
 							else
-								global::vars().files.emplace_back(fsys::File_t(new fsys::File(item->FileName, acurrent_dir)));
+//								global::vars().files.emplace_back(fsys::File_t(new fsys::File(item->FileName, acurrent_dir)));
+								global::vars().files.emplace_back(simstd::make_shared<fsys::File>(item->FileName, acurrent_dir));
 						}
 						apanel->unselect(0);
 					}
@@ -225,7 +226,7 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 			FileProcessor().execute();
 		}
 	}
-	LogTrace();
+	LogTraceObj();
 
 	return nullptr;
 }

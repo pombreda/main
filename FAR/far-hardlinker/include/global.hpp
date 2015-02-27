@@ -62,6 +62,7 @@ namespace global {
 		uint64_t duplicateFileHardLinkerObjCreated;
 		uint64_t duplicateFileHardLinkerObjDestroyed;
 
+		~Statistics();
 		Statistics();
 	};
 

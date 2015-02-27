@@ -26,15 +26,15 @@ namespace far3 {
 
 	Settings_t::~Settings_t()
 	{
-		LogTrace();
+		LogTraceObjBegin();
 		psi().SettingsControl(m_hndl, SCTL_FREE, 0, 0);
-		LogNoise(L"Object destoyed\n");
+		LogTraceObjEnd();
 	}
 
 	Settings_t::Settings_t(const GUID & guid) :
 		m_hndl(INVALID_HANDLE_VALUE )
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsCreate settings = {sizeof(settings), guid, m_hndl};
 		if (psi().SettingsControl(INVALID_HANDLE_VALUE, SCTL_CREATE, 0, &settings))
 			m_hndl = settings.Handle;
@@ -42,28 +42,28 @@ namespace far3 {
 
 	intptr_t Settings_t::create_key(PCWSTR name, FARSETTINGS_SUBFOLDERS root)
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsValue value = {sizeof(value), root, name};
 		return psi().SettingsControl(m_hndl, SCTL_CREATESUBKEY, 0, &value);
 	}
 
 	intptr_t Settings_t::open_key(PCWSTR name, FARSETTINGS_SUBFOLDERS root) const
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsValue value = {sizeof(value), root, name};
 		return psi().SettingsControl(m_hndl, SCTL_OPENSUBKEY, 0, &value);
 	}
 
 	intptr_t Settings_t::del(PCWSTR name, FARSETTINGS_SUBFOLDERS root)
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsValue value = {sizeof(value), root, name};
 		return psi().SettingsControl(m_hndl, SCTL_DELETE, 0, &value);
 	}
 
 	size_t Settings_t::get(PCWSTR name, PVOID value, size_t size, FARSETTINGS_SUBFOLDERS root) const
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsItem item;
 		memory::zero(item);
 		item.StructSize = sizeof(item);
@@ -84,7 +84,7 @@ namespace far3 {
 
 	PCWSTR Settings_t::get(PCWSTR name, PCWSTR def, FARSETTINGS_SUBFOLDERS root) const
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsItem item;
 		memory::zero(item);
 		item.StructSize = sizeof(item);
@@ -96,7 +96,7 @@ namespace far3 {
 
 	uint64_t Settings_t::get(PCWSTR name, uint64_t def, FARSETTINGS_SUBFOLDERS root) const
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsItem item;
 		memory::zero(item);
 		item.StructSize = sizeof(item);
@@ -108,19 +108,19 @@ namespace far3 {
 
 	int64_t Settings_t::get(PCWSTR name, int64_t def, FARSETTINGS_SUBFOLDERS root) const
 	{
-		LogTrace();
+		LogTraceObj();
 		return (int64_t)get(name, (uint64_t)def, root);
 	}
 
 	bool Settings_t::get(PCWSTR name, bool def, FARSETTINGS_SUBFOLDERS root) const
 	{
-		LogTrace();
+		LogTraceObj();
 		return get(name, def ? 1ull : 0ull, root);
 	}
 
 	bool Settings_t::set(PCWSTR name, PCVOID value, size_t size, FARSETTINGS_SUBFOLDERS root)
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsItem item;
 		memory::zero(item);
 		item.StructSize = sizeof(item);
@@ -134,7 +134,7 @@ namespace far3 {
 
 	bool Settings_t::set(PCWSTR name, PCWSTR value, FARSETTINGS_SUBFOLDERS root)
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsItem item;
 		memory::zero(item);
 		item.StructSize = sizeof(item);
@@ -147,7 +147,7 @@ namespace far3 {
 
 	bool Settings_t::set(PCWSTR name, uint64_t value, FARSETTINGS_SUBFOLDERS root)
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsItem item;
 		memory::zero(item);
 		item.StructSize = sizeof(item);
@@ -160,7 +160,7 @@ namespace far3 {
 
 	bool Settings_t::set(PCWSTR name, int64_t value, FARSETTINGS_SUBFOLDERS root)
 	{
-		LogTrace();
+		LogTraceObj();
 		FarSettingsItem item;
 		memory::zero(item);
 		item.StructSize = sizeof(item);
@@ -173,7 +173,7 @@ namespace far3 {
 
 	bool Settings_t::set(PCWSTR name, bool value, FARSETTINGS_SUBFOLDERS root)
 	{
-		LogTrace();
+		LogTraceObj();
 		return set(name, value ? 1ull : 0ull, root);
 	}
 

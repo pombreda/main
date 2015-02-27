@@ -26,19 +26,20 @@ namespace far3 {
 
 	GlobalInfo_i::~GlobalInfo_i()
 	{
+		LogTraceObjBegin();
 		m_plugin->destroy();
-		LogTrace();
+		LogTraceObjEnd();
 	}
 
 	GlobalInfo_i::GlobalInfo_i() :
 		m_plugin(nullptr)
 	{
-		LogTrace();
+		LogTraceObj();
 	}
 
 	void GlobalInfo_i::GetGlobalInfoW(GlobalInfo * info) const
 	{
-		LogTrace();
+		LogTraceObj();
 		info->StructSize = sizeof(*info);
 		info->MinFarVersion = get_min_version();
 		info->Version = get_version();
@@ -50,7 +51,7 @@ namespace far3 {
 
 	intptr_t GlobalInfo_i::ConfigureW(const ConfigureInfo * info)
 	{
-		LogTrace();
+		LogTraceObj();
 		if (info->StructSize < sizeof(*info))
 			return 0;
 
@@ -59,7 +60,7 @@ namespace far3 {
 
 	void GlobalInfo_i::SetStartupInfoW(const PluginStartupInfo * info)
 	{
-		LogTrace();
+		LogTraceObj();
 		if (info->StructSize < sizeof(*info))
 			return;
 
@@ -80,7 +81,7 @@ namespace far3 {
 
 	intptr_t GlobalInfo_i::Configure(const ConfigureInfo * /*info*/)
 	{
-		LogTrace();
+		LogTraceObj();
 		return 0;
 	}
 

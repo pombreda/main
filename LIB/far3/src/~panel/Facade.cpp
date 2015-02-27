@@ -169,25 +169,25 @@ namespace far3 {
 
 		void FacadeImpl::start_selection()
 		{
-			LogTrace();
+			LogTraceObj();
 			psi().PanelControl(m_hndl, FCTL_BEGINSELECTION, 0, nullptr);
 		}
 
 		void FacadeImpl::select(size_t index, bool in)
 		{
-			LogTrace();
+			LogTraceObj();
 			psi().PanelControl(m_hndl, FCTL_SETSELECTION, index, (PVOID)in);
 		}
 
 		void FacadeImpl::unselect(size_t index)
 		{
-			LogTrace();
+			LogTraceObj();
 			psi().PanelControl(m_hndl, FCTL_CLEARSELECTION, index, nullptr);
 		}
 
 		void FacadeImpl::commit_selection()
 		{
-			LogTrace();
+			LogTraceObj();
 			psi().PanelControl(m_hndl, FCTL_ENDSELECTION, 0, nullptr);
 		}
 

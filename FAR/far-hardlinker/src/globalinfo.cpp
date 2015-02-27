@@ -98,19 +98,37 @@ VersionInfo FarGlobalInfo::get_min_version() const
 
 far3::Plugin_i* FarGlobalInfo::CreatePlugin(const PluginStartupInfo* psi) const
 {
-	LogTrace();
+	LogTraceObj();
 	far3::Plugin_i* plugin = create_FarPlugin(psi);
 	return plugin;
 }
 
 void FarGlobalInfo::load_settings()
 {
-	LogTrace();
+	LogTraceObj();
+	LogReport(L"m_cbOperation: %I64d\n", m_cbOperation);
+	LogReport(L"m_cbMask: %I64d\n", m_cbMask);
+	LogReport(L"m_cbDoHardlink: %I64d\n", m_cbDoHardlink);
+	LogReport(L"m_cbDoRecursive: %I64d\n", m_cbDoRecursive);
+	LogReport(L"m_cbAskConfirmation: %I64d\n", m_cbAskConfirmation);
+	LogReport(L"m_cbEuristic: %I64d\n", m_cbEuristic);
+	LogReport(L"m_cbRestrictionFileTime: %I64d\n", m_cbRestrictionFileTime);
+	LogReport(L"m_cbRestrictionFileAttributes: %I64d\n", m_cbRestrictionFileAttributes);
+	LogReport(L"m_cbFilterFileSize: %I64d\n", m_cbFilterFileSize);
+	LogReport(L"m_cbFilterFileReadOnly: %I64d\n", m_cbFilterFileReadOnly);
+	LogReport(L"m_cbFilterFileHidden: %I64d\n", m_cbFilterFileHidden);
+	LogReport(L"m_cbFilterFileSystem: %I64d\n", m_cbFilterFileSystem);
+	LogReport(L"m_cbFilterFileLink: %I64d\n", m_cbFilterFileLink);
+	LogReport(L"m_cbFilterDirReadOnly: %I64d\n", m_cbFilterDirReadOnly);
+	LogReport(L"m_cbFilterDirHidden: %I64d\n", m_cbFilterDirHidden);
+	LogReport(L"m_cbFilterDirSystem: %I64d\n", m_cbFilterDirSystem);
+	LogReport(L"m_cbFilterDirLink: %I64d\n", m_cbFilterDirLink);
+	LogReport(L"m_edMask: '%s'\n", m_edMask.c_str());
 }
 
 void FarGlobalInfo::save_settings() const
 {
-	LogTrace();
+	LogTraceObj();
 }
 
 FarGlobalInfo* get_global_info()
