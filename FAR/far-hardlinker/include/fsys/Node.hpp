@@ -68,11 +68,11 @@ namespace fsys {
 
 		uint64_t inode() const;
 
-		const hash_type & get_head_hash() const;
+		const hash_type& get_head_hash() const;
 
-		const hash_type & get_tail_hash() const;
+		const hash_type& get_tail_hash() const;
 
-		const hash_type & get_whole_hash() const;
+		const hash_type& get_whole_hash() const;
 
 	private:
 		void refresh_handle_info(bool basicInfo = false) const;

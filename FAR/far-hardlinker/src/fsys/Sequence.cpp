@@ -109,9 +109,11 @@ namespace fsys {
 	///=================================================================================================================
 	Sequence::ci_iterator::impl::~impl() noexcept
 	{
-		LogTraceObj();
-		if (findHandle && findHandle != INVALID_HANDLE_VALUE ) {
-			::FindClose(findHandle);
+		if (sequence) {
+			LogTraceObj();
+			if (findHandle && findHandle != INVALID_HANDLE_VALUE ) {
+				::FindClose(findHandle);
+			}
 		}
 	}
 
@@ -119,7 +121,6 @@ namespace fsys {
 		sequence(),
 		findHandle()
 	{
-		LogTraceObj();
 	}
 
 	Sequence::ci_iterator::impl::impl(const Sequence& sequence) noexcept :
@@ -127,6 +128,16 @@ namespace fsys {
 		findHandle(INVALID_HANDLE_VALUE)
 	{
 		LogTraceObj();
+	}
+
+	Sequence::ci_iterator::impl::impl(impl&& other) noexcept :
+		sequence(),
+		findHandle()
+	{
+		LogTraceObj();
+		using simstd::swap;
+		swap(sequence, other.sequence);
+		swap(findHandle, other.findHandle);
 	}
 
 }

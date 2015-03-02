@@ -36,10 +36,11 @@ namespace fsys {
 		~impl() noexcept;
 		impl() noexcept;
 		impl(const Sequence& sequence) noexcept;
+		impl(impl&& sequence) noexcept;
 
-		const Sequence* sequence;
-		HANDLE          findHandle;
-		FindStat        findStat;
+		mutable const Sequence* sequence;
+		HANDLE                  findHandle;
+		FindStat                findStat;
 	};
 
 }

@@ -204,17 +204,14 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 //					LogNoise(L"pi->FileName: '%s'\n", pfileName);
 //					LogNoise(L"ppi->FileName: '%s'\n", pfileName);
 
-//					auto acurrent_dir = fsys::Node_t(new fsys::Folder(curDir));
 					auto acurrent_dir = simstd::make_shared<fsys::Folder>(curDir);
 					apanel->start_selection();
 					for (size_t i = apanel->selected(); i; --i) {
 						auto item = apanel->get_selected(0);
 						if (item) {
 							if (fsys::is_dir(item->FileAttributes))
-//								global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(item->FileName, acurrent_dir)));
 								global::vars().folders.emplace_back(simstd::make_shared<fsys::Folder>(item->FileName, acurrent_dir));
 							else
-//								global::vars().files.emplace_back(fsys::File_t(new fsys::File(item->FileName, acurrent_dir)));
 								global::vars().files.emplace_back(simstd::make_shared<fsys::File>(item->FileName, acurrent_dir));
 						}
 						apanel->unselect(0);
