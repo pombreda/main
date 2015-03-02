@@ -83,11 +83,11 @@ namespace global {
 		fsys::Files_t files;
 	};
 
-	Statistics & statistics();
+	Statistics& statistics();
 
-	Options & options();
+	Options& options();
 
-	Vars & vars();
+	Vars& vars();
 }
 
 #endif

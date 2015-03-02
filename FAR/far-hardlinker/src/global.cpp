@@ -51,19 +51,19 @@ namespace global {
 //		}
 	}
 
-	Statistics & statistics()
+	Statistics& statistics()
 	{
 		static Statistics instance;
 		return instance;
 	}
 
-	Options & options()
+	Options& options()
 	{
 		static Options instance;
 		return instance;
 	}
 
-	Vars & vars()
+	Vars& vars()
 	{
 		static Vars instance;
 		return instance;
