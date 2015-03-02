@@ -210,10 +210,8 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo* info)
 						auto item = apanel->get_selected(0);
 						if (item) {
 							if (fsys::is_dir(item->FileAttributes))
-//								global::vars().folders.emplace_back(fsys::Node_t(new fsys::Folder(item->FileName, acurrent_dir)));
 								global::vars().folders.emplace_back(simstd::make_shared<fsys::Folder>(item->FileName, acurrent_dir));
 							else
-//								global::vars().files.emplace_back(fsys::File_t(new fsys::File(item->FileName, acurrent_dir)));
 								global::vars().files.emplace_back(simstd::make_shared<fsys::File>(item->FileName, acurrent_dir));
 						}
 						apanel->unselect(0);
