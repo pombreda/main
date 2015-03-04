@@ -3,18 +3,37 @@
 
 namespace tst {
 
-	class Base {
+	class Base1 {
 	public:
-		virtual ~Base();
-		Base();
+		virtual ~Base1();
+		Base1();
+	private:
+		ssize_t i = ssize_t();
 	};
 
-	class Derived: public Base {
+	class Base2 {
 	public:
-		~Derived();
-		Derived();
+		virtual ~Base2();
+		Base2();
+	private:
+		ssize_t i = ssize_t();
 	};
 
+	class Derived1: public Base1 {
+	public:
+		~Derived1();
+		Derived1();
+	private:
+		ssize_t i = ssize_t();
+	};
+
+	class Derived2: public Base1, public Base2 {
+	public:
+		~Derived2();
+		Derived2();
+	private:
+		ssize_t i = ssize_t();
+	};
 }
 
 #endif

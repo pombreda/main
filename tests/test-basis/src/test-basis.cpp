@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 //
 //	test_memory();
 //
-//	tst::_shared_ptr();
+	tst::_shared_ptr();
 //
 //	test_string();
 //
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
 //
 //	test_threads();
 //
-	tst::_unique_ptr();
+//	tst::_unique_ptr();
 //
 //	test_url();
 //

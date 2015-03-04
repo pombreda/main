@@ -18,9 +18,9 @@ namespace tst
 		delete p;
 	}
 
-	void Base_deleter(Base* p)
+	void Base_deleter(Base1* p)
 	{
-		TestFuncPlaceFormat("Base_deleter called\n");
+		TestFuncPlaceFormat("Base1_deleter called\n");
 		delete p;
 	}
 
@@ -46,14 +46,26 @@ ssize_t tst::_shared_ptr()
 	TestFuncPlaceFormat("begin\n");
 
 	{
-		auto sdAuto2 = simstd::allocate_shared<Derived>(simstd::allocator<Derived>());
+		auto der2 = simstd::allocate_shared<Derived2>(simstd::allocator<Derived2>());
+		simstd::shared_ptr<Base1> bas1(der2);
+		simstd::shared_ptr<Base2> bas2(der2);
+		TestFuncPlaceFormat("get(der2):      %p\n",  der2.get());
+		TestFuncPlaceFormat("get(bas1):      %p\n",  bas1.get());
+		TestFuncPlaceFormat("get(bas2):      %p\n",  bas2.get());
+		TestFuncPlaceFormat("sizeof(*der2):  %Iu\n", sizeof(*der2));
+		TestFuncPlaceFormat("sizeof(*bas1):  %Iu\n", sizeof(*bas1));
+		TestFuncPlaceFormat("sizeof(*bas2):  %Iu\n", sizeof(*bas2));
+	}
+
+	{
+		auto sdAuto2 = simstd::allocate_shared<Derived1>(simstd::allocator<Derived1>());
 		TestFuncPlaceFormat("sizeof(sdAuto2):  %Iu\n", sizeof(sdAuto2));
 		TestFuncPlaceFormat("get():            %p\n",  sdAuto2.get());
 		sdAuto2.reset();
 	}
 
 	{
-		auto sdAuto1 = simstd::make_shared<Derived>();
+		auto sdAuto1 = simstd::make_shared<Derived1>();
 		TestFuncPlaceFormat("sizeof(sdAuto1):  %Iu\n", sizeof(sdAuto1));
 		TestFuncPlaceFormat("get():            %p\n",  sdAuto1.get());
 		sdAuto1.reset();
@@ -63,20 +75,20 @@ ssize_t tst::_shared_ptr()
 		simstd::shared_ptr<int> aptr1, aptr2;
 		TestFuncPlace();
 		{
-			// create a shared_ptr that owns a tst::A and a A_deleter
-			auto foo_p = new tst::A;
-			simstd::shared_ptr<tst::A> r(foo_p, A_deleter);
+			// create a shared_ptr that owns a A and a A_deleter
+			auto foo_p = new A;
+			simstd::shared_ptr<A> r(foo_p, A_deleter);
 			TestFuncPlaceFormat("r: %p\n", r.get());
 			aptr1 = simstd::shared_ptr<int>(r, &r->j); // aliasing ctor
 			TestFuncPlaceFormat("&r->j: %p\n", aptr1.get());
 			aptr2 = simstd::shared_ptr<int>(r, &r->i); // aliasing ctor
 			TestFuncPlaceFormat("&r->i: %p\n", aptr2.get());
 			TestFuncPlaceFormat("sizeof(r): %Iu, r.use_count: %Iu\n", sizeof(r), r.use_count());
-			// aptr1 is now pointing to an int, but managing the whole tst::A
+			// aptr1 is now pointing to an int, but managing the whole A
 		} // r gets destroyed (deleter not called)
 
 		// obtain pointer to the deleter:
-		auto del_p = simstd::get_deleter<void(*)(tst::A*)>(aptr1);
+		auto del_p = simstd::get_deleter<void(*)(A*)>(aptr1);
 		TestFuncPlace();
 		if (del_p) {
 			TestFuncPlaceFormat("shared_ptr<int> owns a deleter\n");
@@ -87,53 +99,53 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
-		std::shared_ptr<tst::Derived> stdd(new tst::Derived);
+		std::shared_ptr<Derived1> stdd(new Derived1);
 		TestFuncPlaceFormat("sizeof(stdd): %Iu\n", sizeof(stdd));
 
-		std::shared_ptr<tst::Base> stdb(new tst::Base);
+		std::shared_ptr<Base1> stdb(new Base1);
 		TestFuncPlaceFormat("sizeof(stdb): %Iu\n", sizeof(stdb));
 
 		stdb = stdd;
 	}
 
 	{
-		simstd::shared_ptr<tst::Derived> d(new tst::Derived);
+		simstd::shared_ptr<Derived1> d(new Derived1);
 		TestFuncPlaceFormat("sizeof(d): %Iu\n", sizeof(d));
 
-		simstd::shared_ptr<tst::Base> b(new tst::Base);
+		simstd::shared_ptr<Base1> b(new Base1);
 		TestFuncPlaceFormat("sizeof(b): %Iu\n", sizeof(b));
 
 		b = d;
 	}
 
 	{
-		simstd::shared_ptr<Derived> sdNull(nullptr);
+		simstd::shared_ptr<Derived1> sdNull(nullptr);
 		TestFuncPlaceFormat("sizeof(sdNull):  %Iu\n", sizeof(sdNull));
 		TestFuncPlaceFormat("get():           %p\n",  sdNull.get());
 		sdNull.reset();
 	}
 
 	{
-		simstd::shared_ptr<Base> sdb(new Derived);
+		simstd::shared_ptr<Base1> sdb(new Derived1);
 		TestFuncPlaceFormat("sizeof(sdb):  %Iu\n", sizeof(sdb));
 		TestFuncPlaceFormat("get():       %p\n",   sdb.get());
 		sdb.reset();
 	}
 
 	{
-		simstd::shared_ptr<Derived> sdd(new Derived);
+		simstd::shared_ptr<Derived1> sdd(new Derived1);
 		TestFuncPlaceFormat("sizeof(sdd):  %Iu\n", sizeof(sdd));
 		TestFuncPlaceFormat("get():        %p\n",  sdd.get());
 		sdd.reset();
 	}
 
 	{
-		auto deleter = [](const Derived* ptr){
+		auto deleter = [](const Derived1* ptr){
 			TestFuncPlaceFormat("[deleter called]: %p\n", ptr);
 			delete ptr;
 		};
 
-		simstd::shared_ptr<Derived> sdDeleter(new Derived, deleter);
+		simstd::shared_ptr<Derived1> sdDeleter(new Derived1, deleter);
 		TestFuncPlaceFormat("sizeof(sdDeleter):  %Iu\n", sizeof(sdDeleter));
 		TestFuncPlaceFormat("get():              %p\n",  sdDeleter.get());
 		sdDeleter.reset();
@@ -152,11 +164,11 @@ ssize_t tst::_shared_ptr()
 	}
 
 	TestFuncPlaceFormat("\nallocating der\n");
-	auto der = new Derived;
+	auto der = new Derived1;
 	TestFuncPlaceFormat("der: %p\n", der);
 
 	TestFuncPlaceFormat("\nallocating sd\n");
-	simstd::shared_ptr<Derived> sd(der);
+	simstd::shared_ptr<Derived1> sd(der);
 	TestFuncPlaceFormat("sizeof(sd):  %Iu\n", sizeof(sd));
 	TestFuncPlaceFormat("get():       %p\n",  sd.get());
 	TestFuncPlaceFormat("bool():      %d\n",  sd.operator bool());
@@ -164,7 +176,7 @@ ssize_t tst::_shared_ptr()
 	TestFuncPlaceFormat("use_count(): %Iu\n", sd.use_count());
 
 	TestFuncPlaceFormat("\nallocating wd\n");
-	simstd::weak_ptr<Derived> wd(sd);
+	simstd::weak_ptr<Derived1> wd(sd);
 	TestFuncPlaceFormat("sizeof(wd):  %Iu\n", sizeof(wd));
 	TestFuncPlaceFormat("use_count(): %Iu\n", wd.use_count());
 	TestFuncPlaceFormat("expired():   %d\n", wd.expired());

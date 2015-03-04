@@ -4,20 +4,38 @@
 namespace tst
 {
 
-	Base::~Base()
+	Base1::~Base1()
 	{
 		LogTraceObj();
 	}
-	Base::Base()
+	Base1::Base1()
 	{
 		LogTraceObj();
 	}
 
-	Derived::~Derived()
+	Base2::~Base2()
 	{
 		LogTraceObj();
 	}
-	Derived::Derived()
+	Base2::Base2()
+	{
+		LogTraceObj();
+	}
+
+	Derived1::~Derived1()
+	{
+		LogTraceObj();
+	}
+	Derived1::Derived1()
+	{
+		LogTraceObj();
+	}
+
+	Derived2::~Derived2()
+	{
+		LogTraceObj();
+	}
+	Derived2::Derived2()
 	{
 		LogTraceObj();
 	}

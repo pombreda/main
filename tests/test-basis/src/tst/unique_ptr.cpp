@@ -27,18 +27,18 @@ ssize_t tst::_unique_ptr()
 {
 	TestFuncPlaceFormat("BEGIN\n");
 
-	auto deleter = [](Base* ptr){
+	auto deleter = [](Base1* ptr){
 		TestFuncPlaceFormat("[deleter called]\n");
 		delete ptr;
 	};
 
-	simstd::unique_ptr<Derived, decltype(deleter)> uniq1(new Derived, deleter);
-	   std::unique_ptr<Derived, decltype(deleter)> uniq1s(new Derived, deleter);
+	simstd::unique_ptr<Derived1, decltype(deleter)> uniq1(new Derived1, deleter);
+	   std::unique_ptr<Derived1, decltype(deleter)> uniq1s(new Derived1, deleter);
 	TestFuncPlaceFormat("sizeof(uniq1): %d\n", sizeof(uniq1));
 	TestFuncPlaceFormat("sizeof(uniq1s): %d\n", sizeof(uniq1s));
 
-	simstd::unique_ptr<Base, Dltr<Base>> uniq2(new Base, Dltr<Base>());
-	   std::unique_ptr<Base, Dltr<Base>> uniq2s(new Base, Dltr<Base>());
+	simstd::unique_ptr<Base1, Dltr<Base1>> uniq2(new Base1, Dltr<Base1>());
+	   std::unique_ptr<Base1, Dltr<Base1>> uniq2s(new Base1, Dltr<Base1>());
 	TestFuncPlaceFormat("sizeof(uniq2): %d\n", sizeof(uniq2));
 	TestFuncPlaceFormat("sizeof(uniq2s): %d\n", sizeof(uniq2s));
 
