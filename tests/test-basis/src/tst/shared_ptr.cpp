@@ -55,6 +55,28 @@ ssize_t tst::_shared_ptr()
 		TestFuncPlaceFormat("sizeof(*der2):  %Iu\n", sizeof(*der2));
 		TestFuncPlaceFormat("sizeof(*bas1):  %Iu\n", sizeof(*bas1));
 		TestFuncPlaceFormat("sizeof(*bas2):  %Iu\n", sizeof(*bas2));
+
+		auto der2i = simstd::shared_ptr<ssize_t>(der2, &der2->i);
+		auto der2i1 = simstd::shared_ptr<ssize_t>(der2, &der2->Base1::i);
+		auto der2i2 = simstd::shared_ptr<ssize_t>(der2, &der2->Base2::i);
+		auto der2i21 = simstd::shared_ptr<ssize_t>(der2, &der2->Derived2::i);
+		auto bas1i = simstd::shared_ptr<ssize_t>(bas1, &bas1->i);
+		auto bas2i = simstd::shared_ptr<ssize_t>(bas2, &bas2->i);
+		TestFuncPlaceFormat("get(&der2i->i):      %p\n",  der2i.get());
+		TestFuncPlaceFormat("get(&der2i1->i):     %p\n",  der2i1.get());
+		TestFuncPlaceFormat("get(&der2i2->i):     %p\n",  der2i2.get());
+		TestFuncPlaceFormat("get(&der2i21->i):    %p\n",  der2i21.get());
+		TestFuncPlaceFormat("get(&bas1i->i):      %p\n",  bas1i.get());
+		TestFuncPlaceFormat("get(&bas2i->i):      %p\n",  bas2i.get());
+
+//		Derived2* qwe = new Derived2;
+//		TestFuncPlaceFormat("qwe):               %p\n",  qwe);
+//		TestFuncPlaceFormat("qwe(Base1)):        %p\n",  static_cast<Base1*>(qwe));
+//		TestFuncPlaceFormat("qwe(Base2)):        %p\n",  static_cast<Base2*>(qwe));
+//		TestFuncPlaceFormat("&qwe->Base1::i):    %p\n",  &qwe->Base1::i);
+//		TestFuncPlaceFormat("&qwe->Base2::i):    %p\n",  &qwe->Base2::i);
+//		TestFuncPlaceFormat("&qwe->Derived2::i): %p\n",  &qwe->Derived2::i);
+//		TestFuncPlaceFormat("&qwe->i):           %p\n",  &qwe->i);
 	}
 
 	{

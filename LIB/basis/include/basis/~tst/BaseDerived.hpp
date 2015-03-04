@@ -7,7 +7,6 @@ namespace tst {
 	public:
 		virtual ~Base1();
 		Base1();
-	private:
 		ssize_t i = ssize_t();
 	};
 
@@ -15,7 +14,6 @@ namespace tst {
 	public:
 		virtual ~Base2();
 		Base2();
-	private:
 		ssize_t i = ssize_t();
 	};
 
@@ -23,7 +21,6 @@ namespace tst {
 	public:
 		~Derived1();
 		Derived1();
-	private:
 		ssize_t i = ssize_t();
 	};
 
@@ -31,7 +28,6 @@ namespace tst {
 	public:
 		~Derived2();
 		Derived2();
-	private:
 		ssize_t i = ssize_t();
 	};
 }
