@@ -9,7 +9,7 @@ namespace fsys {
 	File::~File()
 	{
 		LogTraceObj();
-		LogNoise(L"'%s', '%s'\n", m_name.c_str(), get_full_path().c_str());
+		LogNoise(L"'%s' [%I64u], '%s'\n", m_name.c_str(), size(), get_full_path().c_str());
 		++global::statistics().fileObjectsDestroyed;
 	}
 
