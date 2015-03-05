@@ -46,6 +46,7 @@ ssize_t tst::_shared_ptr()
 	TestFuncPlaceFormat("begin\n");
 
 	{
+		TestFuncPlace();
 		auto der2 = simstd::allocate_shared<Derived2>(simstd::allocator<Derived2>());
 		simstd::shared_ptr<Base1> bas1(der2);
 		simstd::shared_ptr<Base2> bas2(der2);
@@ -92,6 +93,7 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
+		TestFuncPlace();
 		auto sdAuto2 = simstd::allocate_shared<Derived1>(simstd::allocator<Derived1>());
 		TestFuncPlaceFormat("sizeof(sdAuto2):  %Iu\n", sizeof(sdAuto2));
 		TestFuncPlaceFormat("get():            %p\n",  sdAuto2.get());
@@ -99,6 +101,7 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
+		TestFuncPlace();
 		auto sdAuto1 = simstd::make_shared<Derived1>();
 		TestFuncPlaceFormat("sizeof(sdAuto1):  %Iu\n", sizeof(sdAuto1));
 		TestFuncPlaceFormat("get():            %p\n",  sdAuto1.get());
@@ -106,8 +109,8 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
-		simstd::shared_ptr<int> aptr1, aptr2;
 		TestFuncPlace();
+		simstd::shared_ptr<int> aptr1, aptr2;
 		{
 			// create a shared_ptr that owns a A and a A_deleter
 			auto foo_p = new A;
@@ -133,6 +136,7 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
+		TestFuncPlace();
 		std::shared_ptr<Derived1> stdd(new Derived1);
 		TestFuncPlaceFormat("sizeof(stdd): %Iu\n", sizeof(stdd));
 
@@ -143,6 +147,7 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
+		TestFuncPlace();
 		simstd::shared_ptr<Derived1> d(new Derived1);
 		TestFuncPlaceFormat("sizeof(d): %Iu\n", sizeof(d));
 
@@ -153,6 +158,7 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
+		TestFuncPlace();
 		simstd::shared_ptr<Derived1> sdNull(nullptr);
 		TestFuncPlaceFormat("sizeof(sdNull):  %Iu\n", sizeof(sdNull));
 		TestFuncPlaceFormat("get():           %p\n",  sdNull.get());
@@ -160,6 +166,7 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
+		TestFuncPlace();
 		simstd::shared_ptr<Base1> sdb(new Derived1);
 		TestFuncPlaceFormat("sizeof(sdb):  %Iu\n", sizeof(sdb));
 		TestFuncPlaceFormat("get():       %p\n",   sdb.get());
@@ -167,6 +174,7 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
+		TestFuncPlace();
 		simstd::shared_ptr<Derived1> sdd(new Derived1);
 		TestFuncPlaceFormat("sizeof(sdd):  %Iu\n", sizeof(sdd));
 		TestFuncPlaceFormat("get():        %p\n",  sdd.get());
@@ -174,6 +182,7 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
+		TestFuncPlace();
 		auto deleter = [](const Derived1* ptr){
 			TestFuncPlaceFormat("[deleter called]: %p\n", ptr);
 			delete ptr;
@@ -186,6 +195,7 @@ ssize_t tst::_shared_ptr()
 	}
 
 	{
+		TestFuncPlace();
 		// Good: the two shared_ptr's share the same object
 		simstd::shared_ptr<Good> gp1(new Good);
 		simstd::shared_ptr<Good> gp2 = gp1->getptr();
@@ -197,6 +207,22 @@ ssize_t tst::_shared_ptr()
 		TestFuncPlaceFormat("bp1.use_count():  %Iu\n", bp1.use_count());
 	}
 
+	{
+		TestFuncPlace();
+		auto deleter = [](Derived2* ptr){
+			TestFuncPlaceFormat("[deleter called]\n");
+			delete ptr;
+		};
+
+		simstd::unique_ptr<Derived2, decltype(deleter)> uptr(new Derived2, deleter);
+		TestFuncPlaceFormat("uptr.get():         %p\n",  uptr.get());
+
+		simstd::shared_ptr<Derived2> sptr(simstd::move(uptr));
+		TestFuncPlaceFormat("sptr.get():         %p\n",  sptr.get());
+		TestFuncPlaceFormat("sptr.use_count():   %Iu\n", sptr.use_count());
+	}
+
+	TestFuncPlace();
 	TestFuncPlaceFormat("\nallocating der\n");
 	auto der = new Derived1;
 	TestFuncPlaceFormat("der: %p\n", der);
@@ -245,6 +271,7 @@ ssize_t tst::_shared_ptr()
 	TestFuncPlaceFormat("unique():    %d\n", sd3.unique());
 	TestFuncPlaceFormat("use_count(): %Iu\n", sd3.use_count());
 
+	TestFuncPlaceFormat("objects: %Id\n", Base1::objects);
 	TestFuncPlaceFormat("end\n");
 	return 0;
 }

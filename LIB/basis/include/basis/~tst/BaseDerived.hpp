@@ -12,6 +12,8 @@ namespace tst {
 		virtual ssize_t get_value() const;
 
 		ssize_t i = ssize_t();
+
+		static ssize_t objects;
 	};
 
 	class Base2 {

@@ -24,6 +24,7 @@ namespace simstd
 			explicit shared_count(Ptr ptr)
 				: counter(new counted_ptr<Ptr, LockPol>(ptr))
 			{
+				CRT_ASSERT(counter);
 			}
 
 			template<typename Ptr, typename Deleter>
@@ -40,27 +41,24 @@ namespace simstd
 				using allocator_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counter_type>;
 
 				typename allocator_traits::allocator_type l_allocator(allocator);
-				auto l_counter = allocator_traits::allocate(l_allocator, 1);
-				CRT_ASSERT(l_counter);
-
-				allocator_traits::construct(l_allocator, l_counter, ptr, simstd::move(deleter), simstd::move(allocator));
-				counter = l_counter;
+				counter = allocator_traits::allocate(l_allocator, 1);
+				CRT_ASSERT(counter);
+				allocator_traits::construct(l_allocator, counter, ptr, simstd::move(deleter), simstd::move(allocator));
 			}
 
 			template<typename Type, typename Allocator, typename... Args>
 			shared_count(make_shared_tag, Type*, const Allocator& allocator, Args&&... args)
 				: counter()
 			{
-				TraceFunc();
 				using counter_type = counted_ptr_inplace<Type, Allocator, LockPol>;
 				using allocator_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counter_type>;
 
 				typename allocator_traits::allocator_type l_allocator(allocator);
-				auto l_counter = allocator_traits::allocate(l_allocator, 1);
-				CRT_ASSERT(l_counter);
+				counter = allocator_traits::allocate(l_allocator, 1);
+				CRT_ASSERT(counter);
 
-				allocator_traits::construct(l_allocator, l_counter, simstd::move(allocator), simstd::forward<Args>(args)...);
-				counter = l_counter;
+				allocator_traits::construct(l_allocator, counter, simstd::move(allocator), simstd::forward<Args>(args)...);
+				counter = counter;
 			}
 
 			template<typename Type, typename Deleter>
