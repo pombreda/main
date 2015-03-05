@@ -58,25 +58,12 @@ namespace simstd
 				CRT_ASSERT(counter);
 
 				allocator_traits::construct(l_allocator, counter, simstd::move(allocator), simstd::forward<Args>(args)...);
-				counter = counter;
 			}
 
 			template<typename Type, typename Deleter>
 			explicit shared_count(simstd::unique_ptr<Type, Deleter>&& other)
 				: shared_count(other.release(), other.get_deleter(), simstd::allocator<void>())
-//				: counter()
 			{
-//				using OPtr = typename simstd::unique_ptr<Type, Deleter>::pointer;
-//				using ODeleter = typename defstd::conditional<defstd::is_reference<Deleter>::value, defstd::reference_wrapper<typename defstd::remove_reference<Deleter>::type>, Deleter>::type;
-//				using counter_type = counted_deleter<OPtr, ODeleter, simstd::allocator<void>, LockPol>;
-//				using allocator_traits = simstd::allocator_traits<simstd::allocator<counter_type>>;
-//
-//				typename allocator_traits::allocator_type l_allocator;
-//				auto l_counter = allocator_traits::allocate(l_allocator, 1);
-//				CRT_ASSERT(l_counter);
-//
-//				allocator_traits::construct(l_allocator, l_counter, other.release(), other.get_deleter());
-//				counter = l_counter;
 			}
 
 			explicit shared_count(const weak_count<LockPol>& other, simstd::nothrow_t)
