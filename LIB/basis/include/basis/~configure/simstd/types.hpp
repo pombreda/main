@@ -252,6 +252,20 @@ namespace simstd
 
 namespace simstd
 {
+	namespace pvt
+	{
+		template<typename>
+		struct is_void : public false_type {};
+
+		template<>
+		struct is_void<void> : public true_type {};
+	}
+
+	template<typename Type>
+	struct is_void : public pvt::is_void<remove_cv_t<Type>>::type
+	{
+	};
+
 	template<typename>
 	struct is_pointer : public false_type {};
 
@@ -271,7 +285,7 @@ namespace simstd
 	struct is_rvalue_reference<Type&&> : public true_type {};
 
 	template<typename Type>
-	struct is_reference: public _or_<is_lvalue_reference<Type>, is_rvalue_reference<Type>>::type
+	struct is_reference : public _or_<is_lvalue_reference<Type>, is_rvalue_reference<Type>>::type
 	{
 	};
 
@@ -282,7 +296,7 @@ namespace simstd
 	namespace pvt
 	{
 		template<typename Type>
-		struct alignment_of: public integral_constant<size_t, __alignof__(Type)>
+		struct alignment_of : public integral_constant<size_t, __alignof__(Type)>
 		{
 		};
 
@@ -308,7 +322,7 @@ namespace simstd
 		};
 
 		template<typename Type>
-		struct aligned_buffer: aligned_storage<sizeof(Type), alignment_of<Type>::value>
+		struct aligned_buffer : aligned_storage<sizeof(Type), alignment_of<Type>::value>
 		{
 			void* addr() noexcept
 			{

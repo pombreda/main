@@ -90,7 +90,7 @@ namespace simstd {
 					destroy();
 			}
 
-			virtual void* get_deleter(const std::type_info&) noexcept = 0;
+			virtual void* get_deleter(const defstd::type_info&) noexcept = 0;
 
 		private:
 			virtual void destroy() noexcept

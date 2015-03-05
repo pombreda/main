@@ -12,6 +12,11 @@ namespace tst
 	{
 		LogTraceObj();
 	}
+	ssize_t Base1::get_value() const
+	{
+		LogTraceObj();
+		return i;
+	}
 
 	Base2::~Base2()
 	{
@@ -20,6 +25,11 @@ namespace tst
 	Base2::Base2()
 	{
 		LogTraceObj();
+	}
+	ssize_t Base2::get_value() const
+	{
+		LogTraceObj();
+		return i;
 	}
 
 	Derived1::~Derived1()
@@ -30,6 +40,11 @@ namespace tst
 	{
 		LogTraceObj();
 	}
+	ssize_t Derived1::get_value() const
+	{
+		LogTraceObj();
+		return i;
+	}
 
 	Derived2::~Derived2()
 	{
@@ -38,6 +53,11 @@ namespace tst
 	Derived2::Derived2()
 	{
 		LogTraceObj();
+	}
+	ssize_t Derived2::get_value() const
+	{
+		LogTraceObj();
+		return i;
 	}
 
 }
