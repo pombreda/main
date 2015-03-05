@@ -114,7 +114,6 @@ namespace simstd {
 			shared_ptr_base(simstd::unique_ptr<OType, Deleter>&& other)
 				: ptr(other.get())
 			{
-//				__glibcxx_function_requires(_ConvertibleConcept<OType*, Type*>)
 				auto __raw = raw_ptr(other.get());
 				refctr = shared_count<LockPol>(simstd::move(other));
 				enable_shared_from_this_helper(refctr, __raw, __raw);
@@ -284,7 +283,7 @@ namespace simstd {
 			static OType* raw_ptr(OType* ptr) {return ptr;}
 
 			template<typename OType>
-			static auto raw_ptr(OType __ptr) -> decltype(simstd::addressof(*__ptr)) {return simstd::addressof(*__ptr);}
+			static auto raw_ptr(OType notptr) -> decltype(simstd::addressof(*notptr)) {return simstd::addressof(*notptr);}
 
 			template<typename OType, LockPolicy OLockPol> friend class shared_ptr_base;
 			template<typename OType, LockPolicy OLockPol> friend class weak_ptr_base;

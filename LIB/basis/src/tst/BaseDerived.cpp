@@ -4,13 +4,16 @@
 namespace tst
 {
 
+	ssize_t Base1::objects = 0;
 	Base1::~Base1()
 	{
 		LogTraceObj();
+		--objects;
 	}
 	Base1::Base1()
 	{
 		LogTraceObj();
+		++objects;
 	}
 	ssize_t Base1::get_value() const
 	{

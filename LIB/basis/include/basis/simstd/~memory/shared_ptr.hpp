@@ -1,15 +1,10 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_HPP_
 #define BASIS_MEMORY_SHARED_PTR_HPP_
 
-#include <basis/configure.hpp>
-
 #ifdef __GXX_RTTI
 #   include <typeinfo>
 #endif
 
-#include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_base.hpp>
-#include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_deleter.hpp>
-#include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_ptr_inplace.hpp>
 #include <basis/simstd/~memory/~shared_ptr/shared_ptr_counted_ptr.hpp>
 #include <basis/simstd/~memory/~shared_ptr/shared_ptr_shared_count.hpp>
 #include <basis/simstd/~memory/~shared_ptr/shared_ptr_shared_ptr_base.hpp>
@@ -23,10 +18,7 @@ namespace simstd {
 		using base_type = pvt::shared_ptr_base<Type>;
 
 	public:
-		~shared_ptr() noexcept
-		{
-			TraceObj();
-		}
+		~shared_ptr() noexcept = default;
 
 		constexpr shared_ptr() noexcept = default;
 
