@@ -69,7 +69,7 @@ namespace simstd
 //				: counter()
 			{
 //				using OPtr = typename simstd::unique_ptr<Type, Deleter>::pointer;
-//				using ODeleter = typename std::conditional<std::is_reference<Deleter>::value, std::reference_wrapper<typename std::remove_reference<Deleter>::type>, Deleter>::type;
+//				using ODeleter = typename defstd::conditional<defstd::is_reference<Deleter>::value, defstd::reference_wrapper<typename defstd::remove_reference<Deleter>::type>, Deleter>::type;
 //				using counter_type = counted_deleter<OPtr, ODeleter, simstd::allocator<void>, LockPol>;
 //				using allocator_traits = simstd::allocator_traits<simstd::allocator<counter_type>>;
 //
@@ -113,7 +113,7 @@ namespace simstd
 
 			bool unique() const noexcept {return get_use_count() == 1;}
 
-			void* get_deleter(const std::type_info& ti) const noexcept {return counter ? counter->get_deleter(ti) : nullptr;}
+			void* get_deleter(const defstd::type_info& ti) const noexcept {return counter ? counter->get_deleter(ti) : nullptr;}
 
 			bool less(const shared_count& other) const noexcept {return counter < other.counter;}
 

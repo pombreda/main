@@ -10,14 +10,14 @@ namespace simstd {
 		public:
 			explicit counted_ptr(Ptr ptr) noexcept : ptr(ptr)
 			{
-				static_assert(std::is_pointer<Ptr>::value, "constructed with nonpointer");
+				static_assert(simstd::is_pointer<Ptr>::value, "constructed with nonpointer");
 			}
 
 			void dispose() noexcept {delete ptr;}
 
 			void destroy() noexcept {delete this;}
 
-			void* get_deleter(const std::type_info&) noexcept {return nullptr;}
+			void* get_deleter(const defstd::type_info&) noexcept {return nullptr;}
 
 		private:
 			counted_ptr(const counted_ptr&) = delete;

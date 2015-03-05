@@ -37,7 +37,7 @@ namespace simstd {
 				Alloc_traits::deallocate(allocator, this, 1);
 			}
 
-			void* get_deleter(const std::type_info& ti) noexcept
+			void* get_deleter(const defstd::type_info& ti) noexcept
 			{
 #ifdef __GXX_RTTI
 				if (ti == typeid(make_shared_tag))
