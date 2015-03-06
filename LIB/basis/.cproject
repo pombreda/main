@@ -92,7 +92,7 @@
 									<listOptionValue builtIn="false" value="_UNICODE"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="_DEBUG"/>
-									<listOptionValue builtIn="false" value="PRINT_TRACE=0"/>
+									<listOptionValue builtIn="false" value="PRINT_TRACE=1"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1483145985" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -fno-exceptions -fno-rtti -fno-threadsafe-statics" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.536589519" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -279,12 +279,15 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="x64-Release">
-			<resource resourceType="PROJECT" workspacePath="/basis"/>
-		</configuration>
+		<configuration configurationName="x32-Release"/>
+		<configuration configurationName="x32-Debug"/>
 		<configuration configurationName="x64-Debug">
 			<resource resourceType="PROJECT" workspacePath="/basis"/>
 		</configuration>
+		<configuration configurationName="x64-Release">
+			<resource resourceType="PROJECT" workspacePath="/basis"/>
+		</configuration>
+		<configuration configurationName="x64-Release-sections"/>
 	</storageModule>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>

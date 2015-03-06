@@ -66,6 +66,9 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.475922485" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.1926940542" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1739980830.938634130">
+						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1739980830.938634130" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1739980830"/>
+					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
 						<entry excluding="test-crypt.cpp|test-zodiac|test-zodiac.cpp|test-chrono.cpp|test_chrono.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
@@ -129,9 +132,12 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.63320961" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.782138006.1315062652" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1131611252.1687914950">
+						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1131611252.1687914950" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1131611252"/>
+					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
-						<entry excluding="test-chrono.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -191,9 +197,12 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.85879933" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.782138006.1657144441.2108474923" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.239036598.1424723664">
+						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.239036598.1424723664" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.239036598"/>
+					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
-						<entry excluding="test-chrono.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -262,6 +271,9 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.689038699" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.125867041.683711703" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.309634192.607297825">
+						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.309634192.607297825" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.309634192"/>
+					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
 						<entry excluding="test-zodiac|test-crypt.cpp|test-zodiac.cpp|test-chrono.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
@@ -333,6 +345,9 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.918117996" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.1555992246.1883251687" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1075888848.1742184918">
+						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1075888848.1742184918" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1075888848"/>
+					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
 						<entry excluding="test-crypt.cpp|test-zodiac|test-zodiac.cpp|test-chrono.cpp|test_chrono.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>

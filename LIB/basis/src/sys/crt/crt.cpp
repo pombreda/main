@@ -28,7 +28,7 @@ namespace crt {
 			if (reinterpret_cast<intptr_t>(*pf) == static_cast<intptr_t>(-1)) {
 				continue;
 			} else {
-				TraceFuncFormat("%s:%d, %p->%p\n", __PRETTY_FUNCTION__, __LINE__, pf, *pf);
+				TraceFormatFunc("%p->%p\n", pf, *pf);
 				(*pf)();
 			}
 		}
@@ -37,14 +37,14 @@ namespace crt {
 
 	void invoke_ctors()
 	{
-		TraceFuncFormat("%s:%d, __CTOR_LIST__: %p\n", __PRETTY_FUNCTION__, __LINE__, __CTOR_LIST__);
+		TraceFormatFunc("__CTOR_LIST__: %p\n", __CTOR_LIST__);
 		invoke_crt_functions(__CTOR_LIST__, 1);
 		TraceFunc();
 	}
 
 	void invoke_dtors()
 	{
-		TraceFuncFormat("%s:%d, __DTOR_LIST__: %p\n", __PRETTY_FUNCTION__, __LINE__, __DTOR_LIST__);
+		TraceFormatFunc("__DTOR_LIST__: %p\n", __DTOR_LIST__);
 		invoke_crt_functions(__DTOR_LIST__, 1);
 		TraceFunc();
 	}
@@ -73,7 +73,7 @@ namespace crt {
 		TraceFunc();
 		ssize_t ind = atExitIndex++;
 
-		TraceFuncFormat("%s:%d, func: %p, index: %d\n", __PRETTY_FUNCTION__, __LINE__, pf, (int)ind);
+		TraceFormatFunc("func: %p, index: %d\n", pf, (int)ind);
 		if (ind < MAX_ATEXITLIST_ENTRIES)
 		{
 			atExitArray[ind] = pf;

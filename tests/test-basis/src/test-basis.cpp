@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 //
 //	test_logger();
 //
-//	test_chrono();
+	test_chrono();
 //
 //	test_console_input();
 //
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 //
 //	test_memory();
 //
-	tst::_shared_ptr();
+//	tst::_shared_ptr();
 //
 //	test_string();
 //
