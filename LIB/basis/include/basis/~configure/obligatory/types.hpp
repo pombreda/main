@@ -20,8 +20,8 @@ public:
 
 	atomic_int& operator ++() noexcept {InterlockedAdd(&value, +1); return *this;}
 	atomic_int& operator --() noexcept {InterlockedAdd(&value, -1); return *this;}
-	atomic_int operator ++(int) noexcept {value_type ret = InterlockedAdd(&value, +1); return atomic_int(ret);}
-	atomic_int operator --(int) noexcept {value_type ret = InterlockedAdd(&value, -1); return atomic_int(ret);}
+	atomic_int operator ++(int) noexcept {value_type ret = InterlockedExchangeAdd(&value, +1); return atomic_int(ret);}
+	atomic_int operator --(int) noexcept {value_type ret = InterlockedExchangeAdd(&value, -1); return atomic_int(ret);}
 	operator ssize_t() const {return value;}
 	bool add_if_not_equal(ssize_t addition, ssize_t compare) volatile noexcept
 	{
@@ -34,6 +34,8 @@ public:
 		} while (InterlockedCompareExchange(&value, current + addition, current) != current);
 		return true;
 	}
+
+	bool operator ==(int compare) const noexcept {return value == compare;}
 
 private:
 	value_type value;
