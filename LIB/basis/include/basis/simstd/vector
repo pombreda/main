@@ -6,11 +6,10 @@
 #include <basis/simstd/iterator>
 #include <basis/simstd/memory>
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Type, typename Allocator = simstd::allocator<Type>>
 	class vector;
-
 }
 
 namespace simstd
@@ -141,7 +140,8 @@ namespace simstd
 	}
 
 	template<typename Type, typename Allocator>
-	class vector: private pvt::vector_base<Type, Allocator> {
+	class vector: private pvt::vector_base<Type, Allocator>
+	{
 		using this_type         = vector;
 		using base_type         = pvt::vector_base<Type, Allocator>;
 		using alloc_traits_type = typename base_type::alloc_traits_type;
@@ -167,7 +167,7 @@ namespace simstd
 
 		vector();
 		explicit vector(const allocator_type& allocator);
-		vector(size_type n, const value_type& val, const allocator_type& allocator = allocator_type());
+		vector(size_type n, const value_type& value, const allocator_type& allocator = allocator_type());
 		explicit vector(size_type n, const allocator_type& allocator = allocator_type());
 		template<typename InputIterator>
 		vector(InputIterator first, InputIterator last, const allocator_type& allocator = allocator_type());
@@ -175,7 +175,7 @@ namespace simstd
 		vector(const this_type& other, const allocator_type& allocator);
 		vector(this_type&& other);
 		vector(this_type&& other, const allocator_type& allocator);
-//		vector(simstd::initializer_list<Type> init, const Allocator& allocator = allocator_type());
+//		vector(defstd::initializer_list<Type> init, const Allocator& allocator = allocator_type());
 
 		this_type& operator =(const this_type& other);
 		this_type& operator =(this_type&& other);
@@ -219,16 +219,16 @@ namespace simstd
 		void      clear();
 
 		template<typename InputIterator>
-		iterator insert(const_iterator pos, InputIterator first, InputIterator last);
-		iterator insert(const_iterator pos, const value_type& value);
-		iterator insert(const_iterator pos, size_type n, const value_type& value);
-		iterator insert(const_iterator pos, value_type&& value);
+		iterator insert(const_iterator cpos, InputIterator first, InputIterator last);
+		iterator insert(const_iterator cpos, const value_type& value);
+		iterator insert(const_iterator cpos, size_type n, const value_type& value);
+		iterator insert(const_iterator cpos, value_type&& value);
 
-		iterator erase(const_iterator pos);
+		iterator erase(const_iterator cpos);
 		iterator erase(const_iterator first, const_iterator last);
 
 		template<typename... Args>
-		iterator emplace(const_iterator pos, Args&&... args);
+		iterator emplace(const_iterator cpos, Args&&... args);
 
 		void     push_back(const value_type& value);
 		void     push_back(value_type&& value);
@@ -249,7 +249,7 @@ namespace simstd
 		iterator _erase(const_iterator first, const_iterator last);
 
 		template<typename... Args>
-		iterator _emplace(const_iterator pos, Args&&... args);
+		iterator _emplace(const_iterator cpos, Args&&... args);
 
 		template<typename... Args>
 		void _emplace_back(Args&&... args);
@@ -260,55 +260,55 @@ namespace simstd
 		template<typename ForwardIterator>
 		void _insert_back(ForwardIterator first, ForwardIterator last, simstd::forward_iterator_tag);
 
-		iterator _insert(const_iterator pos, size_type n, const value_type& value);
+		iterator _insert(const_iterator cpos, size_type n, const value_type& value);
 
 		template<typename InputIterator>
-		iterator _insert(const_iterator pos, InputIterator first, InputIterator last, simstd::input_iterator_tag);
+		iterator _insert(const_iterator cpos, InputIterator first, InputIterator last, simstd::input_iterator_tag);
 
 		template<typename ForwardIterator>
-		iterator _insert(const_iterator pos, ForwardIterator first, ForwardIterator last, simstd::forward_iterator_tag);
+		iterator _insert(const_iterator cpos, ForwardIterator first, ForwardIterator last, simstd::forward_iterator_tag);
 	};
 
 	template<typename Type, typename Allocator>
-	bool operator ==(const vector<Type, Allocator>& lhs, const vector<Type, Allocator>& rhs)
+	bool operator ==(const vector<Type, Allocator>& a, const vector<Type, Allocator>& b)
 	{
-		return (lhs.size() == rhs.size() && simstd::equal(lhs.begin(), lhs.end(), rhs.begin()));
+		return a.size() == b.size() && simstd::equal(a.begin(), a.end(), b.begin());
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator !=(const vector<Type, Allocator>& lhs, const vector<Type, Allocator>& rhs)
+	bool operator !=(const vector<Type, Allocator>& a, const vector<Type, Allocator>& b)
 	{
-		return simstd::rel_ops::operator !=(lhs, rhs);
+		return simstd::rel_ops::operator !=(a, b);
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator <(const vector<Type, Allocator>& lhs, const vector<Type, Allocator>& rhs)
+	bool operator <(const vector<Type, Allocator>& a, const vector<Type, Allocator>& b)
 	{
-		return simstd::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		return simstd::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end());
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator >(const vector<Type, Allocator>& lhs, const vector<Type, Allocator>& rhs)
+	bool operator >(const vector<Type, Allocator>& a, const vector<Type, Allocator>& b)
 	{
-		return simstd::rel_ops::operator >(lhs, rhs);
+		return simstd::rel_ops::operator >(a, b);
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator <=(const vector<Type, Allocator>& lhs, const vector<Type, Allocator>& rhs)
+	bool operator <=(const vector<Type, Allocator>& a, const vector<Type, Allocator>& b)
 	{
-		return simstd::rel_ops::operator <=(lhs, rhs);
+		return simstd::rel_ops::operator <=(a, b);
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator >=(const vector<Type, Allocator>& lhs, const vector<Type, Allocator>& rhs)
+	bool operator >=(const vector<Type, Allocator>& a, const vector<Type, Allocator>& b)
 	{
-		return simstd::rel_ops::operator >=(lhs, rhs);
+		return simstd::rel_ops::operator >=(a, b);
 	}
 
 	template<typename Type, typename Allocator>
-	void swap(vector<Type, Allocator>& lhs, vector<Type, Allocator>& rhs)
+	void swap(vector<Type, Allocator>& a, vector<Type, Allocator>& b)
 	{
-		lhs.swap(rhs);
+		a.swap(b);
 	}
 
 	template<typename Type, typename Allocator>
