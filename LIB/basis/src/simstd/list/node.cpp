@@ -1,16 +1,16 @@
 ﻿#include <basis/simstd/list>
 
-namespace simstd {
-
-	namespace pvt {
-
-		List_node_base::List_node_base() noexcept
+namespace simstd
+{
+	namespace pvt
+	{
+		list_node_base::list_node_base() noexcept
 			: m_next(this)
 			, m_prev(this)
 		{
 		}
 
-		void List_node_base::transfer(const this_type* first, const this_type* last) noexcept
+		void list_node_base::transfer(const this_type* first, const this_type* last) noexcept
 		{
 			auto first1 = m_prev;
 
@@ -24,7 +24,7 @@ namespace simstd {
 			const_cast<this_type*>(first)->m_prev = first1;
 		}
 
-		void List_node_base::reverse() noexcept
+		void list_node_base::reverse() noexcept
 		{
 			auto cur = this;
 			do
@@ -37,7 +37,7 @@ namespace simstd {
 			while(cur != this);
 		}
 
-		void List_node_base::hook(const this_type * pos) noexcept
+		void list_node_base::hook(const this_type * pos) noexcept
 		{
 //			LogTraceObj();
 			this_type * prev = pos->m_prev;
@@ -65,7 +65,7 @@ namespace simstd {
 //			LogDebug(L"pos->m_prev: %p\n", next->m_prev);
 		}
 
-		void List_node_base::unhook() noexcept
+		void list_node_base::unhook() noexcept
 		{
 //			LogTraceObj();
 			auto prev = m_prev;
@@ -91,7 +91,7 @@ namespace simstd {
 //			LogDebug(L"next->m_prev: %p\n", next->m_prev);
 		}
 
-		void List_node_base::swap(this_type & a, this_type & b) noexcept
+		void list_node_base::swap(this_type & a, this_type & b) noexcept
 		{
 //			LogTrace();
 			using simstd::swap;
@@ -115,7 +115,5 @@ namespace simstd {
 //			LogDebug(L"b.m_next: %p\n", b.m_next);
 //			LogDebug(L"b.m_prev: %p\n", b.m_prev);
 		}
-
 	}
-
 }
