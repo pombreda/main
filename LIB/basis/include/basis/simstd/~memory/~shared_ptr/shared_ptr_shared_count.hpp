@@ -70,7 +70,7 @@ namespace simstd
 				: counter(other.counter)
 			{
 				if (counter)
-					if (!counter->add_use_ref_count())
+					if (!counter->add_use_ref_count_check())
 						counter = nullptr;
 			}
 
@@ -78,7 +78,7 @@ namespace simstd
 				: counter(other.counter)
 			{
 				if (counter)
-					counter->add_use_ref_count();
+					counter->add_use_ref_count_copy();
 			}
 
 			shared_count& operator =(const shared_count& other) noexcept

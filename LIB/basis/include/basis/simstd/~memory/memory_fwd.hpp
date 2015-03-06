@@ -33,6 +33,7 @@ namespace simstd {
 	namespace pvt {
 		enum class LockPolicy: ssize_t {
 			ATOMIC,
+			CSECTION,
 			MUTEX,
 			NONE,
 		};

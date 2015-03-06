@@ -12,13 +12,14 @@ namespace simstd
 		{
 			ssize_t get_use_count() const noexcept {return use_count;}
 			ssize_t get_weak_count() const noexcept {return weak_count;}
-			bool add_use_ref_count() noexcept {return use_count != 0 ? ++use_count, true : false;}
-			bool add_weak_ref_count() noexcept {return weak_count != 0 ? ++weak_count, true : false;}
+			void add_use_ref_count_copy() noexcept {++use_count;}
+			bool add_use_ref_count_check() noexcept {return use_count == 0 ? false : ++use_count, true;}
+			void add_weak_ref_count() noexcept {++weak_count;}
 
 		protected:
 			choose_lock_policy(ssize_t use_count, ssize_t weak_count) noexcept: use_count(use_count), weak_count(weak_count) {}
-			bool sub_use_ref_count() noexcept {return --use_count != 0;}
-			bool sub_weak_ref_count() noexcept {return --weak_count != 0;}
+			bool sub_use_ref_count() noexcept {return use_count-- == 1;}
+			bool sub_weak_ref_count() noexcept {return weak_count-- == 1;}
 
 		private:
 			ssize_t use_count;
@@ -30,13 +31,14 @@ namespace simstd
 		{
 			ssize_t get_use_count() const noexcept {return use_count;}
 			ssize_t get_weak_count() const noexcept {return weak_count;}
-			bool add_use_ref_count() noexcept {return use_count != 0 ? ++use_count, true : false;}
-			bool add_weak_ref_count() noexcept {return weak_count != 0 ? ++weak_count, true : false;}
+			void add_use_ref_count_copy() noexcept {++use_count;}
+			bool add_use_ref_count_check() noexcept {return use_count.add_if_not_equal(1, 0);}
+			void add_weak_ref_count() noexcept {++weak_count;}
 
 		protected:
 			choose_lock_policy(ssize_t use_count, ssize_t weak_count) noexcept: use_count(use_count), weak_count(weak_count) {}
-			bool sub_use_ref_count() noexcept {return --use_count != 0;}
-			bool sub_weak_ref_count() noexcept {return --weak_count != 0;}
+			bool sub_use_ref_count() noexcept {return use_count-- == 1;}
+			bool sub_weak_ref_count() noexcept {return weak_count-- == 1;}
 
 		private:
 			atomic_int use_count;
@@ -80,7 +82,7 @@ namespace simstd
 
 			void release() noexcept
 			{
-				if (!choose_lock_policy<LockPol>::sub_use_ref_count())
+				if (choose_lock_policy<LockPol>::sub_use_ref_count())
 				{
 					dispose();
 					weak_release();
@@ -89,7 +91,7 @@ namespace simstd
 
 			void weak_release() noexcept
 			{
-				if (!choose_lock_policy<LockPol>::sub_weak_ref_count())
+				if (choose_lock_policy<LockPol>::sub_weak_ref_count())
 					destroy();
 			}
 
