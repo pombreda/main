@@ -6,7 +6,8 @@
 #include <basis/simstd/iterator>
 #include <basis/simstd/memory>
 
-namespace simstd {
+namespace simstd
+{
 	template<typename Type, typename Allocator = simstd::allocator<Type>>
 	class list;
 }
@@ -17,27 +18,19 @@ namespace simstd
 	{
 		struct list_node_base
 		{
-			using this_type = list_node_base;
-
-			list_node_base() noexcept;
-
-			void transfer(const this_type* first, const this_type* last) noexcept;
-
+			void transfer(const list_node_base* first, const list_node_base* last) noexcept;
 			void reverse() noexcept;
-
-			void hook(const this_type* pos) noexcept;
-
+			void hook(const list_node_base* pos) noexcept;
 			void unhook() noexcept;
-
-			static void swap(this_type& a, this_type& b) noexcept;
+			static void swap(list_node_base& a, list_node_base& b) noexcept;
 
 		public:
-			this_type* m_next;
-			this_type* m_prev;
+			list_node_base* m_next = this;
+			list_node_base* m_prev = this;
 		};
 
 		template<typename Type>
-		struct list_node: public list_node_base
+		struct list_node : public list_node_base
 		{
 			template<typename... Args>
 			list_node(Args&&... args) : m_data(simstd::forward<Args>(args)...) {}
@@ -148,7 +141,7 @@ namespace simstd
 
 			list_base(const node_allocator_type& allocator) ;
 
-			list_base(list_base && other);
+			list_base(list_base&& other);
 
 		protected:
 			node_allocator_type& get_node_allocator();
@@ -156,42 +149,24 @@ namespace simstd
 			const node_allocator_type& get_node_allocator() const;
 
 			template<typename ... Args>
-			list_node<Type>* new_node(Args &&... args);
+			list_node<Type>* new_node(Args&&... args);
 
 			void delete_node(const list_node_base* ptr);
 
-			struct List_impl: public node_allocator_type {
-				List_impl();
-				List_impl(const node_allocator_type& other);
-				List_impl(node_allocator_type&& other);
+			struct Impl: public node_allocator_type {
+				Impl() = default;
+				Impl(const node_allocator_type& other): node_allocator_type(other) {}
+				Impl(node_allocator_type&& other): node_allocator_type(simstd::move(other)) {}
 				list_node_base m_end;
 			};
 
-			List_impl m_impl;
+			Impl m_impl;
 
 		private:
 			list_node<Type>* alloc_node();
 
 			void free_node(list_node<Type>* ptr);
 		};
-
-		template<typename Type, typename Allocator>
-		list_base<Type, Allocator>::List_impl::List_impl() :
-			node_allocator_type()
-		{
-		}
-
-		template<typename Type, typename Allocator>
-		list_base<Type, Allocator>::List_impl::List_impl(const node_allocator_type& other) :
-			node_allocator_type(other)
-		{
-		}
-
-		template<typename Type, typename Allocator>
-		list_base<Type, Allocator>::List_impl::List_impl(node_allocator_type&& other) :
-			node_allocator_type(simstd::move(other))
-		{
-		}
 
 		template<typename Type, typename Allocator>
 		list_base<Type, Allocator>::list_base() :

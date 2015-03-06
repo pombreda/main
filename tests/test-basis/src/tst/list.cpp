@@ -1,17 +1,14 @@
-#include <tests.hpp>
+#include <basis/tst.hpp>
 #include <basis/sys/console.hpp>
 #include <basis/sys/logger.hpp>
 #include <basis/sys/memory.hpp>
 
-#include <basis/simstd/list>
 #include <basis/simstd/algorithm>
 #include <basis/simstd/memory>
-
-#include <basis/tst.hpp>
-
+#include <basis/simstd/list>
 #include <list>
 
-void test_list()
+ssize_t tst::_list()
 {
 	LogAtten(L"\n");
 
@@ -133,4 +130,5 @@ void test_list()
 		LogReport(L"  free : %I64u, %I64u\n", stat.get_frees(), stat.get_frees_size());
 		LogReport(L"  diff : %I64d\n", stat.get_allocations_size() - stat.get_frees_size());
 	}
+	return 0;
 }

@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 //
 //	test_logger();
 //
-	test_chrono();
+//	test_chrono();
 //
 //	test_console_input();
 //
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 //
 //	test_crashes();
 //
-//	test_list();
+	tst::_list();
 //
 //	test_math();
 //
