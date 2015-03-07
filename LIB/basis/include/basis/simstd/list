@@ -131,16 +131,16 @@ namespace simstd
 		template<typename Type, typename TypeAllocator>
 		class list_base
 		{
+			using node_type = list_node<Type>;
+
 		protected:
-			using node_allocator_type = typename TypeAllocator::template rebind<list_node<Type>>::other;
+			using node_allocator_type = typename TypeAllocator::template rebind<node_type>::other;
 
 		public:
 			using allocator_type = TypeAllocator;
 
-			list_base();
-
-			list_base(const node_allocator_type& allocator) ;
-
+			list_base() = default;
+			list_base(const node_allocator_type& allocator): m_impl(allocator) {}
 			list_base(list_base&& other);
 
 		protected:
@@ -148,8 +148,8 @@ namespace simstd
 
 			const node_allocator_type& get_node_allocator() const;
 
-			template<typename ... Args>
-			list_node<Type>* new_node(Args&&... args);
+			template<typename... Args>
+			node_type* new_node(Args&&... args);
 
 			void delete_node(const list_node_base* ptr);
 
@@ -161,27 +161,10 @@ namespace simstd
 			};
 
 			Impl m_impl;
-
-		private:
-			list_node<Type>* alloc_node();
-
-			void free_node(list_node<Type>* ptr);
 		};
 
 		template<typename Type, typename Allocator>
-		list_base<Type, Allocator>::list_base() :
-			m_impl()
-		{
-		}
-
-		template<typename Type, typename Allocator>
-		list_base<Type, Allocator>::list_base(const node_allocator_type& allocator) :
-			m_impl(allocator)
-		{
-		}
-
-		template<typename Type, typename Allocator>
-		list_base<Type, Allocator>::list_base(list_base && other) :
+		list_base<Type, Allocator>::list_base(list_base&& other) :
 			m_impl(simstd::move(other.get_node_allocator()))
 		{
 			list_node_base::swap(m_impl.m_end, other.m_impl.m_end);
@@ -200,10 +183,10 @@ namespace simstd
 		}
 
 		template<typename Type, typename Allocator>
-		template<typename ... Args>
+		template<typename... Args>
 		list_node<Type>* list_base<Type, Allocator>::new_node(Args&&... args)
 		{
-			auto ptr = alloc_node();
+			auto ptr = m_impl.node_allocator_type::allocate(1);
 			get_node_allocator().construct(ptr, simstd::forward<Args>(args)...);
 			return ptr;
 		}
@@ -211,21 +194,9 @@ namespace simstd
 		template<typename Type, typename Allocator>
 		void list_base<Type, Allocator>::delete_node(const list_node_base* ptr)
 		{
-			auto node = static_cast<list_node<Type>*>(const_cast<list_node_base*>(ptr));
+			auto node = static_cast<node_type*>(const_cast<list_node_base*>(ptr));
 			get_node_allocator().destroy(node);
-			free_node(node);
-		}
-
-		template<typename Type, typename Allocator>
-		list_node<Type>* list_base<Type, Allocator>::alloc_node()
-		{
-			return m_impl.node_allocator_type::allocate(1);
-		}
-
-		template<typename Type, typename Allocator>
-		void list_base<Type, Allocator>::free_node(list_node<Type>* p)
-		{
-			m_impl.node_allocator_type::deallocate(p, 1);
+			m_impl.node_allocator_type::deallocate(node, 1);
 		}
 	}
 }
