@@ -11,20 +11,20 @@ namespace simstd
 		public:
 			~shared_count() noexcept
 			{
-				if (counter)
-					counter->release();
+				if (counted)
+					counted->release();
 			}
 
 			constexpr shared_count() noexcept
-				: counter()
+				: counted()
 			{
 			}
 
 			template<typename Ptr>
 			explicit shared_count(Ptr ptr)
-				: counter(new counted_ptr<Ptr, LockPol>(ptr))
+				: counted(new counted_ptr<Ptr, LockPol>(ptr))
 			{
-				CRT_ASSERT(counter);
+				CRT_ASSERT(counted);
 			}
 
 			template<typename Ptr, typename Deleter>
@@ -35,29 +35,29 @@ namespace simstd
 
 			template<typename Ptr, typename Deleter, typename Allocator>
 			shared_count(Ptr ptr, Deleter deleter, Allocator allocator)
-				: counter()
+				: counted()
 			{
-				using counter_type = counted_deleter<Ptr, Deleter, Allocator, LockPol>;
-				using allocator_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counter_type>;
+				using counted_type = counted_deleter<Ptr, Deleter, Allocator, LockPol>;
+				using allocator_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counted_type>;
 
 				typename allocator_traits::allocator_type l_allocator(allocator);
-				counter = allocator_traits::allocate(l_allocator, 1);
-				CRT_ASSERT(counter);
-				allocator_traits::construct(l_allocator, counter, ptr, simstd::move(deleter), simstd::move(allocator));
+				counted = allocator_traits::allocate(l_allocator, 1);
+				CRT_ASSERT(counted);
+				allocator_traits::construct(l_allocator, counted, ptr, simstd::move(deleter), simstd::move(allocator));
 			}
 
 			template<typename Type, typename Allocator, typename... Args>
 			shared_count(make_shared_tag, Type*, const Allocator& allocator, Args&&... args)
-				: counter()
+				: counted()
 			{
-				using counter_type = counted_ptr_inplace<Type, Allocator, LockPol>;
-				using allocator_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counter_type>;
+				using counted_type = counted_ptr_inplace<Type, Allocator, LockPol>;
+				using allocator_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counted_type>;
 
 				typename allocator_traits::allocator_type l_allocator(allocator);
-				counter = allocator_traits::allocate(l_allocator, 1);
-				CRT_ASSERT(counter);
+				counted = allocator_traits::allocate(l_allocator, 1);
+				CRT_ASSERT(counted);
 
-				allocator_traits::construct(l_allocator, counter, simstd::move(allocator), simstd::forward<Args>(args)...);
+				allocator_traits::construct(l_allocator, counted, simstd::move(allocator), simstd::forward<Args>(args)...);
 			}
 
 			template<typename Type, typename Deleter>
@@ -67,23 +67,22 @@ namespace simstd
 			}
 
 			explicit shared_count(const weak_count<LockPol>& other, simstd::nothrow_t)
-				: counter(other.counter)
+				: counted(other.counted)
 			{
-				if (counter)
-					if (!counter->add_use_ref_count_check())
-						counter = nullptr;
+				if (counted && !counted->add_use_ref_count_check())
+					counted = nullptr;
 			}
 
 			shared_count(const shared_count& other) noexcept
-				: counter(other.counter)
+				: counted(other.counted)
 			{
-				if (counter)
-					counter->add_use_ref_count_copy();
+				if (counted)
+					counted->add_use_ref_count_copy();
 			}
 
 			shared_count& operator =(const shared_count& other) noexcept
 			{
-				if (counter != other.counter)
+				if (counted != other.counted)
 					shared_count(other).swap(*this);
 				return *this;
 			}
@@ -91,23 +90,23 @@ namespace simstd
 			void swap(shared_count& other) noexcept
 			{
 				using simstd::swap;
-				swap(counter, other.counter);
+				swap(counted, other.counted);
 			}
 
-			ssize_t get_use_count() const noexcept {return counter ? counter->get_use_count() : 0;}
+			ssize_t get_use_count() const noexcept {return counted ? counted->get_use_count() : 0;}
 
 			bool unique() const noexcept {return get_use_count() == 1;}
 
-			void* get_deleter(const defstd::type_info& ti) const noexcept {return counter ? counter->get_deleter(ti) : nullptr;}
+			void* get_deleter(const defstd::type_info& ti) const noexcept {return counted ? counted->get_deleter(ti) : nullptr;}
 
-			bool less(const shared_count& other) const noexcept {return counter < other.counter;}
+			bool less(const shared_count& other) const noexcept {return counted < other.counted;}
 
-			bool less(const weak_count<LockPol>& other) const noexcept {return counter < other.counter;}
+			bool less(const weak_count<LockPol>& other) const noexcept {return counted < other.counted;}
 
-			friend bool operator ==(const shared_count& a, const shared_count& b) noexcept {return a.counter == b.counter;}
+			friend bool operator ==(const shared_count& a, const shared_count& b) noexcept {return a.counted == b.counted;}
 
 		private:
-			counted_base<LockPol>* counter;
+			counted_base<LockPol>* counted;
 
 			friend class weak_count<LockPol>;
 		};
@@ -118,39 +117,39 @@ namespace simstd
 		public:
 			~weak_count() noexcept
 			{
-				if (counter)
-					counter->weak_release();
+				if (counted)
+					counted->weak_release();
 			}
 
 			constexpr weak_count() noexcept
-				: counter()
+				: counted()
 			{
 			}
 
 			weak_count(const shared_count<LockPol>& other) noexcept
-				: counter(other.counter)
+				: counted(other.counted)
 			{
-				if (counter)
-					counter->add_weak_ref_count();
+				if (counted)
+					counted->add_weak_ref_count();
 			}
 
 			weak_count(const weak_count<LockPol>& other) noexcept
-				: counter(other.counter)
+				: counted(other.counted)
 			{
-				if (counter)
-					counter->add_weak_ref_count();
+				if (counted)
+					counted->add_weak_ref_count();
 			}
 
 			weak_count<LockPol>& operator =(const shared_count<LockPol>& other) noexcept
 			{
-				if (counter != other.counter)
+				if (counted != other.counted)
 					weak_count(other).swap(*this);
 				return *this;
 			}
 
 			weak_count<LockPol>& operator =(const weak_count<LockPol>& other) noexcept
 			{
-				if (counter != other.counter)
+				if (counted != other.counted)
 					weak_count(other).swap(*this);
 				return *this;
 			}
@@ -158,23 +157,22 @@ namespace simstd
 			void swap(weak_count<LockPol>& other) noexcept
 			{
 				using simstd::swap;
-				swap(counter, other.counter);
+				swap(counted, other.counted);
 			}
 
-			ssize_t get_use_count() const noexcept {return counter ? counter->get_use_count() : 0;}
+			ssize_t get_use_count() const noexcept {return counted ? counted->get_use_count() : 0;}
 
-			bool less(const weak_count& other) const noexcept {return counter < other.counter;}
+			bool less(const weak_count& other) const noexcept {return counted < other.counted;}
 
-			bool less(const shared_count<LockPol>& other) const noexcept {return counter < other.counter;}
+			bool less(const shared_count<LockPol>& other) const noexcept {return counted < other.counted;}
 
-			friend bool operator ==(const weak_count& a, const weak_count& b) noexcept {return a.counter == b.counter;}
+			friend bool operator ==(const weak_count& a, const weak_count& b) noexcept {return a.counted == b.counted;}
 
 		private:
-			counted_base<LockPol>* counter;
+			counted_base<LockPol>* counted;
 
 			friend class shared_count<LockPol>;
 		};
-
 	}
 }
 

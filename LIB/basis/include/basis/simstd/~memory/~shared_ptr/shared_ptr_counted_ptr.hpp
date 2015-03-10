@@ -112,10 +112,7 @@ namespace simstd
 		private:
 			virtual void dispose() noexcept = 0;
 
-			virtual void destroy() noexcept
-			{
-				delete this;
-			}
+			virtual void destroy() noexcept = 0;
 
 			counted_base(const counted_base&) = delete;
 			counted_base& operator =(const counted_base&) = delete;
@@ -132,12 +129,15 @@ namespace simstd
 			: public counted_base<LockPol>
 		{
 		public:
-			explicit counted_ptr(Ptr ptr) noexcept : ptr(ptr)
+			explicit counted_ptr(Ptr ptr) noexcept :
+				ptr(ptr)
 			{
 				static_assert(simstd::is_pointer<Ptr>::value, "constructed with nonpointer");
 			}
 
 			void dispose() noexcept {delete ptr;}
+
+			void destroy() noexcept {delete this;}
 
 			void* get_deleter(const defstd::type_info&) noexcept {return nullptr;}
 
@@ -154,12 +154,12 @@ namespace simstd
 		}
 
 		template<>
-		inline void counted_ptr<nullptr_t, LockPolicy::NONE>::dispose() noexcept
+		inline void counted_ptr<nullptr_t, LockPolicy::MUTEX>::dispose() noexcept
 		{
 		}
 
 		template<>
-		inline void counted_ptr<nullptr_t, LockPolicy::MUTEX>::dispose() noexcept
+		inline void counted_ptr<nullptr_t, LockPolicy::NONE>::dispose() noexcept
 		{
 		}
 
