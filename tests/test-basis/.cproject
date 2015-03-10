@@ -66,9 +66,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.475922485" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.1926940542" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1739980830.938634130">
-						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1739980830.938634130" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1739980830"/>
-					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
 						<entry excluding="test-crypt.cpp|test-zodiac|test-zodiac.cpp|test-chrono.cpp|test_chrono.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
@@ -119,7 +116,7 @@
 									<listOptionValue builtIn="false" value="_UNICODE"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="_DEBUG"/>
-									<listOptionValue builtIn="false" value="PRINT_TRACE=2"/>
+									<listOptionValue builtIn="false" value="PRINT_TRACE1=2"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.2098713567" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/basis/include}&quot;"/>
@@ -132,9 +129,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.63320961" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.782138006.1315062652" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1131611252.1687914950">
-						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1131611252.1687914950" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1131611252"/>
-					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
@@ -191,15 +185,12 @@
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/include}"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.warnings.extrawarn.979963092" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="gnu.cpp.compiler.option.other.other.110292262" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -fno-threadsafe-statics -fno-exceptions -fno-rtti" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.other.other.110292262" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -fno-threadsafe-statics -fno-exceptions" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1594874790" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.85879933" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.782138006.1657144441.2108474923" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.239036598.1424723664">
-						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.239036598.1424723664" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.239036598"/>
-					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
@@ -271,9 +262,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.689038699" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.125867041.683711703" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.309634192.607297825">
-						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.309634192.607297825" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.309634192"/>
-					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
 						<entry excluding="test-zodiac|test-crypt.cpp|test-zodiac.cpp|test-chrono.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
@@ -345,9 +333,6 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.918117996" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.2049055046.1555992246.1883251687" name="test-chrono.cpp" rcbsApplicability="disable" resourcePath="src/test-chrono.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1075888848.1742184918">
-						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1075888848.1742184918" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.1075888848"/>
-					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="include"/>
 						<entry excluding="test-crypt.cpp|test-zodiac|test-zodiac.cpp|test-chrono.cpp|test_chrono.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>

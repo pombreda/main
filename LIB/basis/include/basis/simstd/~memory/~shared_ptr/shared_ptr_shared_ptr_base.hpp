@@ -336,7 +336,7 @@ namespace simstd {
 			weak_ptr_base(const weak_ptr_base<OType, LockPol>& other) noexcept
 				: refctr(other.refctr)
 			{
-				ptr = other.lock().get(); // here temporary shared_ptr will be created
+				ptr = other.lock().get(); // temporary shared_ptr will be created here
 			}
 
 			template<typename OType, typename = typename defstd::enable_if<defstd::is_convertible<OType*, Type*>::value>::type>

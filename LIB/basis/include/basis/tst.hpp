@@ -2,6 +2,7 @@
 #define BASIS_TST_HPP_
 
 #include <basis/configure.hpp>
+#include <basis/sys/console.hpp>
 
 #define TestFuncFormat(format, ...) console::printf(format, ##__VA_ARGS__)
 #define TestFuncPlace() console::printf("%s:%d\n", __PRETTY_FUNCTION__, __LINE__)
