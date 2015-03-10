@@ -311,13 +311,9 @@ namespace simstd {
 			using this_type = weak_ptr_base;
 
 		public:
-			typedef Type element_type;
+			using element_type = Type;
 
-			constexpr weak_ptr_base() noexcept
-				: refctr()
-				, ptr()
-			{
-			}
+			constexpr weak_ptr_base() noexcept = default;
 
 			weak_ptr_base(const weak_ptr_base&) noexcept = default;
 			weak_ptr_base& operator =(const weak_ptr_base&) noexcept = default;
@@ -325,22 +321,22 @@ namespace simstd {
 			// The "obvious" converting constructor implementation:
 			//
 			//  template<typename OType>
-			//    weak_ptr(const weak_ptr<OType, LockPol>& __r)
-			//    : ptr(__r.ptr), refctr(__r.refctr) // never throws
-			//    { }
+			//  weak_ptr(const weak_ptr<OType, LockPol>& other)
+			//      : refctr(other.refctr), ptr(other.ptr)  // never throws
+			//  {}
 			//
 			// has a serious problem.
 			//
-			//  __r.ptr may already have been invalidated. The ptr(__r.ptr)
-			//  conversion may require access to *__r.ptr (virtual inheritance).
+			//  other.ptr may already have been invalidated. The ptr(other.ptr)
+			//  conversion may require access to *other.ptr (virtual inheritance).
 			//
 			// It is not possible to avoid spurious access violations since
-			// in multithreaded programs __r.ptr may be invalidated at any point.
+			// in multithreaded programs other.ptr may be invalidated at any point.
 			template<typename OType, typename = typename defstd::enable_if<defstd::is_convertible<OType*, Type*>::value>::type>
 			weak_ptr_base(const weak_ptr_base<OType, LockPol>& other) noexcept
 				: refctr(other.refctr)
 			{
-				ptr = other.lock().get();
+				ptr = other.lock().get(); // here temporary shared_ptr will be created
 			}
 
 			template<typename OType, typename = typename defstd::enable_if<defstd::is_convertible<OType*, Type*>::value>::type>
@@ -420,7 +416,7 @@ namespace simstd {
 			friend class simstd::enable_shared_from_this<Type>;
 
 			weak_count<LockPol> refctr;
-			Type*               ptr;
+			Type*               ptr = nullptr;
 		};
 
 		template<typename Type, LockPolicy LockPol>
