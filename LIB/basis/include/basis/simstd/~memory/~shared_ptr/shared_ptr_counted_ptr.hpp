@@ -1,8 +1,6 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_HPP_
 #define BASIS_MEMORY_SHARED_PTR_COUNTED_PTR_HPP_
 
-//#include <basis/sys/~sync/Mutex.hpp>
-
 namespace simstd
 {
 	namespace pvt
@@ -45,29 +43,43 @@ namespace simstd
 			atomic_int weak_count;
 		};
 
-//		template<>
-//		struct choose_lock_policy<LockPolicy::MUTEX>
-//		{
-//			ssize_t get_use_count() const noexcept {return use_count;}
-//			ssize_t get_weak_count() const noexcept {return weak_count;}
-//			bool add_use_ref_count() noexcept {return use_count != 0 ? increase_use(), true : false;}
-//			bool add_weak_ref_count() noexcept {return weak_count != 0 ? increase_weak(), true : false;}
-//
-//		protected:
-//			choose_lock_policy(ssize_t use_count, ssize_t weak_count) noexcept: use_count(use_count), weak_count(weak_count) {}
-//			bool sub_use_ref_count() noexcept {return decrease_use() != 0;}
-//			bool sub_weak_ref_count() noexcept {return decrease_weak() != 0;}
-//
-//		private:
-//			ssize_t increase_use() {mutex.lock(); ssize_t ret = ++use_count; mutex.unlock(); return ret;}
-//			ssize_t decrease_use() {mutex.lock(); ssize_t ret = --use_count; mutex.unlock(); return ret;}
-//			ssize_t increase_weak() {mutex.lock(); ssize_t ret = ++weak_count; mutex.unlock(); return ret;}
-//			ssize_t decrease_weak() {mutex.lock(); ssize_t ret = --weak_count; mutex.unlock(); return ret;}
-//
-//			volatile ssize_t use_count;
-//			volatile ssize_t weak_count;
-//			sync::Mutex mutex;
-//		};
+		template<>
+		struct choose_lock_policy<LockPolicy::MUTEX>
+		{
+			ssize_t get_use_count() const noexcept {return use_count;}
+			ssize_t get_weak_count() const noexcept {return weak_count;}
+			void add_use_ref_count_copy() noexcept {increase_use();}
+			bool add_use_ref_count_check() noexcept {return add_if_not_equal(use_count, 1, 0);}
+			void add_weak_ref_count() noexcept {increase_weak();}
+
+		protected:
+			~choose_lock_policy() noexcept {DeleteCriticalSection(&mutex);}
+			choose_lock_policy(ssize_t use_count, ssize_t weak_count) noexcept: use_count(use_count), weak_count(weak_count) {InitializeCriticalSection(&mutex);}
+			bool sub_use_ref_count() noexcept {return decrease_use() == 1;}
+			bool sub_weak_ref_count() noexcept {return decrease_weak() == 1;}
+
+		private:
+			void increase_use() {EnterCriticalSection(&mutex); ++use_count; LeaveCriticalSection(&mutex);}
+			ssize_t decrease_use() {EnterCriticalSection(&mutex); ssize_t ret = use_count--; LeaveCriticalSection(&mutex); return ret;}
+			void increase_weak() {EnterCriticalSection(&mutex); ++weak_count; LeaveCriticalSection(&mutex);}
+			ssize_t decrease_weak() {EnterCriticalSection(&mutex); ssize_t ret = weak_count--; LeaveCriticalSection(&mutex); return ret;}
+			bool add_if_not_equal(ssize_t& value, ssize_t addition, ssize_t compare)
+			{
+				bool ret = false;
+				EnterCriticalSection(&mutex);
+				if (value != compare)
+				{
+					value += addition;
+					ret = true;
+				}
+				LeaveCriticalSection(&mutex);
+				return ret;
+			}
+
+			ssize_t use_count;
+			ssize_t weak_count;
+			CRITICAL_SECTION mutex;
+		};
 
 		template<LockPolicy LockPol = DEFAULT_LOCK_POLICY>
 		class counted_base: public choose_lock_policy<LockPol>

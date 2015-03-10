@@ -51,5 +51,5 @@ void test_vector()
 		LogReport(L"stat diff : %I64d\n", stat.get_allocations_size() - stat.get_frees_size());
 	}
 
-	tst::_vector(console::printf);
+	tst::_vector();
 }
