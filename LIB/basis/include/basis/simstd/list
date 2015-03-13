@@ -10,381 +10,373 @@ namespace simstd
 {
 	template<typename Type, typename Allocator = simstd::allocator<Type>>
 	class list;
-}
 
-namespace simstd
-{
 	namespace pvt
 	{
-		struct list_node_base
-		{
-			void transfer(const list_node_base* first, const list_node_base* last) noexcept;
-			void reverse() noexcept;
-			void hook(const list_node_base* pos) noexcept;
-			void unhook() noexcept;
-			static void swap(list_node_base& a, list_node_base& b) noexcept;
-
-		public:
-			list_node_base* m_next = this;
-			list_node_base* m_prev = this;
-		};
+		struct list_node_base;
 
 		template<typename Type>
-		struct list_node : public list_node_base
-		{
-			template<typename... Args>
-			list_node(Args&&... args) : m_data(simstd::forward<Args>(args)...) {}
-
-		public:
-			Type m_data;
-		};
+		struct list_node;
 
 		template<typename Type>
-		struct list_iterator
-		{
-			using this_type = list_iterator<Type>;
-			using node_type = list_node<Type>;
-
-			using iterator_category = simstd::bidirectional_iterator_tag;
-			using difference_type = ptrdiff_t;
-			using value_type = Type;
-			using pointer = Type*;
-			using reference = Type&;
-
-			list_iterator() noexcept : pnode() {}
-
-			explicit list_iterator(list_node_base* node) noexcept : pnode(node) {}
-
-//			this_type _M_const_cast() const noexcept {return *this;}
-
-			reference operator *() const noexcept {return static_cast<node_type*>(pnode)->m_data;}
-
-			pointer operator ->() const noexcept {return simstd::addressof(static_cast<node_type*>(pnode)->m_data);}
-
-			this_type& operator ++() noexcept {pnode = pnode->m_next; return *this;}
-
-			this_type operator ++(int) noexcept {this_type tmp = *this; pnode = pnode->m_next; return tmp;}
-
-			this_type& operator --() noexcept {pnode = pnode->m_prev; return *this;}
-
-			this_type operator --(int) noexcept {this_type tmp = *this; pnode = pnode->m_prev; return tmp;}
-
-			bool operator ==(const this_type& other) const noexcept {return pnode == other.pnode;}
-
-			bool operator !=(const this_type& other) const noexcept {return pnode != other.pnode;}
-
-			list_node_base* pnode;
-		};
+		class list_iterator;
 
 		template<typename Type>
-		struct list_const_iterator
-		{
-			using this_type = list_const_iterator<Type>;
-			using node_type = const list_node<Type>;
-			using iterator = list_iterator<Type>;
-
-			using iterator_category = simstd::bidirectional_iterator_tag;
-			using difference_type = ptrdiff_t;
-			using value_type = Type;
-			using pointer = const Type*;
-			using reference = const Type&;
-
-			list_const_iterator() noexcept : pnode() {}
-
-			explicit list_const_iterator(const list_node_base* node) noexcept : pnode(node) {}
-
-			list_const_iterator(const iterator& it) noexcept : pnode(it.pnode) {}
-
-			iterator iterator_cast() const noexcept {return iterator(const_cast<list_node_base*>(pnode));}
-
-			reference operator *() const noexcept {return static_cast<node_type*>(pnode)->m_data;}
-
-			pointer operator ->() const noexcept {return simstd::addressof(static_cast<node_type*>(pnode)->m_data);}
-
-			this_type& operator ++() noexcept {pnode = pnode->m_next; return *this;}
-
-			this_type operator ++(int) noexcept {this_type tmp = *this; pnode = pnode->m_next; return tmp;}
-
-			this_type& operator --() noexcept {pnode = pnode->m_prev; return *this;}
-
-			this_type operator --(int) noexcept {this_type tmp = *this; pnode = pnode->m_prev; return tmp;}
-
-			bool operator ==(const this_type& other) const noexcept {return pnode == other.pnode;}
-
-			bool operator !=(const this_type& other) const noexcept {return pnode != other.pnode;}
-
-			const list_node_base* pnode;
-		};
+		class list_const_iterator;
 
 		template<typename Type>
-		bool operator ==(const list_iterator<Type>& a, const list_const_iterator<Type>& b) noexcept
-		{
-			return a.pnode == b.pnode;
-		}
+		bool operator ==(const list_iterator<Type>&, const list_const_iterator<Type>&) noexcept;
 
 		template<typename Type>
-		bool operator !=(const list_iterator<Type>& a, const list_const_iterator<Type>& b) noexcept
-		{
-			return a.pnode != b.pnode;
-		}
+		bool operator !=(const list_iterator<Type>&, const list_const_iterator<Type>&) noexcept;
 
 		template<typename Type, typename TypeAllocator>
-		class list_base
-		{
-			using node_type = list_node<Type>;
-
-		protected:
-			using node_allocator_type = typename TypeAllocator::template rebind<node_type>::other;
-
-		public:
-			using allocator_type = TypeAllocator;
-
-			list_base() = default;
-			list_base(const node_allocator_type& allocator): m_impl(allocator) {}
-			list_base(list_base&& other);
-
-		protected:
-			node_allocator_type& get_node_allocator();
-
-			const node_allocator_type& get_node_allocator() const;
-
-			template<typename... Args>
-			node_type* new_node(Args&&... args);
-
-			void delete_node(const list_node_base* ptr);
-
-			struct Impl: public node_allocator_type {
-				Impl() = default;
-				Impl(const node_allocator_type& other): node_allocator_type(other) {}
-				Impl(node_allocator_type&& other): node_allocator_type(simstd::move(other)) {}
-				list_node_base m_end;
-			};
-
-			Impl m_impl;
-		};
-
-		template<typename Type, typename Allocator>
-		list_base<Type, Allocator>::list_base(list_base&& other) :
-			m_impl(simstd::move(other.get_node_allocator()))
-		{
-			list_node_base::swap(m_impl.m_end, other.m_impl.m_end);
-		}
-
-		template<typename Type, typename Allocator>
-		typename list_base<Type, Allocator>::node_allocator_type& list_base<Type, Allocator>::get_node_allocator()
-		{
-			return *static_cast<node_allocator_type*>(&m_impl);
-		}
-
-		template<typename Type, typename Allocator>
-		const typename list_base<Type, Allocator>::node_allocator_type& list_base<Type, Allocator>::get_node_allocator() const
-		{
-			return *static_cast<const node_allocator_type*>(&m_impl);
-		}
-
-		template<typename Type, typename Allocator>
-		template<typename... Args>
-		list_node<Type>* list_base<Type, Allocator>::new_node(Args&&... args)
-		{
-			auto ptr = m_impl.node_allocator_type::allocate(1);
-			get_node_allocator().construct(ptr, simstd::forward<Args>(args)...);
-			return ptr;
-		}
-
-		template<typename Type, typename Allocator>
-		void list_base<Type, Allocator>::delete_node(const list_node_base* ptr)
-		{
-			auto node = static_cast<node_type*>(const_cast<list_node_base*>(ptr));
-			get_node_allocator().destroy(node);
-			m_impl.node_allocator_type::deallocate(node, 1);
-		}
+		class list_base;
 	}
 }
+
+struct simstd::pvt::list_node_base
+{
+	void transfer(const list_node_base* first, const list_node_base* last) noexcept;
+	void reverse() noexcept;
+	void hook(const list_node_base* cpos) noexcept;
+	void unhook() noexcept;
+	static void swap(list_node_base& a, list_node_base& b) noexcept;
+
+public:
+	list_node_base* m_next = this;
+	list_node_base* m_prev = this;
+};
+
+template<typename Type>
+struct simstd::pvt::list_node : public list_node_base
+{
+	template<typename... Args>
+	list_node(Args&&... args) : m_data(simstd::forward<Args>(args)...) {}
+
+public:
+	Type m_data;
+};
+
+template<typename Type>
+class simstd::pvt::list_iterator
+{
+	using this_type = list_iterator<Type>;
+	using node_type = list_node<Type>;
+
+public:
+	using iterator_category = simstd::bidirectional_iterator_tag;
+	using difference_type = ptrdiff_t;
+	using value_type = Type;
+	using pointer = Type*;
+	using reference = Type&;
+
+	list_iterator() noexcept : pnode() {}
+	explicit list_iterator(list_node_base* node) noexcept : pnode(node) {}
+
+	// Forward iterator requirements
+	reference  operator * () const noexcept {return static_cast<node_type*>(pnode)->m_data;}
+	pointer    operator ->() const noexcept {return simstd::addressof(static_cast<node_type*>(pnode)->m_data);}
+	this_type& operator ++() noexcept       {pnode = pnode->m_next; return *this;}
+	this_type  operator ++(int) noexcept    {this_type tmp(*this); pnode = pnode->m_next; return tmp;}
+
+	// Bidirectional iterator requirements
+	this_type& operator --() noexcept       {pnode = pnode->m_prev; return *this;}
+	this_type  operator --(int) noexcept    {this_type tmp(*this); pnode = pnode->m_prev; return tmp;}
+
+	bool operator ==(const this_type& other) const noexcept {return pnode == other.pnode;}
+	bool operator !=(const this_type& other) const noexcept {return pnode != other.pnode;}
+
+	list_node_base* pnode;
+};
+
+template<typename Type>
+class simstd::pvt::list_const_iterator
+{
+	using this_type = list_const_iterator<Type>;
+	using node_type = const list_node<Type>;
+	using iterator = list_iterator<Type>;
+
+public:
+	using iterator_category = simstd::bidirectional_iterator_tag;
+	using difference_type = ptrdiff_t;
+	using value_type = Type;
+	using pointer = const Type*;
+	using reference = const Type&;
+
+	list_const_iterator() noexcept : pnode() {}
+	explicit list_const_iterator(const list_node_base* node) noexcept : pnode(node) {}
+	list_const_iterator(const iterator& it) noexcept : pnode(it.pnode) {}
+
+	iterator iterator_cast() const noexcept {return iterator(const_cast<list_node_base*>(pnode));}
+
+	// Forward iterator requirements
+	reference  operator * () const noexcept {return static_cast<node_type*>(pnode)->m_data;}
+	pointer    operator ->() const noexcept {return simstd::addressof(static_cast<node_type*>(pnode)->m_data);}
+	this_type& operator ++() noexcept       {pnode = pnode->m_next; return *this;}
+	this_type  operator ++(int) noexcept    {this_type tmp(*this); pnode = pnode->m_next; return tmp;}
+
+	// Bidirectional iterator requirements
+	this_type& operator --() noexcept       {pnode = pnode->m_prev; return *this;}
+	this_type  operator --(int) noexcept    {this_type tmp(*this); pnode = pnode->m_prev; return tmp;}
+
+	bool operator ==(const this_type& other) const noexcept {return pnode == other.pnode;}
+	bool operator !=(const this_type& other) const noexcept {return pnode != other.pnode;}
+
+	const list_node_base* pnode;
+};
+
+template<typename Type>
+bool simstd::pvt::operator ==(const list_iterator<Type>& a, const list_const_iterator<Type>& b) noexcept
+{
+	return a.pnode == b.pnode;
+}
+
+template<typename Type>
+bool simstd::pvt::operator !=(const list_iterator<Type>& a, const list_const_iterator<Type>& b) noexcept
+{
+	return a.pnode != b.pnode;
+}
+
+template<typename Type, typename TypeAllocator>
+class simstd::pvt::list_base
+{
+	using node_type = list_node<Type>;
+
+protected:
+	using node_allocator_type = typename TypeAllocator::template rebind<node_type>::other;
+
+public:
+	using allocator_type = TypeAllocator;
+
+	list_base() = default;
+	list_base(const node_allocator_type& allocator): m_impl(allocator) {}
+	list_base(list_base&& other) :
+		m_impl(simstd::move(other.get_node_allocator()))
+	{
+		list_node_base::swap(m_impl.m_end, other.m_impl.m_end);
+	}
+
+protected:
+	node_allocator_type& get_node_allocator()
+	{
+		return *static_cast<node_allocator_type*>(&m_impl);
+	}
+
+	const node_allocator_type& get_node_allocator() const
+	{
+		return *static_cast<const node_allocator_type*>(&m_impl);
+	}
+
+	template<typename... Args>
+	node_type* new_node(Args&&... args)
+	{
+		auto ptr = m_impl.node_allocator_type::allocate(1);
+		get_node_allocator().construct(ptr, simstd::forward<Args>(args)...);
+		return ptr;
+	}
+
+	void delete_node(const list_node_base* ptr)
+	{
+		auto node = static_cast<node_type*>(const_cast<list_node_base*>(ptr));
+		get_node_allocator().destroy(node);
+		m_impl.node_allocator_type::deallocate(node, 1);
+	}
+
+	struct Impl: public node_allocator_type {
+		Impl() = default;
+		Impl(const node_allocator_type& other): node_allocator_type(other) {}
+		Impl(node_allocator_type&& other): node_allocator_type(simstd::move(other)) {}
+		list_node_base m_end;
+	};
+
+	Impl m_impl;
+};
+
+template<typename Type, typename Allocator>
+class simstd::list: private pvt::list_base<Type, Allocator>
+{
+	typedef list                                    this_type;
+	typedef pvt::list_base<Type, Allocator>         base_type;
+	typedef typename base_type::node_allocator_type NodeAllocator;
+
+public:
+	typedef Allocator allocator_type;
+	typedef size_t    size_type;
+
+	typedef allocator_traits<allocator_type>       alloc_traits;
+	typedef typename alloc_traits::value_type      value_type;
+	typedef typename alloc_traits::pointer         pointer;
+	typedef typename alloc_traits::const_pointer   const_pointer;
+	typedef value_type&                            reference;
+	typedef const value_type&                      const_reference;
+	typedef typename alloc_traits::difference_type difference_type;
+
+	typedef simstd::pvt::list_iterator<value_type>       iterator;
+	typedef simstd::pvt::list_const_iterator<value_type> const_iterator;
+	typedef simstd::reverse_iterator<iterator>           reverse_iterator;
+	typedef simstd::reverse_iterator<const_iterator>     const_reverse_iterator;
+
+public:
+	~list();
+
+	list();
+	explicit list(const allocator_type& allocator);
+	list(size_type count, const value_type& value, const allocator_type& allocator = allocator_type());
+	explicit list(size_type count, const allocator_type& allocator = allocator_type());
+
+	template<class InputIterator>
+	list(InputIterator first, InputIterator last, const allocator_type& allocator = allocator_type());
+	list(const this_type& other);
+	list(const this_type& other, const allocator_type& allocator);
+	list(this_type&& other);
+	list(this_type&& other, const allocator_type& allocator);
+
+	this_type& operator =(const this_type& other);
+	this_type& operator =(this_type&& other);
+
+	template<typename InputIterator>
+	void assign(InputIterator first, InputIterator last);
+	void assign(size_type n, const value_type& value);
+
+	allocator_type get_allocator() const;
+
+	reference       front();
+	const_reference front() const;
+	reference       back();
+	const_reference back() const;
+
+	iterator               begin();
+	const_iterator         begin() const;
+	const_iterator         cbegin() const;
+	iterator               end();
+	const_iterator         end() const;
+	const_iterator         cend() const;
+	reverse_iterator       rbegin();
+	const_reverse_iterator rbegin() const;
+	const_reverse_iterator crbegin() const;
+	reverse_iterator       rend();
+	const_reverse_iterator rend() const;
+	const_reverse_iterator crend() const;
+
+	bool      empty() const;
+	size_type size() const;
+	size_type max_size() const;
+
+	void      clear();
+
+	template<typename InputIterator>
+	iterator insert(const_iterator cpos, InputIterator first, InputIterator last);
+	iterator insert(const_iterator cpos, const value_type& value);
+	iterator insert(const_iterator cpos, size_type n, const value_type& value);
+	iterator insert(const_iterator cpos, value_type&& value);
+
+	template<typename... Args>
+	iterator emplace(const_iterator cpos, Args&&... args);
+
+	iterator erase(const_iterator cpos);
+	iterator erase(const_iterator first, const_iterator last);
+
+	void     push_back(const value_type& value);
+	void     push_back(value_type&& value);
+
+	template<typename... Args>
+	void     emplace_back(Args&&... args);
+
+	void     pop_back();
+
+	void     push_front(const value_type& value);
+	void     push_front(value_type&& value);
+
+	template<typename... Args>
+	void     emplace_front(Args&&... args);
+
+	void     pop_front();
+
+	void     resize(size_type count);
+	void     resize(size_type count, const value_type& value);
+
+	void     swap(this_type& other);
+
+	void     merge(this_type& other);
+	void     merge(this_type&& other);
+	template<class Compare>
+	void     merge(this_type& other, Compare comp);
+	template<class Compare>
+	void     merge(this_type&& other, Compare comp);
+
+	void     splice(const_iterator cpos, this_type& other);
+	void     splice(const_iterator cpos, this_type&& other);
+	void     splice(const_iterator cpos, this_type& other, const_iterator it);
+	void     splice(const_iterator cpos, this_type&& other, const_iterator it);
+	void     splice(const_iterator cpos, this_type& other, const_iterator first, const_iterator last);
+	void     splice(const_iterator cpos, this_type&& other, const_iterator first, const_iterator last);
+
+	void     remove(const value_type& value);
+	template<class UnaryPredicate>
+	void     remove_if(UnaryPredicate predicatep);
+
+	void     reverse();
+
+	void     unique();
+	template<class BinaryPredicate>
+	void     unique(BinaryPredicate predicate);
+
+	void     sort();
+	template<class Compare>
+	void     sort(Compare comp);
+
+private:
+	void _transfer(const_iterator cpos, const_iterator first, const_iterator last);
+
+	void _default_append(size_type count);
+
+	template<class InputIterator>
+	void _initialize(InputIterator first, InputIterator last);
+};
 
 namespace simstd
 {
 	template<typename Type, typename Allocator>
-	class list: private pvt::list_base<Type, Allocator>
+	bool operator ==(const list<Type, Allocator>& a, const list<Type, Allocator>& b)
 	{
-		typedef list                                    this_type;
-		typedef pvt::list_base<Type, Allocator>         base_type;
-		typedef typename base_type::node_allocator_type NodeAllocator;
-
-	public:
-		typedef Allocator allocator_type;
-		typedef size_t    size_type;
-
-		typedef allocator_traits<allocator_type>       alloc_traits;
-		typedef typename alloc_traits::value_type      value_type;
-		typedef typename alloc_traits::pointer         pointer;
-		typedef typename alloc_traits::const_pointer   const_pointer;
-		typedef value_type&                            reference;
-		typedef const value_type&                      const_reference;
-		typedef typename alloc_traits::difference_type difference_type;
-
-		typedef simstd::pvt::list_iterator<value_type>       iterator;
-		typedef simstd::pvt::list_const_iterator<value_type> const_iterator;
-		typedef simstd::reverse_iterator<iterator>           reverse_iterator;
-		typedef simstd::reverse_iterator<const_iterator>     const_reverse_iterator;
-
-	public:
-		~list();
-
-		list();
-		explicit list(const allocator_type& allocator);
-		list(size_type count, const value_type& value, const allocator_type& allocator = allocator_type());
-		explicit list(size_type count, const allocator_type& allocator = allocator_type());
-
-		template<class InputIterator>
-		list(InputIterator first, InputIterator last, const allocator_type& allocator = allocator_type());
-		list(const this_type & other);
-		list(const this_type & other, const allocator_type & allocator);
-		list(this_type && other);
-		list(this_type && other, const allocator_type & allocator);
-
-		this_type& operator =(const this_type& other);
-		this_type& operator =(this_type&& other);
-
-		template<typename InputIterator>
-		void assign(InputIterator first, InputIterator last);
-		void assign(size_type n, const value_type& value);
-
-		allocator_type get_allocator() const;
-
-		reference         front();
-		const_reference   front() const;
-		reference         back();
-		const_reference   back() const;
-
-		iterator               begin();
-		const_iterator         begin() const;
-		const_iterator         cbegin() const;
-		iterator               end();
-		const_iterator         end() const;
-		const_iterator         cend() const;
-		reverse_iterator       rbegin();
-		const_reverse_iterator rbegin() const;
-		const_reverse_iterator crbegin() const;
-		reverse_iterator       rend();
-		const_reverse_iterator rend() const;
-		const_reverse_iterator crend() const;
-
-		bool      empty() const;
-		size_type size() const;
-		size_type max_size() const;
-
-		void      clear();
-
-		template<typename InputIterator>
-		iterator insert(const_iterator pos, InputIterator first, InputIterator last);
-		iterator insert(const_iterator pos, const value_type& value);
-		iterator insert(const_iterator pos, size_type n, const value_type& value);
-		iterator insert(const_iterator pos, value_type&& value);
-
-		template<typename... Args>
-		iterator emplace(const_iterator pos, Args&&... args);
-
-		iterator erase(const_iterator pos);
-		iterator erase(const_iterator first, const_iterator last);
-
-		void     push_back(const value_type& value);
-		void     push_back(value_type&& value);
-
-		template<typename... Args>
-		void     emplace_back(Args&&... args);
-
-		void     pop_back();
-
-		void     push_front(const value_type& value);
-		void     push_front(value_type&& value);
-
-		template<typename... Args>
-		void     emplace_front(Args&&... args);
-
-		void     pop_front();
-
-		void     resize(size_type count);
-		void     resize(size_type count, const value_type& value);
-
-		void     swap(this_type& other);
-
-		void     merge(this_type& other);
-		void     merge(this_type&& other);
-		template<class Compare>
-		void     merge(this_type& other, Compare comp);
-		template<class Compare>
-		void     merge(this_type&& other, Compare comp);
-
-		void     splice(const_iterator pos, this_type& other);
-		void     splice(const_iterator pos, this_type&& other);
-		void     splice(const_iterator pos, this_type& other, const_iterator it);
-		void     splice(const_iterator pos, this_type&& other, const_iterator it);
-		void     splice(const_iterator pos, this_type& other, const_iterator first, const_iterator last);
-		void     splice(const_iterator pos, this_type&& other, const_iterator first, const_iterator last);
-
-		void     remove(const value_type& value);
-		template<class UnaryPredicate>
-		void     remove_if(UnaryPredicate predicatep);
-
-		void     reverse();
-
-		void     unique();
-		template<class BinaryPredicate>
-		void     unique(BinaryPredicate predicate);
-
-		void     sort();
-		template<class Compare>
-		void     sort(Compare comp);
-
-	private:
-		void _transfer(const_iterator position, const_iterator first, const_iterator last);
-
-		void _default_append(size_type count);
-
-		template<class InputIterator>
-		void _initialize(InputIterator first, InputIterator last);
-	};
-
-	template<typename Type, typename Allocator>
-	bool operator ==(const list<Type, Allocator>& lhs, const list<Type, Allocator>& rhs)
-	{
-		return simstd::equal(lhs.begin(), lhs.end(), rhs.begin());
+		return simstd::equal(a.begin(), a.end(), b.begin());
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator !=(const list<Type, Allocator>& lhs, const list<Type, Allocator>& rhs)
+	bool operator !=(const list<Type, Allocator>& a, const list<Type, Allocator>& b)
 	{
-		return simstd::rel_ops::operator !=(lhs, rhs);
+		return simstd::rel_ops::operator !=(a, b);
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator <(const list<Type, Allocator>& lhs, const list<Type, Allocator>& rhs)
+	bool operator <(const list<Type, Allocator>& a, const list<Type, Allocator>& b)
 	{
-		return simstd::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		return simstd::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end());
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator >(const list<Type, Allocator>& lhs, const list<Type, Allocator>& rhs)
+	bool operator >(const list<Type, Allocator>& a, const list<Type, Allocator>& b)
 	{
-		return simstd::rel_ops::operator >(lhs, rhs);
+		return simstd::rel_ops::operator >(a, b);
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator <=(const list<Type, Allocator>& lhs, const list<Type, Allocator>& rhs)
+	bool operator <=(const list<Type, Allocator>& a, const list<Type, Allocator>& b)
 	{
-		return simstd::rel_ops::operator <=(lhs, rhs);
+		return simstd::rel_ops::operator <=(a, b);
 	}
 
 	template<typename Type, typename Allocator>
-	bool operator >=(const list<Type, Allocator>& lhs, const list<Type, Allocator>& rhs)
+	bool operator >=(const list<Type, Allocator>& a, const list<Type, Allocator>& b)
 	{
-		return simstd::rel_ops::operator >=(lhs, rhs);
+		return simstd::rel_ops::operator >=(a, b);
 	}
 
 	template<typename Type, typename Allocator>
-	void swap(list<Type, Allocator>& lhs, list<Type, Allocator>& rhs)
+	void swap(list<Type, Allocator>& a, list<Type, Allocator>& b)
 	{
-		lhs.swap(rhs);
+		a.swap(b);
 	}
 
 	template<typename Type, typename Allocator>
@@ -402,7 +394,7 @@ namespace simstd
 	}
 
 	template<typename Type, typename Allocator>
-	list<Type, Allocator>::list(const allocator_type & allocator):
+	list<Type, Allocator>::list(const allocator_type& allocator):
 		base_type(NodeAllocator(allocator))
 	{
 		TraceObj();
@@ -435,7 +427,7 @@ namespace simstd
 	}
 
 	template<typename Type, typename Allocator>
-	list<Type, Allocator>::list(const this_type & other):
+	list<Type, Allocator>::list(const this_type& other):
 		base_type(other.get_node_allocator())
 	{
 		TraceObj();
@@ -443,7 +435,7 @@ namespace simstd
 	}
 
 	template<typename Type, typename Allocator>
-	list<Type, Allocator>::list(const this_type & other, const allocator_type & allocator):
+	list<Type, Allocator>::list(const this_type& other, const allocator_type& allocator):
 		base_type(NodeAllocator(allocator))
 	{
 		TraceObj();
@@ -451,14 +443,14 @@ namespace simstd
 	}
 
 	template<typename Type, typename Allocator>
-	list<Type, Allocator>::list(this_type && other):
+	list<Type, Allocator>::list(this_type&& other):
 		base_type(simstd::move(other))
 	{
 		TraceObj();
 	}
 
 	template<typename Type, typename Allocator>
-	list<Type, Allocator>::list(this_type && other, const allocator_type & allocator):
+	list<Type, Allocator>::list(this_type&& other, const allocator_type& allocator):
 		base_type(NodeAllocator(allocator))
 	{
 		TraceObj();
@@ -475,7 +467,7 @@ namespace simstd
 
 	template<typename Type, typename Allocator>
 	typename
-	list<Type, Allocator>::this_type& list<Type, Allocator>::operator =(this_type && other)
+	list<Type, Allocator>::this_type& list<Type, Allocator>::operator =(this_type&& other)
 	{
 		TraceObj();
 		this_type(simstd::move(other)).swap(*this);
@@ -649,57 +641,57 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	template<typename InputIterator>
 	typename
-	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator pos, InputIterator first, InputIterator last)
+	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator cpos, InputIterator first, InputIterator last)
 	{
 		TraceObj();
 		this_type tmp(first, last, get_allocator());
-		splice(pos, tmp);
+		splice(cpos, tmp);
 	}
 
 	template<typename Type, typename Allocator>
 	typename
-	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator pos, const value_type& value)
+	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator cpos, const value_type& value)
 	{
 		TraceObj();
-		return emplace(pos, value);
+		return emplace(cpos, value);
 	}
 
 	template<typename Type, typename Allocator>
 	typename
-	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator pos, size_type n, const value_type& value)
+	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator cpos, size_type n, const value_type& value)
 	{
 		TraceObj();
 		this_type tmp(n, value, get_allocator());
-		splice(pos, tmp);
+		splice(cpos, tmp);
 	}
 
 	template<typename Type, typename Allocator>
 	typename
-	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator pos, value_type&& value)
+	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator cpos, value_type&& value)
 	{
 		TraceObj();
-		return emplace(pos, simstd::move(value));
+		return emplace(cpos, simstd::move(value));
 	}
 
 	template<typename Type, typename Allocator>
 	template<typename... Args>
 	typename
-	list<Type, Allocator>::iterator list<Type, Allocator>::emplace(const_iterator pos, Args&&... args)
+	list<Type, Allocator>::iterator list<Type, Allocator>::emplace(const_iterator cpos, Args&&... args)
 	{
 		TraceObj();
 		auto tmp = base_type::new_node(simstd::forward<Args>(args)...);
-		tmp->hook(pos.pnode);
+		tmp->hook(cpos.pnode);
 		return iterator(tmp);
 	}
 
 	template<typename Type, typename Allocator>
 	typename
-	list<Type, Allocator>::iterator list<Type, Allocator>::erase(const_iterator pos)
+	list<Type, Allocator>::iterator list<Type, Allocator>::erase(const_iterator cpos)
 	{
 		TraceObj();
-		iterator ret(pos.pnode->m_next);
+		iterator ret(cpos.pnode->m_next);
 
-		iterator it(pos.iterator_cast());
+		iterator it(cpos.iterator_cast());
 		it.pnode->unhook();
 		base_type::delete_node(it.pnode);
 
@@ -742,8 +734,8 @@ namespace simstd
 	void list<Type, Allocator>::pop_back()
 	{
 		TraceObj();
-		const_iterator pos = cend();
-		erase(--pos);
+		const_iterator cpos = cend();
+		erase(--cpos);
 	}
 
 	template<typename Type, typename Allocator>
@@ -870,46 +862,46 @@ namespace simstd
 	}
 
 	template<typename Type, typename Allocator>
-	void list<Type, Allocator>::splice(const_iterator pos, this_type& other)
+	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other)
 	{
-		splice(pos, simstd::move(other));
+		splice(cpos, simstd::move(other));
 	}
 
 	template<typename Type, typename Allocator>
-	void list<Type, Allocator>::splice(const_iterator pos, this_type&& other)
+	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other)
 	{
-		_transfer(pos.iterator_cast(), other.begin(), other.end());
+		_transfer(cpos.iterator_cast(), other.begin(), other.end());
 	}
 
 	template<typename Type, typename Allocator>
-	void list<Type, Allocator>::splice(const_iterator pos, this_type& other, const_iterator it)
+	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other, const_iterator it)
 	{
-		splice(pos, simstd::move(other), it);
+		splice(cpos, simstd::move(other), it);
 	}
 
 	template<typename Type, typename Allocator>
-	void list<Type, Allocator>::splice(const_iterator pos, this_type&& other, const_iterator it)
+	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other, const_iterator it)
 	{
 		auto j = it.iterator_cast();
 		++j;
 
-		if (pos == it || pos == j)
+		if (cpos == it || cpos == j)
 			return;
 
-		_transfer(pos.iterator_cast(), it.iterator_cast(), j);
+		_transfer(cpos.iterator_cast(), it.iterator_cast(), j);
 	}
 
 	template<typename Type, typename Allocator>
-	void list<Type, Allocator>::splice(const_iterator pos, this_type& other, const_iterator first, const_iterator last)
+	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other, const_iterator first, const_iterator last)
 	{
-		splice(pos, simstd::move(other), first, last);
+		splice(cpos, simstd::move(other), first, last);
 	}
 
 	template<typename Type, typename Allocator>
-	void list<Type, Allocator>::splice(const_iterator pos, this_type&& other, const_iterator first, const_iterator last)
+	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other, const_iterator first, const_iterator last)
 	{
 		if (first != last)
-			_transfer(pos.iterator_cast(), first.iterator_cast(), last.iterator_cast());
+			_transfer(cpos.iterator_cast(), first.iterator_cast(), last.iterator_cast());
 	}
 
 	template<typename Type, typename Allocator>
@@ -1054,9 +1046,9 @@ namespace simstd
 	}
 
 	template<typename Type, typename Allocator>
-	void list<Type, Allocator>::_transfer(const_iterator pos, const_iterator first, const_iterator last)
+	void list<Type, Allocator>::_transfer(const_iterator cpos, const_iterator first, const_iterator last)
 	{
-		pos.pnode->transfer(first.pnode, last.pnode);
+		cpos.pnode->transfer(first.pnode, last.pnode);
 	}
 
 	template<typename Type, typename Allocator>

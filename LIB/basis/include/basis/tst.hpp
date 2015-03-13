@@ -8,12 +8,14 @@
 #define TestFuncPlace() console::printf("%s:%d\n", __PRETTY_FUNCTION__, __LINE__)
 #define TestFuncPlaceFormat(format, ...) console::printf("%s:%d " format, __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
 
-namespace tst {
+namespace tst
+{
 	typedef int (*aPrintFunc)(const char*, ...);
 	typedef int (*wPrintFunc)(const wchar_t*, ...);
 }
 
-namespace tst {
+namespace tst
+{
 	ssize_t _algorithm();
 	ssize_t _list();
 	ssize_t a_string(aPrintFunc printFunc);
