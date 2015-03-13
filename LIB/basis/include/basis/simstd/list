@@ -326,6 +326,7 @@ public:
 	void     unique(BinaryPredicate predicate);
 
 	void     sort();
+	void     sort1();
 	template<class Compare>
 	void     sort(Compare comp);
 
@@ -352,6 +353,10 @@ private:
 	void _merge(this_type& other, Compare comp);
 	template<class Compare>
 	void _merge(this_type&& other, Compare comp);
+
+	void _splice(const_iterator cpos, this_type&& other);
+	void _splice(const_iterator cpos, this_type&& other, const_iterator it);
+	void _splice(const_iterator cpos, this_type&& other, const_iterator first, const_iterator last);
 };
 
 namespace simstd
@@ -359,7 +364,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	bool operator ==(const list<Type, Allocator>& a, const list<Type, Allocator>& b)
 	{
-		return simstd::equal(a.begin(), a.end(), b.begin());
+		return simstd::equal(a.cbegin(), a.cend(), b.cbegin());
 	}
 
 	template<typename Type, typename Allocator>
@@ -371,7 +376,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	bool operator <(const list<Type, Allocator>& a, const list<Type, Allocator>& b)
 	{
-		return simstd::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end());
+		return simstd::lexicographical_compare(a.cbegin(), a.cend(), b.cbegin(), b.cend());
 	}
 
 	template<typename Type, typename Allocator>
@@ -450,7 +455,7 @@ namespace simstd
 		base_type(other.get_node_allocator())
 	{
 		TraceObj();
-		_initialize(other.begin(), other.end());
+		_initialize(other.cbegin(), other.cend());
 	}
 
 	template<typename Type, typename Allocator>
@@ -458,7 +463,7 @@ namespace simstd
 		base_type(node_allocator_type(allocator))
 	{
 		TraceObj();
-		_initialize(other.begin(), other.end());
+		_initialize(other.cbegin(), other.cend());
 	}
 
 	template<typename Type, typename Allocator>
@@ -533,7 +538,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::const_reference list<Type, Allocator>::front() const
 	{
-		return *begin();
+		return *cbegin();
 	}
 
 	template<typename Type, typename Allocator>
@@ -633,7 +638,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::const_reverse_iterator list<Type, Allocator>::crend() const
 	{
-		return const_reverse_iterator(begin());
+		return const_reverse_iterator(cbegin());
 	}
 
 	template<typename Type, typename Allocator>
@@ -646,7 +651,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::size_type list<Type, Allocator>::size() const
 	{
-		return simstd::distance(begin(), end());
+		return simstd::distance(cbegin(), cend());
 	}
 
 	template<typename Type, typename Allocator>
@@ -670,7 +675,7 @@ namespace simstd
 	{
 		TraceObj();
 		this_type tmp(first, last, get_allocator());
-		splice(cpos, tmp);
+		_splice(cpos, simstd::move(tmp));
 	}
 
 	template<typename Type, typename Allocator>
@@ -687,7 +692,7 @@ namespace simstd
 	{
 		TraceObj();
 		this_type tmp(n, value, get_allocator());
-		splice(cpos, tmp);
+		_splice(cpos, simstd::move(tmp));
 	}
 
 	template<typename Type, typename Allocator>
@@ -814,7 +819,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::swap(this_type& other)
 	{
-		TraceObj();
+//		TraceObj();
 		m_impl.m_end.swap(m_impl.m_end, other.m_impl.m_end);
 	}
 
@@ -852,52 +857,42 @@ namespace simstd
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other)
 	{
 		TraceObj();
-		_transfer(cpos.iterator_cast(), other.begin(), other.end());
+		_splice(cpos, simstd::move(other));
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other)
 	{
 		TraceObj();
-		_transfer(cpos.iterator_cast(), other.begin(), other.end());
+		_splice(cpos, simstd::move(other));
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other, const_iterator it)
 	{
 		TraceObj();
-		splice(cpos, simstd::move(other), it);
+		_splice(cpos, simstd::move(other), it);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other, const_iterator it)
 	{
 		TraceObj();
-		auto j = it.iterator_cast();
-
-		if (cpos == it || cpos == ++j)
-			return;
-
-		if (this != &other) {
-			CRT_ASSERT(other.get_allocator() == get_allocator());
-		}
-
-		_transfer(cpos.iterator_cast(), it.iterator_cast(), j);
+		_splice(cpos, simstd::move(other), it);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other, const_iterator first, const_iterator last)
 	{
 		TraceObj();
-		splice(cpos, simstd::move(other), first, last);
+		_splice(cpos, simstd::move(other), first, last);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other, const_iterator first, const_iterator last)
 	{
 		TraceObj();
-		if (first != last)
-			_transfer(cpos.iterator_cast(), first.iterator_cast(), last.iterator_cast());
+		_splice(cpos, simstd::move(other), first, last);
 	}
 
 	template<typename Type, typename Allocator>
@@ -995,19 +990,19 @@ namespace simstd
 	{
 		TraceObj();
 		if (size() > 1) {
-			list __carry;
+			list carry;
 			list __tmp[64];
 			list * __fill = &__tmp[0];
 			list * __counter;
 
 			do {
-				__carry.splice(__carry.begin(), *this, begin());
+				carry._splice(carry.cbegin(), simstd::move(*this), cbegin());
 
 				for (__counter = &__tmp[0]; __counter != __fill && !__counter->empty(); ++__counter) {
-					__counter->_merge(__carry);
-					__carry.swap(*__counter);
+					__counter->_merge(carry);
+					carry.swap(*__counter);
 				}
-				__carry.swap(*__counter);
+				carry.swap(*__counter);
 				if (__counter == __fill)
 					++__fill;
 			} while (!empty());
@@ -1024,19 +1019,19 @@ namespace simstd
 	{
 		TraceObj();
 		if (size() > 1) {
-			list __carry;
+			list carry;
 			list __tmp[64];
 			list * __fill = &__tmp[0];
 			list * __counter;
 
 			do {
-				__carry.splice(__carry.begin(), *this, begin());
+				carry._splice(carry.cbegin(), simstd::move(*this), cbegin());
 
 				for (__counter = &__tmp[0]; __counter != __fill && !__counter->empty(); ++__counter) {
-					__counter->_merge(__carry, comp);
-					__carry.swap(*__counter);
+					__counter->_merge(carry, comp);
+					carry.swap(*__counter);
 				}
-				__carry.swap(*__counter);
+				carry.swap(*__counter);
 				if (__counter == __fill)
 					++__fill;
 			} while (!empty());
@@ -1123,10 +1118,10 @@ namespace simstd
 	void list<Type, Allocator>::_merge(this_type&& other)
 	{
 		if (this != &other) {
-			auto first1 = begin();
-			auto last1 = end();
-			auto first2 = other.begin();
-			auto last2 = other.end();
+			auto first1 = cbegin();
+			auto last1 = cend();
+			auto first2 = other.cbegin();
+			auto last2 = other.cend();
 
 			while (first1 != last1 && first2 != last2) {
 				if (*first2 < *first1) {
@@ -1153,10 +1148,10 @@ namespace simstd
 	void list<Type, Allocator>::_merge(this_type&& other, Compare comp)
 	{
 		if (this != &other) {
-			auto first1 = begin();
-			auto last1 = end();
-			auto first2 = other.begin();
-			auto last2 = other.end();
+			auto first1 = cbegin();
+			auto last1 = cend();
+			auto first2 = other.cbegin();
+			auto last2 = other.cend();
 
 			while (first1 != last1 && first2 != last2) {
 				if (comp(*first2, *first1)) {
@@ -1169,6 +1164,38 @@ namespace simstd
 			if (first2 != last2)
 				_transfer(last1, first2, last2);
 		}
+	}
+
+	template<typename Type, typename Allocator>
+	void list<Type, Allocator>::_splice(const_iterator cpos, this_type&& other)
+	{
+		TraceObj();
+		_transfer(cpos, other.cbegin(), other.cend());
+	}
+
+	template<typename Type, typename Allocator>
+	void list<Type, Allocator>::_splice(const_iterator cpos, this_type&& other, const_iterator it)
+	{
+		auto last = it;
+
+		if (cpos == it || cpos == ++last)
+			return;
+
+		if (this != &other) {
+			CRT_ASSERT(other.get_allocator() == get_allocator());
+		}
+
+		_transfer(cpos, it, last);
+	}
+
+	template<typename Type, typename Allocator>
+	void list<Type, Allocator>::_splice(const_iterator cpos, this_type&& other, const_iterator first, const_iterator last)
+	{
+		if (this != &other) {
+			CRT_ASSERT(other.get_allocator() == get_allocator());
+		}
+
+		_transfer(cpos, first, last);
 	}
 
 }

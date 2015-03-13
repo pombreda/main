@@ -4,6 +4,7 @@
 #include <basis/sys/memory.hpp>
 
 #include <basis/simstd/algorithm>
+#include <basis/simstd/chrono>
 #include <basis/simstd/memory>
 #include <basis/simstd/list>
 #include <list>
@@ -52,6 +53,17 @@ void print_container(const char* name, const Type& listContainer)
 	TestFuncFormat("%s: size(): %Id (", name, listContainer.size());
 	for (auto it = begin(listContainer); it != end(listContainer); ++it) {
 		TestFuncFormat(" %Id", it->val());
+	}
+	TestFuncFormat(")\n");
+}
+
+template<>
+void print_container(const char* name, const simstd::list<ssize_t>& listContainer)
+{
+	using namespace simstd;
+	TestFuncFormat("%s: size(): %Id (", name, listContainer.size());
+	for (auto it = begin(listContainer); it != end(listContainer); ++it) {
+		TestFuncFormat(" %Id", *it);
 	}
 	TestFuncFormat(")\n");
 }
@@ -243,15 +255,34 @@ ssize_t tst::_list()
 		{
 			TestFuncFormat("\n\n\n");
 			TestFuncPlace();
-			test_list_type list1(9);
+			using std::chrono::duration_cast;
+			using std::chrono::microseconds;
+			using std::chrono::milliseconds;
+			using std::chrono::nanoseconds;
+			using std::chrono::steady_clock;
+			ssize_t size = 1000;
+
+			auto start3 = simstd::chrono::perfomance_clock::now();
+			simstd::list<ssize_t> list1(size);
+			auto end3 = simstd::chrono::perfomance_clock::now();
+			auto elapsed3 = end3 - start3;
+			TestFuncPlaceFormat("size1: %10I64u, count3: %10I64u ns, count3: %10I64u mcs, count3: %6I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed3).count(), (uint64_t)duration_cast<microseconds>(elapsed3).count(), (uint64_t)duration_cast<milliseconds>(elapsed3).count());
 			print_container("list1", list1);
 
 			TestFuncPlaceFormat("generate:\n");
+			start3 = simstd::chrono::perfomance_clock::now();
 			simstd::generate(simstd::begin(list1), simstd::end(list1), get_random);
+			end3 = simstd::chrono::perfomance_clock::now();
+			elapsed3 = end3 - start3;
+			TestFuncPlaceFormat("size2: %10I64u, count3: %10I64u ns, count3: %10I64u mcs, count3: %6I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed3).count(), (uint64_t)duration_cast<microseconds>(elapsed3).count(), (uint64_t)duration_cast<milliseconds>(elapsed3).count());
 			print_container("list1", list1);
 
 			TestFuncPlaceFormat("sorting:\n");
+			start3 = simstd::chrono::perfomance_clock::now();
 			list1.sort();
+			end3 = simstd::chrono::perfomance_clock::now();
+			elapsed3 = end3 - start3;
+			TestFuncPlaceFormat("size3: %10I64u, count3: %10I64u ns, count3: %10I64u mcs, count3: %6I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed3).count(), (uint64_t)duration_cast<microseconds>(elapsed3).count(), (uint64_t)duration_cast<milliseconds>(elapsed3).count());
 			print_container("list1", list1);
 		}
 //

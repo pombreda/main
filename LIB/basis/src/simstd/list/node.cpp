@@ -6,16 +6,19 @@ namespace simstd
 	{
 		void list_node_base::transfer(const list_node_base* first, const list_node_base* last) noexcept
 		{
-			auto first1 = m_prev;
+			if (first != last)
+			{
+				auto first1 = m_prev;
 
-			m_prev = last->m_prev;
-			m_prev->m_next = this;
+				m_prev = last->m_prev;
+				m_prev->m_next = this;
 
-			first->m_prev->m_next = const_cast<list_node_base*>(last);
-			const_cast<list_node_base*>(last)->m_prev = first->m_prev;
+				first->m_prev->m_next = const_cast<list_node_base*>(last);
+				const_cast<list_node_base*>(last)->m_prev = first->m_prev;
 
-			first1->m_next = const_cast<list_node_base*>(first);
-			const_cast<list_node_base*>(first)->m_prev = first1;
+				first1->m_next = const_cast<list_node_base*>(first);
+				const_cast<list_node_base*>(first)->m_prev = first1;
+			}
 		}
 
 		void list_node_base::reverse() noexcept
