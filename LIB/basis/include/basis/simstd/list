@@ -345,6 +345,13 @@ private:
 	void _erase_back();
 	iterator _erase(const_iterator cpos);
 	iterator _erase(const_iterator first, const_iterator last);
+
+	void _merge(this_type& other);
+	void _merge(this_type&& other);
+	template<class Compare>
+	void _merge(this_type& other, Compare comp);
+	template<class Compare>
+	void _merge(this_type&& other, Compare comp);
 };
 
 namespace simstd
@@ -814,87 +821,66 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::merge(this_type& other)
 	{
-		merge(simstd::move(other));
+		TraceObj();
+		_merge(simstd::move(other));
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::merge(this_type&& other)
 	{
-		if (this != &other) {
-			auto first1 = begin();
-			auto last1 = end();
-			auto first2 = other.begin();
-			auto last2 = other.end();
-
-			while (first1 != last1 && first2 != last2) {
-				if (*first2 < *first1) {
-					auto next = first2;
-					_transfer(first1, first2, ++next);
-					first2 = next;
-				} else
-					++first1;
-			}
-
-			if (first2 != last2)
-				_transfer(last1, first2, last2);
-		}
+		TraceObj();
+		_merge(simstd::move(other));
 	}
 
 	template<typename Type, typename Allocator>
 	template<class Compare>
 	void list<Type, Allocator>::merge(this_type& other, Compare comp)
 	{
-		merge(simstd::move(other), comp);
+		TraceObj();
+		_merge(simstd::move(other), comp);
 	}
 
 	template<typename Type, typename Allocator>
 	template<class Compare>
 	void list<Type, Allocator>::merge(this_type&& other, Compare comp)
 	{
-		if (this != &other) {
-			auto first1 = begin();
-			auto last1 = end();
-			auto first2 = other.begin();
-			auto last2 = other.end();
-			while (first1 != last1 && first2 != last2) {
-				if (comp(*first2, *first1)) {
-					auto next = first2;
-					_transfer(first1, first2, ++next);
-					first2 = next;
-				} else
-					++first1;
-			}
-			if (first2 != last2)
-				_transfer(last1, first2, last2);
-		}
+		TraceObj();
+		_merge(simstd::move(other), comp);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other)
 	{
-		splice(cpos, simstd::move(other));
+		TraceObj();
+		_transfer(cpos.iterator_cast(), other.begin(), other.end());
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other)
 	{
+		TraceObj();
 		_transfer(cpos.iterator_cast(), other.begin(), other.end());
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other, const_iterator it)
 	{
+		TraceObj();
 		splice(cpos, simstd::move(other), it);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other, const_iterator it)
 	{
+		TraceObj();
 		auto j = it.iterator_cast();
-		++j;
 
-		if (cpos == it || cpos == j)
+		if (cpos == it || cpos == ++j)
 			return;
+
+		if (this != &other) {
+			CRT_ASSERT(other.get_allocator() == get_allocator());
+		}
 
 		_transfer(cpos.iterator_cast(), it.iterator_cast(), j);
 	}
@@ -902,12 +888,14 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other, const_iterator first, const_iterator last)
 	{
+		TraceObj();
 		splice(cpos, simstd::move(other), first, last);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other, const_iterator first, const_iterator last)
 	{
+		TraceObj();
 		if (first != last)
 			_transfer(cpos.iterator_cast(), first.iterator_cast(), last.iterator_cast());
 	}
@@ -915,6 +903,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::remove(const value_type& value)
 	{
+		TraceObj();
 		auto first = cbegin();
 		auto last = cend();
 		auto postponed = last;
@@ -939,6 +928,7 @@ namespace simstd
 	template<class UnaryPredicate>
 	void list<Type, Allocator>::remove_if(UnaryPredicate predicate)
 	{
+		TraceObj();
 		auto first = cbegin();
 		auto last = cend();
 		while (first != last)
@@ -960,6 +950,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::unique()
 	{
+		TraceObj();
 		auto first = cbegin();
 		auto last = cend();
 
@@ -981,6 +972,7 @@ namespace simstd
 	template<class BinaryPredicate>
 	void list<Type, Allocator>::unique(BinaryPredicate predicate)
 	{
+		TraceObj();
 		auto first = cbegin();
 		auto last = cend();
 
@@ -1001,6 +993,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::sort()
 	{
+		TraceObj();
 		if (size() > 1) {
 			list __carry;
 			list __tmp[64];
@@ -1011,7 +1004,7 @@ namespace simstd
 				__carry.splice(__carry.begin(), *this, begin());
 
 				for (__counter = &__tmp[0]; __counter != __fill && !__counter->empty(); ++__counter) {
-					__counter->merge(__carry);
+					__counter->_merge(__carry);
 					__carry.swap(*__counter);
 				}
 				__carry.swap(*__counter);
@@ -1020,7 +1013,7 @@ namespace simstd
 			} while (!empty());
 
 			for (__counter = &__tmp[1]; __counter != __fill; ++__counter)
-				__counter->merge(*(__counter - 1));
+				__counter->_merge(*(__counter - 1));
 			swap(*(__fill - 1));
 		}
 	}
@@ -1029,6 +1022,7 @@ namespace simstd
 	template<class Compare>
 	void list<Type, Allocator>::sort(Compare comp)
 	{
+		TraceObj();
 		if (size() > 1) {
 			list __carry;
 			list __tmp[64];
@@ -1039,7 +1033,7 @@ namespace simstd
 				__carry.splice(__carry.begin(), *this, begin());
 
 				for (__counter = &__tmp[0]; __counter != __fill && !__counter->empty(); ++__counter) {
-					__counter->merge(__carry, comp);
+					__counter->_merge(__carry, comp);
 					__carry.swap(*__counter);
 				}
 				__carry.swap(*__counter);
@@ -1048,7 +1042,7 @@ namespace simstd
 			} while (!empty());
 
 			for (__counter = &__tmp[1]; __counter != __fill; ++__counter)
-				__counter->merge(*(__counter - 1), comp);
+				__counter->_merge(*(__counter - 1), comp);
 			swap(*(__fill - 1));
 		}
 	}
@@ -1056,7 +1050,8 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::_transfer(const_iterator cpos, const_iterator first, const_iterator last)
 	{
-		cpos.pnode->transfer(first.pnode, last.pnode);
+		auto pos(cpos.iterator_cast());
+		pos.pnode->transfer(first.pnode, last.pnode);
 	}
 
 	template<typename Type, typename Allocator>
@@ -1117,6 +1112,65 @@ namespace simstd
 			first = _erase(first);
 		return last.iterator_cast();
 	}
+
+	template<typename Type, typename Allocator>
+	void list<Type, Allocator>::_merge(this_type& other)
+	{
+		_merge(simstd::move(other));
+	}
+
+	template<typename Type, typename Allocator>
+	void list<Type, Allocator>::_merge(this_type&& other)
+	{
+		if (this != &other) {
+			auto first1 = begin();
+			auto last1 = end();
+			auto first2 = other.begin();
+			auto last2 = other.end();
+
+			while (first1 != last1 && first2 != last2) {
+				if (*first2 < *first1) {
+					auto cur = first2;
+					_transfer(first1, cur, ++first2);
+				} else
+					++first1;
+			}
+
+			if (first2 != last2)
+				_transfer(last1, first2, last2);
+		}
+	}
+
+	template<typename Type, typename Allocator>
+	template<class Compare>
+	void list<Type, Allocator>::_merge(this_type& other, Compare comp)
+	{
+		_merge(simstd::move(other), comp);
+	}
+
+	template<typename Type, typename Allocator>
+	template<class Compare>
+	void list<Type, Allocator>::_merge(this_type&& other, Compare comp)
+	{
+		if (this != &other) {
+			auto first1 = begin();
+			auto last1 = end();
+			auto first2 = other.begin();
+			auto last2 = other.end();
+
+			while (first1 != last1 && first2 != last2) {
+				if (comp(*first2, *first1)) {
+					auto cur = first2;
+					_transfer(first1, cur, ++first2);
+				} else
+					++first1;
+			}
+
+			if (first2 != last2)
+				_transfer(last1, first2, last2);
+		}
+	}
+
 }
 
 #endif

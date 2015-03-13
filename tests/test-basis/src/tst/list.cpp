@@ -7,6 +7,17 @@
 #include <basis/simstd/memory>
 #include <basis/simstd/list>
 #include <list>
+#include <ctime>
+
+inline ssize_t get_random()
+{
+	return rand() % 100;
+}
+
+//inline ssize_t get_random(ssize_t l = 100)
+//{
+//	return rand() % l;
+//}
 
 template<typename Type>
 void check_emptiness(const Type& listContainer)
@@ -34,12 +45,21 @@ void check_size(const Type& listContainer, size_t size)
 	CRT_ASSERT(simstd::next(listContainer.crbegin(), size) == listContainer.crend());
 }
 
+template<typename Type>
+void print_container(const char* name, const Type& listContainer)
+{
+	using namespace simstd;
+	TestFuncFormat("%s: size(): %Id (", name, listContainer.size());
+	for (auto it = begin(listContainer); it != end(listContainer); ++it) {
+		TestFuncFormat(" %Id", it->val());
+	}
+	TestFuncFormat(")\n");
+}
+
 ssize_t tst::_list()
 {
-	LogAtten(L"\n");
-
-	A ma1[5];
-	A ma2[4];
+	TestFuncPlace();
+	srand(static_cast<unsigned>(time(0)));
 
 	struct HeapTag {};
 	using heap_type = memory::heap::DecoratorStat<memory::heap::Special<HeapTag>, memory::heap::StatCount, HeapTag>;
@@ -48,18 +68,22 @@ ssize_t tst::_list()
 
 	heap_type::init();
 	{
-		LogTrace();
+		TestFuncPlace();
 		using test_list_type = simstd::list<A, EqAlloc>;
+		A ma1[5];
+		A ma2[4];
 
 		{
-			console::printf("\n\n\n");
-			LogTrace();
+			TestFuncFormat("\n\n\n");
+			TestFuncPlace();
 			test_list_type list1;
 			check_emptiness(list1);
+			print_container("list1", list1);
 
 			EqAlloc allocator;
 			test_list_type list2(allocator);
 			check_emptiness(list2);
+			print_container("list2", list2);
 
 			list1.swap(list2);
 			list1.clear();
@@ -69,25 +93,29 @@ ssize_t tst::_list()
 		}
 
 		{
-			console::printf("\n\n\n");
-			LogTrace();
+			TestFuncFormat("\n\n\n");
+			TestFuncPlace();
 			test_list_type list1(9, A(9));
 			check_size(list1, 9);
+			print_container("list1", list1);
 
-			LogTrace();
+			TestFuncPlace();
 			EqAlloc allocator;
 			test_list_type list2(8, A(8), allocator);
 			check_size(list2, 8);
+			print_container("list2", list2);
 
-			LogTrace();
+			TestFuncPlace();
 			test_list_type list3(list2);
 			check_size(list3, 8);
+			print_container("list3", list3);
 
-			LogTrace();
+			TestFuncPlace();
 			test_list_type list4(list1, allocator);
 			check_size(list4, 9);
+			print_container("list4", list4);
 
-			LogTrace();
+			TestFuncPlace();
 			list4.clear();
 			check_emptiness(list4);
 			list3.clear();
@@ -99,25 +127,29 @@ ssize_t tst::_list()
 		}
 
 		{
-			console::printf("\n\n\n");
-			LogTrace();
+			TestFuncFormat("\n\n\n");
+			TestFuncPlace();
 			test_list_type list1(static_cast<test_list_type::size_type>(7));
 			check_size(list1, 7);
+			print_container("list1", list1);
 
-			LogTrace();
+			TestFuncPlace();
 			EqAlloc allocator;
 			test_list_type list2(static_cast<test_list_type::size_type>(6), allocator);
 			check_size(list2, 6);
+			print_container("list2", list2);
 
-			LogTrace();
+			TestFuncPlace();
 			test_list_type list3(simstd::move(list2));
 			check_size(list3, 6);
+			print_container("list3", list3);
 
-			LogTrace();
+			TestFuncPlace();
 			test_list_type list4(simstd::move(list1), allocator);
 			check_size(list4, 7);
+			print_container("list4", list4);
 
-			LogTrace();
+			TestFuncPlace();
 			list4.clear();
 			check_emptiness(list4);
 			list3.clear();
@@ -127,65 +159,101 @@ ssize_t tst::_list()
 		}
 
 		{
-			console::printf("\n\n\n");
-			LogTrace();
+			TestFuncFormat("\n\n\n");
+			TestFuncPlace();
 			test_list_type list1(simstd::begin(ma1), simstd::end(ma1));
 			check_size(list1, lengthof(ma1));
+			print_container("list1", list1);
 
-			LogTrace();
+			TestFuncPlace();
 			EqAlloc allocator;
 			test_list_type list2(simstd::begin(ma2), simstd::end(ma2), allocator);
 			check_size(list2, lengthof(ma2));
+			print_container("list2", list2);
 
-			LogTrace();
+			TestFuncPlace();
+			test_list_type list3(3, A(3));
+			print_container("list3", list3);
+
+			TestFuncPlace();
 			list1.swap(list2);
 			check_size(list1, lengthof(ma2));
 			check_size(list2, lengthof(ma1));
+			print_container("list1", list1);
+			print_container("list2", list2);
 
-			LogTrace();
-			list2 = list1;
-			check_size(list2, list1.size());
+			TestFuncPlace();
+			list1 = list2;
+			check_size(list1, list2.size());
+			print_container("list1", list1);
+			print_container("list2", list2);
 
-			LogTrace();
-			list1.clear();
-			check_emptiness(list1);
+			TestFuncPlace();
+			auto list3size = list3.size();
+			list2 = simstd::move(list3);
+			check_size(list2, list3size);
+			check_emptiness(list3);
+			print_container("list2", list2);
+			print_container("list3", list3);
+
+			TestFuncPlace();
 			list2.clear();
 			check_emptiness(list2);
+			list1.clear();
+			check_emptiness(list1);
 		}
 
-//		return 0;
-//		test_list_type tl1;
-//		test_list_type tl2;
-//
-//		auto itl1b = tl1.begin();
-//		auto itl1e = tl1.end();
-//		auto itl2b = tl2.cbegin();
-//		auto itl2e = tl2.cend();
-//
-//		if (itl1b == itl1e)
-//			LogTrace();
-//		if (itl1b == itl2b)
-//			LogTrace();
-//		if (itl1b == itl2e)
-//			LogTrace();
-//		if (itl1e == itl1b)
-//			LogTrace();
-//		if (itl1e == itl2b)
-//			LogTrace();
-//		if (itl1e == itl2e)
-//			LogTrace();
-//		if (itl2b == itl1b)
-//			LogTrace();
-//		if (itl2b == itl1e)
-//			LogTrace();
-//		if (itl2b == itl2e)
-//			LogTrace();
-//		if (itl2e == itl1b)
-//			LogTrace();
-//		if (itl2e == itl1e)
-//			LogTrace();
-//		if (itl2e == itl2b)
-//			LogTrace();
+		{
+			TestFuncFormat("\n\n\n");
+			TestFuncPlace();
+			test_list_type tl1;
+			test_list_type tl2;
+
+			auto itl1b = tl1.begin();
+			auto itl1e = tl1.end();
+			auto itl2b = tl2.cbegin();
+			auto itl2e = tl2.cend();
+
+			if (itl1b == itl1e)
+				TestFuncPlace();
+			if (itl1b == itl2b)
+				TestFuncPlace();
+			if (itl1b == itl2e)
+				TestFuncPlace();
+			if (itl1e == itl1b)
+				TestFuncPlace();
+			if (itl1e == itl2b)
+				TestFuncPlace();
+			if (itl1e == itl2e)
+				TestFuncPlace();
+			if (itl2b == itl1b)
+				TestFuncPlace();
+			if (itl2b == itl1e)
+				TestFuncPlace();
+			if (itl2b == itl2e)
+				TestFuncPlace();
+			if (itl2e == itl1b)
+				TestFuncPlace();
+			if (itl2e == itl1e)
+				TestFuncPlace();
+			if (itl2e == itl2b)
+				TestFuncPlace();
+		}
+
+		{
+			TestFuncFormat("\n\n\n");
+			TestFuncPlace();
+			test_list_type list1(9);
+			print_container("list1", list1);
+
+			TestFuncPlaceFormat("generate:\n");
+			simstd::generate(simstd::begin(list1), simstd::end(list1), get_random);
+			print_container("list1", list1);
+
+			TestFuncPlaceFormat("sorting:\n");
+			list1.sort();
+			print_container("list1", list1);
+		}
 //
 //		A a;
 //
@@ -260,6 +328,8 @@ ssize_t tst::_list()
 		LogReport(L"  alloc: %I64u, %I64u\n", stat.get_allocations(), stat.get_allocations_size());
 		LogReport(L"  free : %I64u, %I64u\n", stat.get_frees(), stat.get_frees_size());
 		LogReport(L"  diff : %I64d\n", stat.get_allocations_size() - stat.get_frees_size());
+
+		LogReport(L"  objects A: %Id\n", A::objects);
 	}
 	return 0;
 }

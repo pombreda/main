@@ -3,11 +3,13 @@
 
 namespace tst
 {
+	ssize_t A::objects = 0;
 
 	A::~A()
 	{
 		LogTraceObj();
 		LogNoise2(L"val: %d\n", m_a);
+		--objects;
 	}
 
 	A::A() :
@@ -16,6 +18,7 @@ namespace tst
 		m_a()
 	{
 		LogTraceObj();
+		++objects;
 	}
 
 	A::A(int a) :
@@ -25,6 +28,7 @@ namespace tst
 	{
 		LogTraceObj();
 		LogNoise2(L"%d\n", m_a);
+		++objects;
 	}
 
 	A::A(const A& other) :
@@ -33,6 +37,7 @@ namespace tst
 		m_a(other.m_a)
 	{
 		LogTraceObj();
+		++objects;
 	}
 
 	A::A(A&& other) :
@@ -41,6 +46,7 @@ namespace tst
 		m_a(simstd::move(other.m_a))
 	{
 		LogTraceObj();
+		++objects;
 	}
 
 	A& A::operator =(const A& other)
@@ -67,6 +73,11 @@ namespace tst
 	{
 		A ret(*this);
 		return ret += other;
+	}
+
+	bool A::operator < (const A& other) const
+	{
+		return m_a < other.m_a;
 	}
 
 	void A::swap(A& other)
