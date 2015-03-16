@@ -1,5 +1,5 @@
-#ifndef LIBBASE_CSTR_CHAR_TRAITS_HPP_
-#define LIBBASE_CSTR_CHAR_TRAITS_HPP_
+#ifndef BASIS_SYS_CSTR_CHAR_TRAITS_HPP_
+#define BASIS_SYS_CSTR_CHAR_TRAITS_HPP_
 
 #include <basis/simstd/~string/char_traits.hpp>
 

@@ -1,9 +1,5 @@
-﻿#ifndef BASIS_STRING_STR_IMPL_HPP_
-#define BASIS_STRING_STR_IMPL_HPP_
-
-#include <basis/simstd/string>
-
-#include <basis/ext/pattern.hpp>
+﻿#ifndef BASIS_SIMSTD_STRING_STR_IMPL_HPP_
+#define BASIS_SIMSTD_STRING_STR_IMPL_HPP_
 
 namespace simstd {
 	namespace pvt {

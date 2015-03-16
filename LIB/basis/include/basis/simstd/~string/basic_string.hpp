@@ -1,12 +1,5 @@
-﻿#ifndef BASIS_STRING_BASIC_STRING_HPP_
-#define BASIS_STRING_BASIC_STRING_HPP_
-
-#include <basis/ext/pattern.hpp>
-#include <basis/sys/crt.hpp>
-#include <basis/sys/console.hpp>
-#include <basis/simstd/string>
-#include <basis/simstd/iterator>
-#include <basis/simstd/~algorithm/base.hpp>
+﻿#ifndef BASIS_SIMSTD_STRING_BASIC_STRING_HPP_
+#define BASIS_SIMSTD_STRING_BASIC_STRING_HPP_
 
 namespace simstd {
 
@@ -880,7 +873,6 @@ namespace simstd {
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::this_type basic_string<C, T, A>::substr(size_type pos, size_type count) const
 	{
-		console::printf(L"%S:%d [%Iu, %Iu]\n", __PRETTY_FUNCTION__, __LINE__, pos, count);
 		pos = simstd::min(pos, size());
 		count = simstd::min(count, size() - pos);
 		return this_type(c_str() + pos, count, base_type::get_allocator());
@@ -1050,8 +1042,10 @@ namespace simstd {
 	void basic_string<C, T, A>::raw_append(InputIt first, InputIt last)
 	{
 		auto ptr = base_type::m_impl->get_end();
-		auto endIt = simstd::copy(first, last, ptr);
-		base_type::m_impl->set_size(size() + simstd::distance(ptr, endIt));
+		for (; first != last; ++first, ++ptr) {
+			traits_type::assign(*ptr, *first);
+		}
+		base_type::m_impl->set_size(size() + simstd::distance(base_type::m_impl->get_end(), ptr));
 	}
 
 	template<typename C, typename T, typename A>

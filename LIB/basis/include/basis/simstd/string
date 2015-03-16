@@ -2,8 +2,12 @@
 #define BASIS_SIMSTD_STRING_
 
 #include <basis/configure.hpp>
-#include <basis/simstd/memory>
+#include <basis/ext/pattern.hpp>
 
+#include <basis/simstd/memory>
+#include <basis/simstd/iterator>
+
+#include <basis/simstd/~string/string_fwd.hpp>
 #include <basis/simstd/~string/char_traits.hpp>
 #include <basis/simstd/~string/Str_impl.hpp>
 #include <basis/simstd/~string/Str_base.hpp>
@@ -11,5 +15,9 @@
 //#include <basis/simstd/~string/basic_string2.hpp>
 #include <basis/simstd/~string/convert_a.hpp>
 #include <basis/simstd/~string/convert_w.hpp>
+
+//#include <basis/sys/crt.hpp>
+//#include <basis/sys/console.hpp>
+//#include <basis/simstd/~algorithm/base.hpp>
 
 #endif

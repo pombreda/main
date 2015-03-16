@@ -1,5 +1,5 @@
-﻿#ifndef BASIS_STRING_STRING_FWD_HPP_
-#define BASIS_STRING_STRING_FWD_HPP_
+﻿#ifndef BASIS_SIMSTD_STRING_STRING_FWD_HPP_
+#define BASIS_SIMSTD_STRING_STRING_FWD_HPP_
 
 namespace simstd {
 	template<typename CharType>

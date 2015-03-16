@@ -1,5 +1,5 @@
-﻿#ifndef BASIS_STRING_STR_BASE_HPP_
-#define BASIS_STRING_STR_BASE_HPP_
+﻿#ifndef BASIS_SIMSTD_STRING_STR_BASE_HPP_
+#define BASIS_SIMSTD_STRING_STR_BASE_HPP_
 
 namespace simstd {
 
@@ -102,6 +102,7 @@ namespace simstd {
 			RawAllocator rawAlloc(alloc);
 			size_t size = capa * sizeof(T) + sizeof(impl_type);
 			auto ret = reinterpret_cast<StrBase<T, A>::impl_type*>(rawAlloc.allocate(size));
+			CRT_ASSERT(ret);
 
 			ImpAllocator implAlloc(alloc);
 			implAlloc.construct(ret, capa, alloc);
