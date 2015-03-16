@@ -10,6 +10,14 @@
 #include <list>
 #include <ctime>
 
+struct HeapTag {};
+using heap_type = memory::heap::DecoratorStat<memory::heap::Special<HeapTag>, memory::heap::StatCount, HeapTag>;
+//using EqAlloc = simstd::allocator<A>;
+using EqAlloc = simstd::AllocatorHeap<tst::A, heap_type>;
+using EqAlloc2 = simstd::AllocatorHeap<ssize_t, heap_type>;
+using test_list_type = simstd::list<tst::A, EqAlloc>;
+using test_list_type2 = simstd::list<ssize_t, EqAlloc2>;
+
 inline ssize_t get_random()
 {
 	return rand() % 100;
@@ -58,7 +66,7 @@ void print_container(const char* name, const Type& listContainer)
 }
 
 template<>
-void print_container(const char* name, const simstd::list<ssize_t>& listContainer)
+void print_container(const char* name, const test_list_type2& listContainer)
 {
 	using namespace simstd;
 	TestFuncFormat("%s: size(): %Id (", name, listContainer.size());
@@ -73,15 +81,9 @@ ssize_t tst::_list()
 	TestFuncPlace();
 	srand(static_cast<unsigned>(time(0)));
 
-	struct HeapTag {};
-	using heap_type = memory::heap::DecoratorStat<memory::heap::Special<HeapTag>, memory::heap::StatCount, HeapTag>;
-//	using EqAlloc = simstd::allocator<A>;
-	using EqAlloc = simstd::AllocatorHeap<A, heap_type>;
-
 	heap_type::init();
 	{
 		TestFuncPlace();
-		using test_list_type = simstd::list<A, EqAlloc>;
 		A ma1[5];
 		A ma2[4];
 
@@ -263,7 +265,7 @@ ssize_t tst::_list()
 			ssize_t size = 1000;
 
 			auto start3 = simstd::chrono::perfomance_clock::now();
-			simstd::list<ssize_t> list1(size);
+			test_list_type2 list1(size);
 			auto end3 = simstd::chrono::perfomance_clock::now();
 			auto elapsed3 = end3 - start3;
 			TestFuncPlaceFormat("size1: %10I64u, count3: %10I64u ns, count3: %10I64u mcs, count3: %6I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed3).count(), (uint64_t)duration_cast<microseconds>(elapsed3).count(), (uint64_t)duration_cast<milliseconds>(elapsed3).count());
