@@ -904,15 +904,14 @@ namespace simstd
 		auto postponed = last;
 
 		while (first != last) {
-			auto next = first;
-			++next;
-			if (*first == value) {
-				if (simstd::addressof(*first) == simstd::addressof(value))
-					postponed = first;
+			auto cur = first;
+			++first;
+			if (*cur == value) {
+				if (simstd::addressof(*cur) == simstd::addressof(value))
+					postponed = cur;
 				else
-					_erase(first);
+					_erase(cur);
 			}
-			first = next;
 		}
 
 		if (postponed != last)
@@ -926,6 +925,7 @@ namespace simstd
 		TraceObj();
 		auto first = cbegin();
 		auto last = cend();
+
 		while (first != last)
 		{
 			if (predicate(*first))
@@ -991,25 +991,25 @@ namespace simstd
 		TraceObj();
 		if (size() > 1) {
 			list carry;
-			list __tmp[64];
-			list * __fill = &__tmp[0];
-			list * __counter;
+			list pool[64];
+			list* tofill = &pool[0];
+			list* poolIt;
 
 			do {
 				carry._splice(carry.cbegin(), simstd::move(*this), cbegin());
 
-				for (__counter = &__tmp[0]; __counter != __fill && !__counter->empty(); ++__counter) {
-					__counter->_merge(carry);
-					carry.swap(*__counter);
+				for (poolIt = &pool[0]; poolIt != tofill && !poolIt->empty(); ++poolIt) {
+					poolIt->_merge(carry);
+					carry.swap(*poolIt);
 				}
-				carry.swap(*__counter);
-				if (__counter == __fill)
-					++__fill;
+				carry.swap(*poolIt);
+				if (poolIt == tofill)
+					++tofill;
 			} while (!empty());
 
-			for (__counter = &__tmp[1]; __counter != __fill; ++__counter)
-				__counter->_merge(*(__counter - 1));
-			swap(*(__fill - 1));
+			for (poolIt = &pool[1]; poolIt != tofill; ++poolIt)
+				poolIt->_merge(*(poolIt - 1));
+			swap(*(tofill - 1));
 		}
 	}
 
@@ -1020,25 +1020,25 @@ namespace simstd
 		TraceObj();
 		if (size() > 1) {
 			list carry;
-			list __tmp[64];
-			list * __fill = &__tmp[0];
-			list * __counter;
+			list pool[64];
+			list* tofill = &pool[0];
+			list* poolIt;
 
 			do {
 				carry._splice(carry.cbegin(), simstd::move(*this), cbegin());
 
-				for (__counter = &__tmp[0]; __counter != __fill && !__counter->empty(); ++__counter) {
-					__counter->_merge(carry, comp);
-					carry.swap(*__counter);
+				for (poolIt = &pool[0]; poolIt != tofill && !poolIt->empty(); ++poolIt) {
+					poolIt->_merge(carry, comp);
+					carry.swap(*poolIt);
 				}
-				carry.swap(*__counter);
-				if (__counter == __fill)
-					++__fill;
+				carry.swap(*poolIt);
+				if (poolIt == tofill)
+					++tofill;
 			} while (!empty());
 
-			for (__counter = &__tmp[1]; __counter != __fill; ++__counter)
-				__counter->_merge(*(__counter - 1), comp);
-			swap(*(__fill - 1));
+			for (poolIt = &pool[1]; poolIt != tofill; ++poolIt)
+				poolIt->_merge(*(poolIt - 1), comp);
+			swap(*(tofill - 1));
 		}
 	}
 
