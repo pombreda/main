@@ -6,7 +6,7 @@
 #include <basis/simstd/string>
 #include <string>
 
-void test_string()
+ssize_t tst::_string()
 {
 	TestFuncPlace();
 
@@ -17,15 +17,17 @@ void test_string()
 
 	heap_type::init();
 	{
-		std::string qwe1 = "qwerty1";
-		std::string qwe2 = qwe1;
+		simstd::string qwe1 = "qwerty1";
+		simstd::string qwe2 = qwe1;
 
 		TestFuncPlaceFormat("qwe1: size: %Iu, capa: %Iu '%s'\n", qwe1.size(), qwe1.capacity(), qwe1.c_str());
 		TestFuncPlaceFormat("qwe2: size: %Iu, capa: %Iu '%s'\n", qwe2.size(), qwe2.capacity(), qwe2.c_str());
-		TestFuncPlaceFormat("qwe2: \n", qwe2.size(), qwe2.capacity(), qwe2.c_str());
-
+		TestFuncPlaceFormat("qwe1.c_str: %p\n", qwe1.c_str());
+		TestFuncPlaceFormat("qwe2.c_str: %p\n", qwe2.c_str());
 
 		qwe1.assign(qwe1.c_str(), qwe1.size());
+		TestFuncPlaceFormat("qwe1.c_str: %p\n", qwe1.c_str());
+		TestFuncPlaceFormat("qwe2.c_str: %p\n", qwe2.c_str());
 
 		tstring str1;
 
@@ -70,4 +72,5 @@ void test_string()
 		TestFuncPlaceFormat("  free : %I64u, %I64u\n", stat.get_frees(), stat.get_frees_size());
 		TestFuncPlaceFormat("  diff : %I64d\n", stat.get_allocations_size() - stat.get_frees_size());
 	}
+	return 0;
 }

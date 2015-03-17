@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 //
 //	tst::_shared_ptr();
 //
-	test_string();
+	tst::_string();
 //
 //	test_traceback();
 //
