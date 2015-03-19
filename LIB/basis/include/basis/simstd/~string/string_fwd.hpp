@@ -5,15 +5,14 @@ namespace simstd {
 	template<typename CharType>
 	struct char_traits;
 
-	template<typename CharType, typename Traits, typename Allocator>
+	template<typename CharType, typename Traits = simstd::char_traits<CharType>, typename Allocator = simstd::allocator<CharType>>
 	class basic_string;
 
-	typedef simstd::basic_string<char, simstd::char_traits<char>, simstd::allocator<char>>          string;
-	typedef simstd::basic_string<wchar_t, simstd::char_traits<wchar_t>, simstd::allocator<wchar_t>> wstring;
-
+	using string = basic_string<char, char_traits<char>, allocator<char>>;
+	using wstring = basic_string<wchar_t, char_traits<wchar_t>, allocator<wchar_t>>;
 }
 
-typedef simstd::basic_string<char, simstd::char_traits<char>, simstd::allocator<char>>          astring;
-typedef simstd::basic_string<wchar_t, simstd::char_traits<wchar_t>, simstd::allocator<wchar_t>> ustring;
+using astring = simstd::basic_string<char, simstd::char_traits<char>, simstd::allocator<char>>;
+using ustring = simstd::basic_string<wchar_t, simstd::char_traits<wchar_t>, simstd::allocator<wchar_t>>;
 
 #endif

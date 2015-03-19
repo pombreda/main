@@ -17,17 +17,50 @@ ssize_t tst::_string()
 
 	heap_type::init();
 	{
-		simstd::string qwe1 = "qwerty1";
-		simstd::string qwe2 = qwe1;
+		{
+			simstd::string qwe1 = "qwerty1";
+			simstd::string qwe2 = qwe1;
+			qwe2.reserve(qwe2.capacity() + 1);
 
-		TestFuncPlaceFormat("qwe1: size: %Iu, capa: %Iu '%s'\n", qwe1.size(), qwe1.capacity(), qwe1.c_str());
-		TestFuncPlaceFormat("qwe2: size: %Iu, capa: %Iu '%s'\n", qwe2.size(), qwe2.capacity(), qwe2.c_str());
-		TestFuncPlaceFormat("qwe1.c_str: %p\n", qwe1.c_str());
-		TestFuncPlaceFormat("qwe2.c_str: %p\n", qwe2.c_str());
+			TestFuncPlaceFormat("qwe1: size: %Iu, capa: %Iu '%s'\n", qwe1.size(), qwe1.capacity(), qwe1.c_str());
+			TestFuncPlaceFormat("qwe2: size: %Iu, capa: %Iu '%s'\n", qwe2.size(), qwe2.capacity(), qwe2.c_str());
+			TestFuncPlaceFormat("qwe1.c_str: %p\n", qwe1.c_str());
+			TestFuncPlaceFormat("qwe2.c_str: %p\n", qwe2.c_str());
 
-		qwe1.assign(qwe1.c_str(), qwe1.size());
-		TestFuncPlaceFormat("qwe1.c_str: %p\n", qwe1.c_str());
-		TestFuncPlaceFormat("qwe2.c_str: %p\n", qwe2.c_str());
+//			qwe2.shrink_to_fit();
+			qwe2.pop_back();
+//			qwe2.assign(qwe2.c_str(), qwe2.size());
+			TestFuncPlaceFormat("qwe1: size: %Iu, capa: %Iu '%s'\n", qwe1.size(), qwe1.capacity(), qwe1.c_str());
+			TestFuncPlaceFormat("qwe2: size: %Iu, capa: %Iu '%s'\n", qwe2.size(), qwe2.capacity(), qwe2.c_str());
+			TestFuncPlaceFormat("qwe1.c_str: %p\n", qwe1.c_str());
+			TestFuncPlaceFormat("qwe2.c_str: %p\n", qwe2.c_str());
+
+			{
+				auto qwe3(qwe1 + qwe2);
+				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
+				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
+			}
+			{
+				auto qwe3('a' + qwe1);
+				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
+				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
+			}
+			{
+				auto qwe3("asd" + qwe1);
+				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
+				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
+			}
+			{
+				auto qwe3(qwe1 + 'a');
+				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
+				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
+			}
+			{
+				auto qwe3(qwe1 + "asd");
+				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
+				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
+			}
+		}
 
 		tstring str1;
 
