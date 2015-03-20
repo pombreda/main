@@ -9,7 +9,7 @@
 
 #include <basis/simstd/~string/string_fwd.hpp>
 #include <basis/simstd/~string/char_traits.hpp>
-#include <basis/simstd/~string/Str_base.hpp>
+#include <basis/simstd/~string/basic_string_base.hpp>
 #include <basis/simstd/~string/basic_string.hpp>
 //#include <basis/simstd/~string/basic_string2.hpp>
 #include <basis/simstd/~string/convert_a.hpp>
