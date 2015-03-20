@@ -5,7 +5,7 @@ template<typename CharType, typename Traits, typename Allocator>
 class simstd::basic_string: private pvt::basic_string_base<CharType, Allocator> {
 	using this_type = basic_string;
 	using base_type = pvt::basic_string_base<CharType, Allocator>;
-	using base_type::m_impl;
+	using base_type::impl;
 
 public:
 	using traits_type = Traits;
@@ -320,7 +320,7 @@ namespace simstd
 		base_type(other, allocator)
 	{
 		TraceObj();
-		if (m_impl != other.m_impl)
+		if (impl != other.impl)
 			_raw_append(other.c_str(), other.size());
 	}
 
@@ -336,7 +336,7 @@ namespace simstd
 		base_type(simstd::move(other), allocator)
 	{
 		TraceObj();
-		if (m_impl != other.m_impl)
+		if (impl != other.impl)
 			_raw_append(other.c_str(), other.size());
 	}
 
@@ -384,7 +384,7 @@ namespace simstd
 	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::assign(const this_type& other)
 	{
 		TraceObj();
-		if (m_impl != other.m_impl) {
+		if (impl != other.impl) {
 			this_type(other).swap(*this);
 		}
 		return *this;
@@ -404,7 +404,7 @@ namespace simstd
 	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::assign(this_type&& other) noexcept
 	{
 		TraceObj();
-		CRT_ASSERT(m_impl != other.m_impl); // UB
+		CRT_ASSERT(impl != other.impl); // UB
 		swap(other);
 		return *this;
 	}
@@ -436,15 +436,33 @@ namespace simstd
 	}
 
 	template<typename C, typename T, typename A>
+	template<typename InputIt>
+	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_assign(InputIt first, InputIt last, simstd::input_iterator_tag tag)
+	{
+		split_and_clear(capacity());
+		_append(first, last, tag);
+		return *this;
+	}
+
+	template<typename C, typename T, typename A>
+	template<typename ForwardIt>
+	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_assign(ForwardIt first, ForwardIt last, simstd::forward_iterator_tag)
+	{
+		split_and_clear(simstd::distance(first, last));
+		_raw_append(first, last);
+		return *this;
+	}
+
+	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::allocator_type basic_string<C, T, A>::get_allocator() const
 	{
-		return m_impl->get_allocator();
+		return impl->get_allocator();
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::const_reference basic_string<C, T, A>::at(size_type in) const
 	{
-		return *(m_impl->get_data() + in);
+		return *(impl->get_data() + in);
 	}
 
 	template<typename C, typename T, typename A>
@@ -452,27 +470,27 @@ namespace simstd
 	{
 		CRT_ASSERT(in < length());
 		split_and_copy(capacity());
-		return *(m_impl->get_data() + in);
+		return *(impl->get_data() + in);
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::const_reference basic_string<C, T, A>::operator [](size_type in) const
 	{
-		return *(m_impl->get_data() + in);
+		return *(impl->get_data() + in);
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::reference basic_string<C, T, A>::operator [](size_type in)
 	{
 		split_and_copy(capacity());
-		return *(m_impl->get_data() + in);
+		return *(impl->get_data() + in);
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::const_reference basic_string<C, T, A>::front() const
 	{
 		CRT_ASSERT(!empty());
-		return *m_impl->get_data();
+		return *impl->get_data();
 	}
 
 	template<typename C, typename T, typename A>
@@ -480,14 +498,14 @@ namespace simstd
 	{
 		CRT_ASSERT(!empty());
 		split_and_copy(capacity());
-		return *m_impl->get_data();
+		return *impl->get_data();
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::const_reference basic_string<C, T, A>::back() const
 	{
 		CRT_ASSERT(!empty());
-		return *(m_impl->get_data() + size() - 1);
+		return *(impl->get_data() + size() - 1);
 	}
 
 	template<typename C, typename T, typename A>
@@ -495,19 +513,19 @@ namespace simstd
 	{
 		CRT_ASSERT(!empty());
 		split_and_copy(capacity());
-		return *(m_impl->get_data() + size() - 1);
+		return *(impl->get_data() + size() - 1);
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::const_pointer basic_string<C, T, A>::data() const
 	{
-		return m_impl->get_data();
+		return impl->get_data();
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::const_pointer basic_string<C, T, A>::c_str() const
 	{
-		return m_impl->get_data();
+		return impl->get_data();
 	}
 
 	template<typename C, typename T, typename A>
@@ -525,7 +543,7 @@ namespace simstd
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::iterator basic_string<C, T, A>::begin()
 	{
-		return iterator(m_impl->get_data());
+		return iterator(impl->get_data());
 	}
 
 	template<typename C, typename T, typename A>
@@ -585,19 +603,19 @@ namespace simstd
 	template<typename C, typename T, typename A>
 	bool basic_string<C, T, A>::empty() const
 	{
-		return m_impl->get_size() == 0;
+		return impl->get_size() == 0;
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::size_type basic_string<C, T, A>::size() const
 	{
-		return m_impl->get_size();
+		return impl->get_size();
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::size_type basic_string<C, T, A>::length() const
 	{
-		return m_impl->get_size();
+		return impl->get_size();
 	}
 
 	template<typename C, typename T, typename A>
@@ -616,7 +634,7 @@ namespace simstd
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::size_type basic_string<C, T, A>::capacity() const
 	{
-		return m_impl->get_capa();
+		return impl->get_capa();
 	}
 
 	template<typename C, typename T, typename A>
@@ -671,7 +689,7 @@ namespace simstd
 		TraceObj();
 		auto insertPos = simstd::distance(cbegin(), cpos);
 		insert(insertPos, 0, 1, ch);
-		return iterator(m_impl->get_data() + insertPos);
+		return iterator(impl->get_data() + insertPos);
 	}
 
 	template<typename C, typename T, typename A>
@@ -680,7 +698,7 @@ namespace simstd
 		TraceObj();
 		auto insertPos = simstd::distance(cbegin(), cpos);
 		insert(insertPos, 0, count, ch);
-		return iterator(m_impl->get_data() + insertPos);
+		return iterator(impl->get_data() + insertPos);
 	}
 
 	template<typename C, typename T, typename A>
@@ -690,7 +708,7 @@ namespace simstd
 		TraceObj();
 		auto insertPos = simstd::distance(cbegin(), cpos);
 		CRT_ASSERT(false); // TODO not implemented
-		return iterator(m_impl->get_data() + insertPos);
+		return iterator(impl->get_data() + insertPos);
 	}
 
 	template<typename C, typename T, typename A>
@@ -722,13 +740,13 @@ namespace simstd
 		auto indexLast = index + count;
 		CRT_ASSERT(index <= size());
 		CRT_ASSERT(indexLast <= size());
-		if (m_impl->is_shared()) {
+		if (impl->is_shared()) {
 			this_type(get_allocator(), capacity(), c_str(), index, c_str() + indexLast, size() - indexLast).swap(*this);
 		} else {
-			traits_type::move(m_impl->get_data() + index, m_impl->get_data() + indexLast, size() - indexLast);
-			m_impl->set_size(size() - count);
+			traits_type::move(impl->get_data() + index, impl->get_data() + indexLast, size() - indexLast);
+			impl->set_size(size() - count);
 		}
-		return iterator(m_impl->get_data() + index);
+		return iterator(impl->get_data() + index);
 	}
 
 	template<typename C, typename T, typename A>
@@ -745,7 +763,7 @@ namespace simstd
 		TraceObj();
 		CRT_ASSERT(!empty());
 		split_and_copy(capacity());
-		m_impl->set_size(size() - 1);
+		impl->set_size(size() - 1);
 	}
 
 	template<typename C, typename T, typename A>
@@ -801,6 +819,26 @@ namespace simstd
 	{
 		TraceObj();
 		return _append(first, last, simstd::pvt::iterator_category(first));
+	}
+
+	template<typename C, typename T, typename A>
+	template<typename InputIt>
+	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_append(InputIt first, InputIt last, simstd::input_iterator_tag)
+	{
+		for (; first != last; ++first) {
+			split_and_copy(get_necessary_capacity(1));
+			_raw_append(1, *first);
+		}
+		return *this;
+	}
+
+	template<typename C, typename T, typename A>
+	template<typename ForwardIt>
+	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_append(ForwardIt first, ForwardIt last, simstd::forward_iterator_tag)
+	{
+		split_and_copy(get_necessary_capacity(simstd::distance(first, last)));
+		_raw_append(first, last);
+		return *this;
 	}
 
 	template<typename C, typename T, typename A>
@@ -904,12 +942,12 @@ namespace simstd
 		} else {
 //			printf("      (%Iu, %Iu): '%s'\n", size(), capacity(), c_str());
 //			printf("replace before: '%s'\n", c_str());
-			traits_type::move(m_impl->get_data() + index + len, m_impl->get_data() + index + count, size() - (index + count));
-//			traits_type::assign(m_impl->get_data() + index, len, ' ');
+			traits_type::move(impl->get_data() + index + len, impl->get_data() + index + count, size() - (index + count));
+//			traits_type::assign(impl->get_data() + index, len, ' ');
 //			printf("replace after : '%s'\n", c_str());
-			traits_type::copy(m_impl->get_data() + index, str, len);
+			traits_type::copy(impl->get_data() + index, str, len);
 //			printf("replace after : '%s'\n", c_str());
-			m_impl->set_size(size() + len - count);
+			impl->set_size(size() + len - count);
 //			printf("      (%Iu, %Iu): '%s'\n", size(), capacity(), c_str());
 		}
 		return *this;
@@ -951,9 +989,9 @@ namespace simstd
 			tmp._raw_append(c_str() + index, size() - index);
 			tmp.swap(*this);
 		} else {
-			traits_type::move(m_impl->get_data() + index + len, m_impl->get_data() + index + count, size() - (index + count));
-			traits_type::assign(m_impl->get_data() + index, len, ch);
-			m_impl->set_size(size() + len - count);
+			traits_type::move(impl->get_data() + index + len, impl->get_data() + index + count, size() - (index + count));
+			traits_type::assign(impl->get_data() + index, len, ch);
+			impl->set_size(size() + len - count);
 		}
 		return *this;
 	}
@@ -963,6 +1001,33 @@ namespace simstd
 	{
 		TraceObj();
 		return replace(simstd::distance(cbegin(), first), simstd::distance(first, last), len, ch);
+	}
+
+	template<typename C, typename T, typename A>
+	template<typename Iterator>
+	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_replace(const_iterator first, const_iterator last, Iterator first2, Iterator last2, simstd::input_iterator_tag tag)
+	{
+		auto index = simstd::distance(cbegin(), first);
+		auto count = simstd::distance(first, last);
+		this_type tmp(get_allocator(), capacity(), c_str(), index);
+		tmp._append(first2, last2, tag);
+		tmp.append(c_str() + index + count, size() - (index + count));
+		tmp.swap(*this);
+		return *this;
+	}
+
+	template<typename C, typename T, typename A>
+	template<typename Iterator>
+	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_replace(const_iterator first, const_iterator last, Iterator first2, Iterator last2, simstd::forward_iterator_tag)
+	{
+		auto index = simstd::distance(cbegin(), first);
+		auto count = simstd::distance(first, last);
+		auto len = simstd::distance(first2, last2);
+		this_type tmp(get_allocator(), get_necessary_capacity(len - count), c_str(), index);
+		tmp._raw_append(first2, last2);
+		tmp._raw_append(c_str() + index + count, size() - (index + count));
+		tmp.swap(*this);
+		return *this;
 	}
 
 	template<typename C, typename T, typename A>
@@ -1002,7 +1067,7 @@ namespace simstd
 	{
 		TraceObj();
 		using simstd::swap;
-		swap(m_impl, other.m_impl);
+		swap(impl, other.impl);
 	}
 
 	template<typename C, typename T, typename A>
@@ -1063,7 +1128,7 @@ namespace simstd
 	typename basic_string<C, T, A>::size_type basic_string<C, T, A>::find_first_of(const this_type& str, size_type index) const
 	{
 		for (; index < size(); ++index)
-			if (traits_type::find(str.c_str(), str.size(), at(index)))
+			if (traits_type::find(str.c_str(), str.size(), c_str() + index))
 				return index;
 		return npos;
 	}
@@ -1072,7 +1137,7 @@ namespace simstd
 	typename basic_string<C, T, A>::size_type basic_string<C, T, A>::find_first_not_of(const this_type& str, size_type index) const
 	{
 		for (; index < size(); ++index)
-			if (traits_type::find(str.c_str(), str.size(), at(index)) == nullptr)
+			if (traits_type::find(str.c_str(), str.size(), c_str() + index) == nullptr)
 				return index;
 		return npos;
 	}
@@ -1082,7 +1147,7 @@ namespace simstd
 	{
 		index = simstd::min(index, size());
 		while (index > 0)
-			if (traits_type::find(str.c_str(), str.size(), at(--index)))
+			if (traits_type::find(str.c_str(), str.size(), c_str() + --index))
 				return index;
 		return npos;
 	}
@@ -1092,7 +1157,7 @@ namespace simstd
 	{
 		index = simstd::min(index, size());
 		while (index > 0)
-			if (traits_type::find(str.c_str(), str.size(), at(--index)) == nullptr)
+			if (traits_type::find(str.c_str(), str.size(), c_str() + --index) == nullptr)
 				return index;
 		return npos;
 	}
@@ -1128,92 +1193,28 @@ namespace simstd
 	void basic_string<C, T, A>::_raw_append(value_type ch, size_type count)
 	{
 		CRT_ASSERT((size() + count) <= capacity());
-		traits_type::assign(m_impl->get_end(), count, ch);
-		m_impl->set_size(size() + count);
+		traits_type::assign(impl->get_end(), count, ch);
+		impl->set_size(size() + count);
 	}
 
 	template<typename C, typename T, typename A>
 	void basic_string<C, T, A>::_raw_append(const_pointer str, size_type len)
 	{
 		CRT_ASSERT((size() + len) <= capacity());
-		traits_type::move(m_impl->get_end(), str, len);
-		m_impl->set_size(size() + len);
+		traits_type::move(impl->get_end(), str, len);
+		impl->set_size(size() + len);
 	}
 
 	template<typename C, typename T, typename A>
 	template<typename InputIt>
 	void basic_string<C, T, A>::_raw_append(InputIt first, InputIt last)
 	{
-		auto ptr = m_impl->get_end();
+		auto ptr = impl->get_end();
 		for (; first != last; ++first, ++ptr) {
 			traits_type::assign(*ptr, *first);
 		}
-		CRT_ASSERT((size() + simstd::distance(m_impl->get_end(), ptr)) <= capacity());
-		m_impl->set_size(size() + simstd::distance(m_impl->get_end(), ptr));
-	}
-
-	template<typename C, typename T, typename A>
-	template<typename InputIt>
-	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_append(InputIt first, InputIt last, simstd::input_iterator_tag)
-	{
-		for (; first != last; ++first) {
-			split_and_copy(get_necessary_capacity(1));
-			_raw_append(1, *first);
-		}
-		return *this;
-	}
-
-	template<typename C, typename T, typename A>
-	template<typename ForwardIt>
-	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_append(ForwardIt first, ForwardIt last, simstd::forward_iterator_tag)
-	{
-		split_and_copy(get_necessary_capacity(simstd::distance(first, last)));
-		_raw_append(first, last);
-		return *this;
-	}
-
-	template<typename C, typename T, typename A>
-	template<typename InputIt>
-	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_assign(InputIt first, InputIt last, simstd::input_iterator_tag tag)
-	{
-		split_and_clear(capacity());
-		_append(first, last, tag);
-		return *this;
-	}
-
-	template<typename C, typename T, typename A>
-	template<typename ForwardIt>
-	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_assign(ForwardIt first, ForwardIt last, simstd::forward_iterator_tag)
-	{
-		split_and_clear(simstd::distance(first, last));
-		return _raw_append(first, last);
-	}
-
-	template<typename C, typename T, typename A>
-	template<typename Iterator>
-	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_replace(const_iterator first, const_iterator last, Iterator first2, Iterator last2, simstd::input_iterator_tag tag)
-	{
-		auto index = simstd::distance(cbegin(), first);
-		auto count = simstd::distance(first, last);
-		this_type tmp(get_allocator(), capacity(), c_str(), index);
-		tmp._append(first2, last2, tag);
-		tmp.append(c_str() + index + count, size() - (index + count));
-		tmp.swap(*this);
-		return *this;
-	}
-
-	template<typename C, typename T, typename A>
-	template<typename Iterator>
-	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::_replace(const_iterator first, const_iterator last, Iterator first2, Iterator last2, simstd::forward_iterator_tag)
-	{
-		auto index = simstd::distance(cbegin(), first);
-		auto count = simstd::distance(first, last);
-		auto len = simstd::distance(first2, last2);
-		this_type tmp(get_allocator(), get_necessary_capacity(len - count), c_str(), index);
-		tmp._raw_append(first2, last2);
-		tmp._raw_append(c_str() + index + count, size() - (index + count));
-		tmp.swap(*this);
-		return *this;
+		CRT_ASSERT((size() + simstd::distance(impl->get_end(), ptr)) <= capacity());
+		impl->set_size(size() + simstd::distance(impl->get_end(), ptr));
 	}
 
 	template<typename C, typename T, typename A>
@@ -1227,7 +1228,7 @@ namespace simstd
 	template<typename C, typename T, typename A>
 	bool basic_string<C, T, A>::must_be_splitted(size_type minCapacity)
 	{
-		return capacity() < minCapacity || m_impl->is_shared();
+		return capacity() < minCapacity || impl->is_shared();
 	}
 
 	template<typename C, typename T, typename A>
@@ -1236,7 +1237,7 @@ namespace simstd
 		if (must_be_splitted(minCapacity))
 			this_type(get_allocator(), simstd::max(minCapacity, capacity()), nullptr, 0).swap(*this);
 		else
-			m_impl->set_size(0);
+			impl->set_size(0);
 	}
 
 	template<typename C, typename T, typename A>
@@ -1276,7 +1277,7 @@ namespace simstd
 	template<typename C, typename T, typename A>
 	bool basic_string<C, T, A>::is_same_str(const_pointer str) const
 	{
-		return c_str() <= str && str < (c_str() + size()); // append to itself
+		return c_str() <= str && str <= (c_str() + size());
 	}
 
 	///=============================================================================================
