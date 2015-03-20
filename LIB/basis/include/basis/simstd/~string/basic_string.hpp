@@ -195,6 +195,8 @@ private:
 	template<typename InputIt>
 	void _raw_append(InputIt first, InputIt last);
 
+	iterator _erase(size_type index, size_type count);
+
 	template<typename InputIt>
 	this_type& _append(InputIt first, InputIt last, simstd::input_iterator_tag);
 	template<typename ForwardIt>
@@ -221,8 +223,6 @@ private:
 	size_type find(const_pointer str, size_type index, size_type length) const;
 
 	bool is_same_str(const_pointer str) const;
-
-	static const size_t MIN_ALLOC_BLOCK = 16;
 
 	template<typename C, typename T, typename A> friend basic_string<C, T, A> operator +(const basic_string<C, T, A>& a, const basic_string<C, T, A>& b);
 	template<typename C, typename T, typename A> friend basic_string<C, T, A> operator +(const C* a, const basic_string<C, T, A>& b);
@@ -603,7 +603,7 @@ namespace simstd
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::size_type basic_string<C, T, A>::max_size() const
 	{
-		return ~static_cast<size_type>(0);
+		return npos;
 	}
 
 	template<typename C, typename T, typename A>
@@ -696,32 +696,39 @@ namespace simstd
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::this_type& basic_string<C, T, A>::erase(size_type index, size_type count)
 	{
-		TraceObj();
-		auto indexLast = (count == npos) ? size() : simstd::min(size(), index + count);
-		erase(simstd::next(cbegin(), index), simstd::next(cbegin(), indexLast));
+		TraceFormatObj("(%Iu, %Iu)\n", index, count);
+		CRT_ASSERT(index <= size());
+		_erase(index, (count == npos) ? size() - index : count);
 		return *this;
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::iterator basic_string<C, T, A>::erase(const_iterator cpos)
 	{
-		TraceObj();
-		return erase(cpos, simstd::next(cpos, 1));
+		TraceFormatObj("(%p), [%p]\n", &*cpos, c_str());
+		return _erase(simstd::distance(cbegin(), cpos), 1);
 	}
 
 	template<typename C, typename T, typename A>
 	typename basic_string<C, T, A>::iterator basic_string<C, T, A>::erase(const_iterator first, const_iterator last)
 	{
-		TraceObj();
-		auto indexFirst = simstd::distance(cbegin(), first);
-		auto indexLast = simstd::distance(cbegin(), last);
+		TraceFormatObj("(%p, %p), [%p]\n", &*first, &*last, c_str());
+		return _erase(simstd::distance(cbegin(), first), simstd::distance(first, last));
+	}
+
+	template<typename C, typename T, typename A>
+	typename basic_string<C, T, A>::iterator basic_string<C, T, A>::_erase(size_type index, size_type count)
+	{
+		auto indexLast = index + count;
+		CRT_ASSERT(index <= size());
+		CRT_ASSERT(indexLast <= size());
 		if (m_impl->is_shared()) {
-			this_type(get_allocator(), capacity(), c_str(), indexFirst, c_str() + indexLast, size() - indexLast).swap(*this);
+			this_type(get_allocator(), capacity(), c_str(), index, c_str() + indexLast, size() - indexLast).swap(*this);
 		} else {
-			traits_type::move(m_impl->get_data() + indexFirst, m_impl->get_data() + indexLast, size() - indexLast + 1);
-			m_impl->set_size(size() - (indexLast - indexFirst));
+			traits_type::move(m_impl->get_data() + index, m_impl->get_data() + indexLast, size() - indexLast);
+			m_impl->set_size(size() - count);
 		}
-		return iterator(m_impl->get_data() + indexFirst);
+		return iterator(m_impl->get_data() + index);
 	}
 
 	template<typename C, typename T, typename A>

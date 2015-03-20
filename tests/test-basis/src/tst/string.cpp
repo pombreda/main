@@ -39,14 +39,23 @@ ssize_t tst::_string()
 				auto qwe3(qwe1 + qwe2);
 				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
 				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
+				qwe3.erase(3, 4);
+				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
+				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
 			}
 			{
 				auto qwe3('a' + qwe1);
 				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
 				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
+				qwe3.erase(qwe3.cbegin() + 3);
+				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
+				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
 			}
 			{
 				auto qwe3("asd" + qwe1);
+				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
+				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
+				qwe3.erase(qwe3.cbegin() + 3, qwe3.cbegin() + 7);
 				TestFuncPlaceFormat("qwe3: size: %Iu, capa: %Iu '%s'\n", qwe3.size(), qwe3.capacity(), qwe3.c_str());
 				TestFuncPlaceFormat("qwe3.c_str: %p\n", qwe3.c_str());
 			}
