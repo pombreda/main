@@ -1128,7 +1128,7 @@ namespace simstd
 	typename basic_string<C, T, A>::size_type basic_string<C, T, A>::find_first_of(const this_type& str, size_type index) const
 	{
 		for (; index < size(); ++index)
-			if (traits_type::find(str.c_str(), str.size(), c_str() + index))
+			if (traits_type::find(str.c_str(), str.size(), *(c_str() + index)) != nullptr)
 				return index;
 		return npos;
 	}
@@ -1137,7 +1137,7 @@ namespace simstd
 	typename basic_string<C, T, A>::size_type basic_string<C, T, A>::find_first_not_of(const this_type& str, size_type index) const
 	{
 		for (; index < size(); ++index)
-			if (traits_type::find(str.c_str(), str.size(), c_str() + index) == nullptr)
+			if (traits_type::find(str.c_str(), str.size(), *(c_str() + index)) == nullptr)
 				return index;
 		return npos;
 	}
@@ -1147,7 +1147,7 @@ namespace simstd
 	{
 		index = simstd::min(index, size());
 		while (index > 0)
-			if (traits_type::find(str.c_str(), str.size(), c_str() + --index))
+			if (traits_type::find(str.c_str(), str.size(), *(c_str() + --index)) != nullptr)
 				return index;
 		return npos;
 	}
@@ -1157,7 +1157,7 @@ namespace simstd
 	{
 		index = simstd::min(index, size());
 		while (index > 0)
-			if (traits_type::find(str.c_str(), str.size(), c_str() + --index) == nullptr)
+			if (traits_type::find(str.c_str(), str.size(), *(c_str() + --index)) == nullptr)
 				return index;
 		return npos;
 	}

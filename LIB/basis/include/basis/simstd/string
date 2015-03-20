@@ -11,12 +11,7 @@
 #include <basis/simstd/~string/char_traits.hpp>
 #include <basis/simstd/~string/basic_string_base.hpp>
 #include <basis/simstd/~string/basic_string.hpp>
-//#include <basis/simstd/~string/basic_string2.hpp>
 #include <basis/simstd/~string/convert_a.hpp>
 #include <basis/simstd/~string/convert_w.hpp>
-
-//#include <basis/sys/crt.hpp>
-//#include <basis/sys/console.hpp>
-//#include <basis/simstd/~algorithm/base.hpp>
 
 #endif
