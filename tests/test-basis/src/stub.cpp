@@ -86,7 +86,7 @@ extern "C" {
 
 	int atexit(crt::Function pf)
 	{
-		TraceFuncFormat("%s:%d func: %p\n", __PRETTY_FUNCTION__, __LINE__, pf);
+		TraceFormatFunc("%s:%d func: %p\n", __PRETTY_FUNCTION__, __LINE__, pf);
 		return crt::atexit(pf);
 	}
 

@@ -29,7 +29,7 @@ memory::heap::StatCount::StatCount():
 
 void* memory::heap::StatCount::commit_alloc(void* ptr, uint64_t size, const char* function, int line)
 {
-	TraceFunc();
+//	TraceFunc();
 	UNUSED(function);
 	UNUSED(line);
 
@@ -43,7 +43,7 @@ void* memory::heap::StatCount::commit_alloc(void* ptr, uint64_t size, const char
 
 void memory::heap::StatCount::commit_free(const void* ptr, uint64_t size, const char* function, int line)
 {
-	TraceFunc();
+//	TraceFunc();
 	UNUSED(function);
 	UNUSED(line);
 

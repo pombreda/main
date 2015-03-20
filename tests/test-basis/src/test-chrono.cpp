@@ -1,3 +1,8 @@
+#if defined(PRINT_TRACE)
+#   undef PRINT_TRACE
+#   define PRINT_TRACE 0
+#endif
+
 #include <tests.hpp>
 
 #include <basis/sys/logger.hpp>
@@ -81,8 +86,8 @@ void test_chrono()
 		auto elapsed1 = end1 - start1;
 //		auto elapsed2 = end2 - start2;
 		auto elapsed3 = end3 - start3;
-		LogReport(L"size1: %I64u, count1: %I64u ns, count1: %I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed1).count(), (uint64_t )duration_cast<milliseconds>(elapsed1).count());
-//		LogReport(L"size2: %I64u, count2: %I64u ns, count2: %I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed2).count(), (uint64_t)duration_cast<milliseconds>(elapsed2).count());
-		LogReport(L"size3: %I64u, count3: %I64u ns, count3: %I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed3).count(), (uint64_t )duration_cast<milliseconds>(elapsed3).count());
+		LogReport(L"size1: %10I64u, count1: %10I64u ns, count1: %10I64u mcs, count1: %6I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed1).count(), (uint64_t)duration_cast<microseconds>(elapsed1).count(), (uint64_t)duration_cast<milliseconds>(elapsed1).count());
+//		LogReport(L"size2: %10I64u, count2: %10I64u ns, count2: %10I64u mcs, count2: %6I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed2).count(), (uint64_t)duration_cast<microseconds>(elapsed2).count(), (uint64_t)duration_cast<milliseconds>(elapsed2).count());
+		LogReport(L"size3: %10I64u, count3: %10I64u ns, count3: %10I64u mcs, count3: %6I64u ms\n", size, (uint64_t)duration_cast<nanoseconds>(elapsed3).count(), (uint64_t)duration_cast<microseconds>(elapsed3).count(), (uint64_t)duration_cast<milliseconds>(elapsed3).count());
 	}
 }

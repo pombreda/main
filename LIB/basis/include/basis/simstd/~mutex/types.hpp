@@ -25,6 +25,6 @@ namespace simstd {
 
 	constexpr adopt_lock_t adopt_lock{};
 
-}    // namespace simstd
+}
 
 #endif

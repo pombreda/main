@@ -1,47 +1,42 @@
 ﻿#include <basis/simstd/list>
 
-namespace simstd {
-
-	namespace pvt {
-
-		List_node_base::List_node_base() noexcept
-			: m_next(this)
-			, m_prev(this)
+namespace simstd
+{
+	namespace pvt
+	{
+		void list_node_base::transfer(const list_node_base* first, const list_node_base* last) noexcept
 		{
+			if (first != last)
+			{
+				auto first1 = m_prev;
+
+				m_prev = last->m_prev;
+				m_prev->m_next = this;
+
+				first->m_prev->m_next = const_cast<list_node_base*>(last);
+				const_cast<list_node_base*>(last)->m_prev = first->m_prev;
+
+				first1->m_next = const_cast<list_node_base*>(first);
+				const_cast<list_node_base*>(first)->m_prev = first1;
+			}
 		}
 
-		void List_node_base::transfer(const this_type* first, const this_type* last) noexcept
-		{
-			auto first1 = m_prev;
-
-			m_prev = last->m_prev;
-			m_prev->m_next = this;
-
-			first->m_prev->m_next = const_cast<this_type*>(last);
-			const_cast<this_type*>(last)->m_prev = first->m_prev;
-
-			first1->m_next = const_cast<this_type*>(first);
-			const_cast<this_type*>(first)->m_prev = first1;
-		}
-
-		void List_node_base::reverse() noexcept
+		void list_node_base::reverse() noexcept
 		{
 			auto cur = this;
-			do
-			{
+			do {
 				auto next = cur->m_next;
 				cur->m_next = cur->m_prev;
 				cur->m_prev = next;
-				cur         = cur->m_prev;
-			}
-			while(cur != this);
+				cur = cur->m_prev;
+			} while (cur != this);
 		}
 
-		void List_node_base::hook(const this_type * pos) noexcept
+		void list_node_base::hook(const list_node_base* pos) noexcept
 		{
 //			LogTraceObj();
-			this_type * prev = pos->m_prev;
-			this_type * next = const_cast<this_type*>(pos);
+			auto prev = pos->m_prev;
+			auto next = const_cast<list_node_base*>(pos);
 //			LogDebug(L"prev: %p\n", prev);
 //			LogDebug(L"this: %p\n", this);
 //			LogDebug(L"next: %p\n", next);
@@ -52,7 +47,7 @@ namespace simstd {
 //			LogDebug(L"pos->m_next: %p\n", next->m_next);
 //			LogDebug(L"pos->m_prev: %p\n", next->m_prev);
 
-			m_next = const_cast<this_type*>(next);
+			m_next = const_cast<list_node_base*>(next);
 			m_prev = prev;
 			prev->m_next = this;
 			next->m_prev = this;
@@ -65,7 +60,7 @@ namespace simstd {
 //			LogDebug(L"pos->m_prev: %p\n", next->m_prev);
 		}
 
-		void List_node_base::unhook() noexcept
+		void list_node_base::unhook() noexcept
 		{
 //			LogTraceObj();
 			auto prev = m_prev;
@@ -91,7 +86,7 @@ namespace simstd {
 //			LogDebug(L"next->m_prev: %p\n", next->m_prev);
 		}
 
-		void List_node_base::swap(this_type & a, this_type & b) noexcept
+		void list_node_base::swap(list_node_base& a, list_node_base& b) noexcept
 		{
 //			LogTrace();
 			using simstd::swap;
@@ -103,7 +98,7 @@ namespace simstd {
 			else
 				a.m_next->m_prev = a.m_prev->m_next = &a;
 
-			if(b.m_next == &a)
+			if (b.m_next == &a)
 				b.m_next = b.m_prev = &b;
 			else
 				b.m_next->m_prev = b.m_prev->m_next = &b;
@@ -115,7 +110,5 @@ namespace simstd {
 //			LogDebug(L"b.m_next: %p\n", b.m_next);
 //			LogDebug(L"b.m_prev: %p\n", b.m_prev);
 		}
-
 	}
-
 }

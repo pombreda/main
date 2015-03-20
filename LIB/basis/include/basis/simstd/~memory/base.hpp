@@ -126,9 +126,9 @@ namespace simstd {
 	template<typename InputIt, typename ForwardIt, typename Allocator>
 	ForwardIt uninitialized_copy_a(InputIt first, InputIt last, ForwardIt d_first, Allocator& allocator)
 	{
-		using alloc_traits = simstd::allocator_traits<Allocator>;
+		using alloc_traits_type = simstd::allocator_traits<Allocator>;
 		for (; first != last; ++first, ++d_first) {
-			alloc_traits::construct(allocator, simstd::addressof(*d_first), *first);
+			alloc_traits_type::construct(allocator, simstd::addressof(*d_first), *first);
 		}
 		return d_first;
 	}
@@ -145,9 +145,9 @@ namespace simstd {
 	template<typename InputIt, typename Size, typename ForwardIt, typename Allocator>
 	ForwardIt uninitialized_copy_n_a(InputIt first, Size cnt, ForwardIt d_first, Allocator& allocator)
 	{
-		using alloc_traits = simstd::allocator_traits<Allocator>;
+		using alloc_traits_type = simstd::allocator_traits<Allocator>;
 		for (; cnt > 0; ++first, ++d_first, --cnt) {
-			alloc_traits::construct(allocator, simstd::addressof(*d_first), *first);
+			alloc_traits_type::construct(allocator, simstd::addressof(*d_first), *first);
 		}
 		return d_first;
 	}
@@ -172,9 +172,9 @@ namespace simstd {
 	template<typename ForwardIt, typename Allocator>
 	ForwardIt uninitialized_default_a(ForwardIt first, ForwardIt last, Allocator& allocator)
 	{
-		using alloc_traits = simstd::allocator_traits<Allocator>;
+		using alloc_traits_type = simstd::allocator_traits<Allocator>;
 		for (; first != last; ++first) {
-			alloc_traits::construct(allocator, simstd::addressof(*first));
+			alloc_traits_type::construct(allocator, simstd::addressof(*first));
 		}
 		return first;
 	}
@@ -193,9 +193,9 @@ namespace simstd {
 	template<typename ForwardIt, typename Size, typename Allocator>
 	ForwardIt uninitialized_default_n_a(ForwardIt first, Size cnt, Allocator& allocator)
 	{
-		using alloc_traits = simstd::allocator_traits<Allocator>;
+		using alloc_traits_type = simstd::allocator_traits<Allocator>;
 		for (; cnt > 0; ++first, --cnt) {
-			alloc_traits::construct(allocator, simstd::addressof(*first));
+			alloc_traits_type::construct(allocator, simstd::addressof(*first));
 		}
 		return first;
 	}
@@ -212,9 +212,9 @@ namespace simstd {
 	template<typename ForwardIt, typename Type, typename Allocator>
 	ForwardIt uninitialized_fill_a(ForwardIt first, ForwardIt last, const Type& val, Allocator& allocator)
 	{
-		using alloc_traits = simstd::allocator_traits<Allocator>;
+		using alloc_traits_type = simstd::allocator_traits<Allocator>;
 		for (; first != last; ++first) {
-			alloc_traits::construct(allocator, simstd::addressof(*first), val);
+			alloc_traits_type::construct(allocator, simstd::addressof(*first), val);
 		}
 		return first;
 	}
@@ -231,9 +231,9 @@ namespace simstd {
 	template<typename ForwardIt, typename Size, typename Type, typename Allocator>
 	ForwardIt uninitialized_fill_n_a(ForwardIt first, Size cnt, const Type& val, Allocator& allocator)
 	{
-		using alloc_traits = simstd::allocator_traits<Allocator>;
+		using alloc_traits_type = simstd::allocator_traits<Allocator>;
 		for (; cnt > 0; ++first, --cnt) {
-			alloc_traits::construct(allocator, simstd::addressof(*first), val);
+			alloc_traits_type::construct(allocator, simstd::addressof(*first), val);
 		}
 		return first;
 	}
