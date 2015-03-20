@@ -37,31 +37,37 @@ namespace simstd {
 
 		static int compare(const char_type* str1, const char_type* str2, size_t count)
 		{
+			CRT_ASSERT(str1 && str2);
 			return memcmp(str1, str2, count);
 		}
 
 		static size_t length(const char_type* str)
 		{
+			CRT_ASSERT(str);
 			return str ? strlen(str) : 0;
 		}
 
 		static const char_type* find(const char_type* where, size_t length, const char_type& what)
 		{
+			CRT_ASSERT(where);
 			return (const char_type*)memchr(where, what, length);
 		}
 
 		static char_type* move(char_type* dest, const char_type* src, size_t count)
 		{
+			CRT_ASSERT(dest && src);
 			return (char_type*)memmove(dest, src, count);
 		}
 
 		static char_type* copy(char_type* dest, const char_type* src, size_t count)
 		{
+			CRT_ASSERT(dest && src);
 			return (char_type*)memcpy(dest, src, count);
 		}
 
 		static char_type* assign(char_type* str, size_t count, char_type chr)
 		{
+			CRT_ASSERT(str);
 			return (char_type*)memset(str, chr, count);
 		}
 
@@ -119,31 +125,37 @@ namespace simstd {
 
 		static int compare(const char_type* str1, const char_type* str2, size_t count)
 		{
+			CRT_ASSERT(str1 && str2);
 			return wmemcmp(str1, str2, count);
 		}
 
 		static size_t length(const char_type* str)
 		{
+			CRT_ASSERT(str);
 			return str ? wcslen(str) : 0;
 		}
 
 		static const char_type* find(const char_type* where, size_t length, const char_type& what)
 		{
+			CRT_ASSERT(where);
 			return wmemchr(where, what, length);
 		}
 
 		static char_type* move(char_type* dest, const char_type* src, size_t count)
 		{
+			CRT_ASSERT(dest && src);
 			return wmemmove(dest, src, count);
 		}
 
 		static char_type* copy(char_type* dest, const char_type* src, size_t count)
 		{
+			CRT_ASSERT(dest && src);
 			return wmemcpy(dest, src, count);
 		}
 
 		static char_type* assign(char_type* str, size_t count, char_type chr)
 		{
+			CRT_ASSERT(str);
 			return wmemset(str, chr, count);
 		}
 

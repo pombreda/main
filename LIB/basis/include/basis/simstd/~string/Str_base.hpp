@@ -6,9 +6,9 @@ namespace simstd
 	namespace pvt
 	{
 		template<typename Type, typename Allocator>
-		struct StrImpl: public Allocator
+		struct basic_string_base_impl: public Allocator
 		{
-			StrImpl(size_t capa, const Allocator& allocator) :
+			basic_string_base_impl(size_t capa, const Allocator& allocator) :
 				Allocator(allocator),
 				m_size(0),
 				m_capa(capa),
@@ -24,7 +24,7 @@ namespace simstd
 			size_t get_capa() const noexcept {return m_capa;}
 			void set_size(size_t size) noexcept {m_size = size; m_data[size] = m_terminal_char;}
 
-			const Allocator& get_allocator() const noexcept {return *static_cast<Allocator*>(const_cast<StrImpl*>(this));}
+			const Allocator& get_allocator() const noexcept {return *static_cast<const Allocator*>(this);}
 
 			Type* get_data() const noexcept {return const_cast<Type*>(m_data);}
 			Type* get_end() const noexcept {return const_cast<Type*>(m_data) + m_size;}
@@ -39,27 +39,25 @@ namespace simstd
 		};
 
 		template<typename Type, typename Allocator>
-		class StrBase
+		class basic_string_base
 		{
 		public:
-			~StrBase();
+			~basic_string_base();
 
-			StrBase(const Allocator& allocator, size_t capa = 0);
-			StrBase(const StrBase& other);
-			StrBase(const StrBase& other, const Allocator& allocator);
-			StrBase(StrBase&& other);
-			StrBase(StrBase&& other, const Allocator& allocator);
-
-			const Allocator& get_allocator() const;
+			basic_string_base(const Allocator& allocator, size_t capa = 0);
+			basic_string_base(const basic_string_base& other);
+			basic_string_base(const basic_string_base& other, const Allocator& allocator);
+			basic_string_base(basic_string_base&& other);
+			basic_string_base(basic_string_base&& other, const Allocator& allocator);
 
 		protected:
-			typedef StrImpl<Type, Allocator> impl_type;
-			typedef typename Allocator::template rebind<impl_type>::other ImpAllocator;
-			typedef typename Allocator::template rebind<char>::other      RawAllocator;
-
+			using impl_type = basic_string_base_impl<Type, Allocator>;
 			impl_type* m_impl;
 
 		private:
+			using impl_allocator = typename Allocator::template rebind<impl_type>::other;
+			using raw_allocator = typename Allocator::template rebind<char>::other;
+
 			static impl_type* new_impl(size_t capa, const Allocator& allocator);
 			static void       del_impl(const impl_type* ptr);
 
@@ -67,14 +65,14 @@ namespace simstd
 		};
 
 		template<typename T, typename A>
-		StrBase<T, A>::~StrBase()
+		basic_string_base<T, A>::~basic_string_base()
 		{
 			if (m_impl && m_impl->decrease_ref())
 				del_impl(m_impl);
 		}
 
 		template<typename T, typename A>
-		StrBase<T, A>::StrBase(const A& allocator, size_t capa) :
+		basic_string_base<T, A>::basic_string_base(const A& allocator, size_t capa) :
 			m_impl()
 		{
 			m_impl = new_impl(simstd::max(MIN_CAPACITY, capa), allocator);
@@ -82,7 +80,7 @@ namespace simstd
 		}
 
 		template<typename T, typename A>
-		StrBase<T, A>::StrBase(const StrBase& other) :
+		basic_string_base<T, A>::basic_string_base(const basic_string_base& other) :
 			m_impl(other.m_impl)
 		{
 			CRT_ASSERT(m_impl);
@@ -90,11 +88,11 @@ namespace simstd
 		}
 
 		template<typename T, typename A>
-		StrBase<T, A>::StrBase(const StrBase& other, const A& allocator) :
+		basic_string_base<T, A>::basic_string_base(const basic_string_base& other, const A& allocator) :
 			m_impl(other.m_impl)
 		{
 			CRT_ASSERT(m_impl);
-			if (allocator == other.get_allocator()) {
+			if (allocator == other.m_impl->get_allocator()) {
 				m_impl->increase_ref();
 			} else {
 				m_impl = new_impl(other.m_impl->get_capa(), allocator);
@@ -103,21 +101,20 @@ namespace simstd
 		}
 
 		template<typename T, typename A>
-		StrBase<T, A>::StrBase(StrBase&& other) :
-			m_impl()
+		basic_string_base<T, A>::basic_string_base(basic_string_base&& other) :
+			m_impl(other.m_impl)
 		{
-			using simstd::swap;
-			swap(m_impl, other.m_impl);
 			CRT_ASSERT(m_impl);
+			m_impl->increase_ref();
 		}
 
 		template<typename T, typename A>
-		StrBase<T, A>::StrBase(StrBase&& other, const A& allocator) :
-			m_impl()
+		basic_string_base<T, A>::basic_string_base(basic_string_base&& other, const A& allocator) :
+			m_impl(other.m_impl)
 		{
-			if (allocator == other.get_allocator()) {
-				using simstd::swap;
-				swap(m_impl, other.m_impl);
+			CRT_ASSERT(m_impl);
+			if (allocator == other.m_impl->get_allocator()) {
+				m_impl->increase_ref();
 			} else {
 				m_impl = new_impl(other.m_impl->get_capa(), allocator);
 			}
@@ -125,30 +122,23 @@ namespace simstd
 		}
 
 		template<typename T, typename A>
-		const A& StrBase<T, A>::get_allocator() const
+		typename basic_string_base<T, A>::impl_type* basic_string_base<T, A>::new_impl(size_t capa, const A& allocator)
 		{
-			CRT_ASSERT(m_impl);
-			return m_impl->get_allocator();
-		}
-
-		template<typename T, typename A>
-		typename StrBase<T, A>::impl_type* StrBase<T, A>::new_impl(size_t capa, const A& allocator)
-		{
-			RawAllocator rawAlloc(allocator);
+			raw_allocator rawAlloc(allocator);
 			size_t size = capa * sizeof(T) + sizeof(impl_type);
-			auto ret = reinterpret_cast<StrBase<T, A>::impl_type*>(rawAlloc.allocate(size));
+			auto ret = reinterpret_cast<basic_string_base<T, A>::impl_type*>(rawAlloc.allocate(size));
 			CRT_ASSERT(ret);
 
-			ImpAllocator implAlloc(allocator);
+			impl_allocator implAlloc(allocator);
 			implAlloc.construct(ret, capa, allocator);
 			return ret;
 		}
 
 		template<typename T, typename A>
-		void StrBase<T, A>::del_impl(const impl_type* ptr)
+		void basic_string_base<T, A>::del_impl(const impl_type* ptr)
 		{
 			auto impl = const_cast<impl_type*>(ptr);
-			ImpAllocator allocator = impl->get_allocator();
+			impl_allocator allocator = impl->get_allocator();
 			allocator.destroy(impl);
 			allocator.deallocate(impl, 1);
 		}

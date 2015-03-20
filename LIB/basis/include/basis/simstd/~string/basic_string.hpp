@@ -2,9 +2,9 @@
 #define BASIS_SIMSTD_STRING_BASIC_STRING_HPP_
 
 template<typename CharType, typename Traits, typename Allocator>
-class simstd::basic_string: private pvt::StrBase<CharType, Allocator> {
+class simstd::basic_string: private pvt::basic_string_base<CharType, Allocator> {
 	using this_type = basic_string;
-	using base_type = pvt::StrBase<CharType, Allocator>;
+	using base_type = pvt::basic_string_base<CharType, Allocator>;
 	using base_type::m_impl;
 
 public:
@@ -889,7 +889,7 @@ namespace simstd
 //		printf("      (index: %Iu, count: %Iu)\n", index, count);
 		auto capa = get_necessary_capacity(len - count);
 		if (must_be_splitted(capa) || is_same_str(str)) {
-			this_type tmp(base_type::get_allocator(), capa, c_str(), index, str, len);
+			this_type tmp(get_allocator(), capa, c_str(), index, str, len);
 //			printf("      (%Iu, %Iu): '%s'\n", tmp.size(), tmp.capacity(), tmp.c_str());
 			tmp._raw_append(c_str() + index, size() - index);
 //			printf("      (%Iu, %Iu): '%s'\n", tmp.size(), tmp.capacity(), tmp.c_str());
@@ -939,7 +939,7 @@ namespace simstd
 		count = simstd::min(count, size() - index);
 		auto capa = get_necessary_capacity(len - count);
 		if (must_be_splitted(capa)) {
-			this_type tmp(base_type::get_allocator(), capa, c_str(), index);
+			this_type tmp(get_allocator(), capa, c_str(), index);
 			tmp._raw_append(ch, len);
 			tmp._raw_append(c_str() + index, size() - index);
 			tmp.swap(*this);
@@ -964,7 +964,7 @@ namespace simstd
 		TraceObj();
 		CRT_ASSERT(index <= size());
 		count = simstd::min(count, size() - index);
-		return this_type(base_type::get_allocator(), count, c_str() + index, count);
+		return this_type(get_allocator(), count, c_str() + index, count);
 	}
 
 	template<typename C, typename T, typename A>
@@ -1227,7 +1227,7 @@ namespace simstd
 	void basic_string<C, T, A>::split_and_clear(size_type minCapacity)
 	{
 		if (must_be_splitted(minCapacity))
-			this_type(base_type::get_allocator(), simstd::max(minCapacity, capacity()), nullptr, 0).swap(*this);
+			this_type(get_allocator(), simstd::max(minCapacity, capacity()), nullptr, 0).swap(*this);
 		else
 			m_impl->set_size(0);
 	}
@@ -1236,7 +1236,7 @@ namespace simstd
 	void basic_string<C, T, A>::split_and_copy(size_type minCapacity)
 	{
 		if (must_be_splitted(minCapacity))
-			this_type(base_type::get_allocator(), simstd::max(minCapacity, capacity()), c_str(), size()).swap(*this);
+			this_type(get_allocator(), simstd::max(minCapacity, capacity()), c_str(), size()).swap(*this);
 	}
 
 	template<typename C, typename T, typename A>
