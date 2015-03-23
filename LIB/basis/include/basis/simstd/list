@@ -150,32 +150,32 @@ public:
 	using allocator_type = Allocator;
 
 	list_base() = default;
-	list_base(const node_allocator_type& allocator): m_impl(allocator) {}
+	list_base(const node_allocator_type& allocator): impl(allocator) {}
 	list_base(list_base&& other) :
-		m_impl(simstd::move(other.get_node_allocator()))
+		impl(simstd::move(other.get_node_allocator()))
 	{
-		list_node_base::swap(m_impl.m_end, other.m_impl.m_end);
+		list_node_base::swap(impl.list_end, other.impl.list_end);
 	}
 
 protected:
 	node_allocator_type& get_node_allocator()
 	{
-		return *static_cast<node_allocator_type*>(&m_impl);
+		return *static_cast<node_allocator_type*>(&impl);
 	}
 
 	const node_allocator_type& get_node_allocator() const
 	{
-		return *static_cast<const node_allocator_type*>(&m_impl);
+		return *static_cast<const node_allocator_type*>(&impl);
 	}
 
 	template<typename... Args>
 	node_type* new_node(Args&&... args)
 	{
 		auto& allocator = get_node_allocator();
-		auto ptr = allocator.allocate(1);
-		CRT_ASSERT(ptr);
-		allocator.construct(ptr, simstd::forward<Args>(args)...);
-		return ptr;
+		auto node = allocator.allocate(1);
+		CRT_ASSERT(node);
+		allocator.construct(node, simstd::forward<Args>(args)...);
+		return node;
 	}
 
 	void delete_node(const list_node_base* ptr)
@@ -186,15 +186,15 @@ protected:
 		allocator.deallocate(node, 1);
 	}
 
-	struct Impl: public node_allocator_type
+	struct list_base_impl: public node_allocator_type
 	{
-		Impl() = default;
-		Impl(const node_allocator_type& other): node_allocator_type(other) {}
-		Impl(node_allocator_type&& other): node_allocator_type(simstd::move(other)) {}
-		list_node_base m_end;
+		list_base_impl() = default;
+		list_base_impl(const node_allocator_type& other): node_allocator_type(other) {}
+		list_base_impl(node_allocator_type&& other): node_allocator_type(simstd::move(other)) {}
+		list_node_base list_end;
 	};
 
-	Impl m_impl;
+	list_base_impl impl;
 };
 
 template<typename Type, typename Allocator>
@@ -203,7 +203,7 @@ class simstd::list: private pvt::list_base<Type, Allocator>
 	using this_type = list;
 	using base_type = pvt::list_base<Type, Allocator>;
 	using node_allocator_type = typename base_type::node_allocator_type;
-	using base_type::m_impl;
+	using base_type::impl;
 	using base_type::new_node;
 	using base_type::delete_node;
 	using base_type::get_node_allocator;
@@ -480,12 +480,12 @@ namespace simstd
 	list<Type, Allocator>::list(this_type&& other, const allocator_type& allocator):
 		base_type(node_allocator_type(allocator))
 	{
-		if (other.get_allocator() != allocator) {
-			TraceObj();
-			_initialize(simstd::make_move_iterator(other.begin()), simstd::make_move_iterator(other.end()));
-		} else {
+		if (other.get_allocator() == allocator) {
 			TraceObj();
 			swap(other);
+		} else {
+			TraceObj();
+			_initialize(simstd::make_move_iterator(other.begin()), simstd::make_move_iterator(other.end()));
 		}
 		other.clear();
 	}
@@ -564,7 +564,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::iterator list<Type, Allocator>::begin()
 	{
-		return iterator(m_impl.m_end.m_next);
+		return iterator(impl.list_end.m_next);
 	}
 
 	template<typename Type, typename Allocator>
@@ -578,14 +578,14 @@ namespace simstd
 	typename
 	list<Type, Allocator>::const_iterator list<Type, Allocator>::cbegin() const
 	{
-		return const_iterator(m_impl.m_end.m_next);
+		return const_iterator(impl.list_end.m_next);
 	}
 
 	template<typename Type, typename Allocator>
 	typename
 	list<Type, Allocator>::iterator list<Type, Allocator>::end()
 	{
-		return iterator(&m_impl.m_end);
+		return iterator(&impl.list_end);
 	}
 
 	template<typename Type, typename Allocator>
@@ -599,7 +599,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::const_iterator list<Type, Allocator>::cend() const
 	{
-		return const_iterator(&m_impl.m_end);
+		return const_iterator(&impl.list_end);
 	}
 
 	template<typename Type, typename Allocator>
@@ -647,7 +647,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	bool list<Type, Allocator>::empty() const
 	{
-		return m_impl.m_end.m_next == &m_impl.m_end;
+		return impl.list_end.m_next == &impl.list_end;
 	}
 
 	template<typename Type, typename Allocator>
@@ -823,7 +823,7 @@ namespace simstd
 	void list<Type, Allocator>::swap(this_type& other)
 	{
 //		TraceObj();
-		m_impl.m_end.swap(m_impl.m_end, other.m_impl.m_end);
+		impl.list_end.swap(impl.list_end, other.impl.list_end);
 	}
 
 	template<typename Type, typename Allocator>
@@ -942,7 +942,7 @@ namespace simstd
 	void list<Type, Allocator>::reverse()
 	{
 		TraceObj();
-		m_impl.m_end.reverse();
+		impl.list_end.reverse();
 	}
 
 	template<typename Type, typename Allocator>

@@ -14,9 +14,9 @@ struct HeapTag {};
 using heap_type = memory::heap::DecoratorStat<memory::heap::Special<HeapTag>, memory::heap::StatCount, HeapTag>;
 //using EqAlloc = simstd::allocator<A>;
 using EqAlloc = simstd::AllocatorHeap<tst::A, heap_type>;
-using EqAlloc2 = simstd::AllocatorHeap<ssize_t, heap_type>;
+using SizetAlloc = simstd::AllocatorHeap<ssize_t, heap_type>;
 using test_list_type = simstd::list<tst::A, EqAlloc>;
-using test_list_type2 = simstd::list<ssize_t, EqAlloc2>;
+using test_list_type2 = simstd::list<ssize_t, SizetAlloc>;
 
 inline ssize_t get_random()
 {
