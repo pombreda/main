@@ -171,16 +171,19 @@ protected:
 	template<typename... Args>
 	node_type* new_node(Args&&... args)
 	{
-		auto ptr = m_impl.node_allocator_type::allocate(1);
-		get_node_allocator().construct(ptr, simstd::forward<Args>(args)...);
+		auto& allocator = get_node_allocator();
+		auto ptr = allocator.allocate(1);
+		CRT_ASSERT(ptr);
+		allocator.construct(ptr, simstd::forward<Args>(args)...);
 		return ptr;
 	}
 
 	void delete_node(const list_node_base* ptr)
 	{
+		auto& allocator = get_node_allocator();
 		auto node = static_cast<node_type*>(const_cast<list_node_base*>(ptr));
-		get_node_allocator().destroy(node);
-		m_impl.node_allocator_type::deallocate(node, 1);
+		allocator.destroy(node);
+		allocator.deallocate(node, 1);
 	}
 
 	struct Impl: public node_allocator_type

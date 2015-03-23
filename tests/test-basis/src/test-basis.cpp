@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 //
 //	test_crashes();
 //
-//	tst::_list();
+	tst::_list();
 //
 //	test_math();
 //
@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 //
 //	tst::_shared_ptr();
 //
-	tst::_string();
+//	tst::_string();
 //
 //	test_traceback();
 //
