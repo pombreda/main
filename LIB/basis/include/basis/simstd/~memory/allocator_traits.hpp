@@ -98,13 +98,14 @@ namespace simstd {
 	template<class T>
 	void allocator_traits<Allocator>::destroy(Allocator& a, T* ptr)
 	{
-		a.destroy(ptr); // TODO
+		TraceFunc();
+		a.destroy(ptr);
 	}
 
 	template<typename Allocator>
 	typename allocator_traits<Allocator>::size_type allocator_traits<Allocator>::max_size(const Allocator& a)
 	{
-		return a.max_size(); //TODO
+		return a.max_size();
 	}
 
 }

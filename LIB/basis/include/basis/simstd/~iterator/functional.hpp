@@ -30,7 +30,7 @@ namespace simstd {
 	template<typename Container>
 	typename Container::const_iterator cbegin(const Container & c)
 	{
-		begin(c);
+		return begin(c);
 	}
 
 	template<typename Container>
@@ -60,7 +60,7 @@ namespace simstd {
 	template<typename Container>
 	typename Container::const_iterator cend(const Container & c)
 	{
-		end(c);
+		return end(c);
 	}
 
 	///=============================================================================================

@@ -1,8 +1,6 @@
 #ifndef BASIS_SYS_MEMORY_HEAP_SPECIAL_HPP_
 #define BASIS_SYS_MEMORY_HEAP_SPECIAL_HPP_
 
-#include <basis/sys/crt.hpp>
-
 namespace memory {
 	namespace heap {
 
@@ -22,6 +20,10 @@ namespace memory {
 
 			static const char* get_name();
 
+			// little trick for test
+			bool operator ==(const Special& other) const noexcept {return this == &other;}
+			bool operator !=(const Special& other) const noexcept {return this != &other;}
+
 		private:
 			static HANDLE m_heap;
 		};
@@ -33,13 +35,13 @@ namespace memory {
 	namespace heap {
 
 		template<typename Type>
-		HANDLE Special<Type>::m_heap;
+		HANDLE Special<Type>::m_heap = HANDLE();
 
 		template<typename Type>
 		void Special<Type>::init(size_t size)
 		{
 			UNUSED(size);
-			CRT_ASSERT(m_heap == nullptr);
+			CRT_ASSERT(!m_heap);
 			m_heap = HeapCreate(0, 0, 0);
 			CRT_ASSERT(m_heap);
 		}
@@ -49,6 +51,7 @@ namespace memory {
 		{
 			CRT_ASSERT(m_heap);
 			HeapDestroy(m_heap);
+			m_heap = HANDLE();
 		}
 
 		template<typename Type>

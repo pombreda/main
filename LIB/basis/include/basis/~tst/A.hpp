@@ -19,12 +19,16 @@ namespace tst {
 
 		A operator +(const A& other) const;
 
+		bool operator < (const A& other) const;
+
 		void swap(A& other);
 
 		int val() const;
 
 		int j;
 		int i;
+
+		static ssize_t objects;
 
 	private:
 		int m_a;

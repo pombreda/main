@@ -7,7 +7,7 @@ namespace logger {
 	///================================================================================== ModuleImpl
 	ModuleImpl::~ModuleImpl()
 	{
-		TraceFuncFormat("%s:%d %S\n", __PRETTY_FUNCTION__, __LINE__, m_name);
+		TraceFormatObj("[%S, %Id]\n", m_name, (ssize_t)m_lvl);
 	}
 
 	ModuleImpl::ModuleImpl(const wchar_t* name, const Target_t & tgt, Level lvl) :
@@ -18,10 +18,9 @@ namespace logger {
 		m_enabled(1),
 		m_utf8_out(1)
 	{
-		TraceFunc();
+		TraceFormatObj("[%S, %Id]\n", name, (ssize_t)lvl);
 		cstr::copy(m_name, name, lengthof(m_name));
 //		out(Level::Logger, L"Logger module has been created\n");
-		TraceFunc();
 	}
 
 	void ModuleImpl::destroy() const
@@ -86,7 +85,7 @@ namespace logger {
 
 	void ModuleImpl::out(Level lvl, const wchar_t* format, ...) const
 	{
-		TraceFunc();
+//		TraceFunc();
 		if (m_enabled && lvl >= m_lvl) {
 			wchar_t buff[DEFAULT_PRINTF_BUFFER];
 			auto pend = add_prefix(lvl, buff, lengthof(buff));
@@ -94,23 +93,23 @@ namespace logger {
 			va_start(args, format);
 			out_args(lvl, buff, pend, lengthof(buff) - (pend - buff), format, args);
 		}
-		TraceFunc();
+//		TraceFunc();
 	}
 
 	void ModuleImpl::out_with_color(WORD color, Level lvl, const wchar_t* format, ...) const
 	{
-		TraceFunc();
+//		TraceFunc();
 		if (m_enabled && lvl >= m_lvl) {
 			Va_list args;
 			va_start(args, format);
 			out_args(color, lvl, format, args);
 		}
-		TraceFunc();
+//		TraceFunc();
 	}
 
 	void ModuleImpl::out_with_place(const char* file, int line, const char* func, Level lvl, const wchar_t* format, ...) const
 	{
-		TraceFunc();
+//		TraceFunc();
 		if (m_enabled && m_lvl <= lvl) {
 			wchar_t buff[DEFAULT_PRINTF_BUFFER];
 			auto pend = add_prefix(lvl, buff, lengthof(buff));
@@ -118,7 +117,7 @@ namespace logger {
 			Va_list args;
 			va_start(args, format);
 			out_args(lvl, buff, pend, lengthof(buff) - (pend - buff), format, args);
-			TraceFunc();
+//			TraceFunc();
 		}
 	}
 
@@ -129,7 +128,7 @@ namespace logger {
 
 	wchar_t* ModuleImpl::add_prefix(Level lvl, wchar_t* buff, size_t size) const
 	{
-		TraceFunc();
+//		TraceFunc();
 		size_t written = 0;
 		if (m_prefix & (Prefix::Date | Prefix::Time)) {
 			SYSTEMTIME time;
@@ -150,13 +149,13 @@ namespace logger {
 		if (m_prefix & Prefix::Thread) {
 			written += safe_snprintf(buff + written, size - written, L"%5u ", ::GetCurrentThreadId());
 		}
-		TraceFunc();
+//		TraceFunc();
 		return buff + written;
 	}
 
 	wchar_t* ModuleImpl::add_place(wchar_t* buff, size_t size, const char* file, int line, const char* func) const
 	{
-		TraceFunc();
+//		TraceFunc();
 		size_t written = 0;
 		if (m_prefix & Prefix::Place) {
 			written += safe_snprintf(buff + written, size - written, L"%16.16S:%-5d ", filename_only(file), line);
@@ -164,33 +163,34 @@ namespace logger {
 		if (m_prefix & Prefix::Function) {
 			written += safe_snprintf(buff + written, size - written, L"%S() ", funcname_only(func));
 		}
-		TraceFunc();
+//		TraceFunc();
 		return buff + written;
 	}
 
 	void ModuleImpl::out_args(Level lvl, wchar_t* buff, wchar_t* pend, size_t size, const wchar_t* frmat, va_list & args) const
 	{
-		TraceFunc();
+//		TraceFunc();
 		size_t written = safe_vsnprintf(pend, size, frmat, args);
-		TraceFuncFormat("'%S'\n", pend);
+//		TraceFuncFormat("'%S'\n", pend);
 		auto scopeLock(m_target->lock_scope());
 		m_target->out(this, lvl, buff, pend - buff + written);
-		TraceFunc();
+//		TraceFunc();
 	}
 
 	void ModuleImpl::out_args(WORD color, Level lvl, const wchar_t* frmat, va_list args) const
 	{
-		TraceFunc();
+//		TraceFunc();
 		wchar_t buff[4096];
 		size_t written = safe_vsnprintf(buff, lengthof(buff), frmat, args);
 		auto scopeLock(m_target->lock_scope());
 		m_target->out(this, color, lvl, buff, written);
-		TraceFunc();
+//		TraceFunc();
 	}
 
 	///=============================================================================================
-	ModuleImpl* create_Module_impl(const wchar_t* name, const Target_t & tgt, Level lvl)
+	ModuleImpl* create_Module_impl(const wchar_t* name, const Target_t& tgt, Level lvl)
 	{
+		TraceFormatFunc("[%S, %Id]\n", name, (ssize_t)lvl);
 		return new ModuleImpl(name, tgt, lvl);
 	}
 

@@ -47,15 +47,15 @@ int main(int argc, char* argv[])
 //
 //	test_crashes();
 //
-//	test_list();
+	tst::_list();
 //
 //	test_math();
 //
 //	test_memory();
 //
-	tst::_shared_ptr();
+//	tst::_shared_ptr();
 //
-//	test_string();
+//	tst::_string();
 //
 //	test_traceback();
 //

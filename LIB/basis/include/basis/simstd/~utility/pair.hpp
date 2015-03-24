@@ -62,7 +62,6 @@ namespace simstd {
 		swap(second, other.second);
 	}
 
-	///=============================================================================================
 	template<typename T1, typename T2>
 	simstd::pair<T1, T2> make_pair(T1 t, T2 u)
 	{

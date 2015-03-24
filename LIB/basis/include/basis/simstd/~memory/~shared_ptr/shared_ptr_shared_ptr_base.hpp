@@ -25,7 +25,7 @@ namespace simstd {
 			using element_type = Type;
 
 			constexpr shared_ptr_base() noexcept
-				: ptr(nullptr)
+				: ptr()
 			{
 			}
 
@@ -125,33 +125,33 @@ namespace simstd {
 			{
 			}
 
-			shared_ptr_base& operator =(const shared_ptr_base&) noexcept = default;
+			shared_ptr_base& operator =(const shared_ptr_base& other) noexcept = default;
 
 			template<typename OType>
-			shared_ptr_base& operator =(const shared_ptr_base<OType, LockPol>& __r) noexcept
+			shared_ptr_base& operator =(const shared_ptr_base<OType, LockPol>& other) noexcept
 			{
-				refctr = __r.refctr; // __shared_count::op= doesn't throw
-				ptr = __r.ptr;
+				refctr = other.refctr;
+				ptr = other.ptr;
 				return *this;
 			}
 
-			shared_ptr_base& operator =(shared_ptr_base&& __r) noexcept
+			shared_ptr_base& operator =(shared_ptr_base&& other) noexcept
 			{
-				shared_ptr_base(simstd::move(__r)).swap(*this);
+				shared_ptr_base(simstd::move(other)).swap(*this);
 				return *this;
 			}
 
 			template<class OType>
-			shared_ptr_base& operator =(shared_ptr_base<OType, LockPol>&& __r) noexcept
+			shared_ptr_base& operator =(shared_ptr_base<OType, LockPol>&& other) noexcept
 			{
-				shared_ptr_base(simstd::move(__r)).swap(*this);
+				shared_ptr_base(simstd::move(other)).swap(*this);
 				return *this;
 			}
 
 			template<typename OType, typename Deleter>
-			shared_ptr_base& operator =(simstd::unique_ptr<OType, Deleter>&& __r)
+			shared_ptr_base& operator =(simstd::unique_ptr<OType, Deleter>&& other)
 			{
-				shared_ptr_base(simstd::move(__r)).swap(*this);
+				shared_ptr_base(simstd::move(other)).swap(*this);
 				return *this;
 			}
 
@@ -166,102 +166,111 @@ namespace simstd {
 				shared_ptr_base(ptr).swap(*this);
 			}
 
-		template<typename OType, typename _Deleter>
-		void
-		reset(OType* __p, _Deleter __d)
-		{	shared_ptr_base(__p, __d).swap(*this);}
+			template<typename OType, typename Deleter>
+			void reset(OType* ptr, Deleter deleter)
+			{
+				shared_ptr_base(ptr, deleter).swap(*this);
+			}
 
-		template<typename OType, typename _Deleter, typename _Alloc>
-		void reset(OType* __p, _Deleter __d, _Alloc __a) {shared_ptr_base(__p, __d, simstd::move(__a)).swap(*this);}
+			template<typename OType, typename Deleter, typename Allocator>
+			void reset(OType* ptr, Deleter deleter, Allocator allocator)
+			{
+				shared_ptr_base(ptr, deleter, simstd::move(allocator)).swap(*this);
+			}
 
-		// Allow class instantiation when Type is [cv-qual] void.
-		typename defstd::add_lvalue_reference<Type>::type
-		operator*() const noexcept
-		{
-//			_GLIBCXX_DEBUG_ASSERT(ptr != 0);
-			return *ptr;
-		}
+			// Allow class instantiation when Type is [cv-qual] void.
+			typename defstd::add_lvalue_reference<Type>::type operator*() const noexcept
+			{
+				CRT_ASSERT(ptr);
+				return *ptr;
+			}
 
-		Type* operator->() const noexcept
-		{
-			CRT_ASSERT(ptr);
-			return ptr;
-		}
+			Type* operator ->() const noexcept
+			{
+				CRT_ASSERT(ptr);
+				return ptr;
+			}
 
-		Type* get() const noexcept
-		{
-			return ptr;
-		}
+			Type* get() const noexcept
+			{
+				return ptr;
+			}
 
-		explicit operator bool() const // never throws
-		{	return ptr == 0 ? false : true;}
+			explicit operator bool() const // never throws
+			{
+				return ptr ? true : false;
+			}
 
-		bool unique() const noexcept
-		{
-			return refctr.unique();
-		}
+			bool unique() const noexcept
+			{
+				return refctr.unique();
+			}
 
-		ssize_t use_count() const noexcept
-		{
-			return refctr.get_use_count();
-		}
+			ssize_t use_count() const noexcept
+			{
+				return refctr.get_use_count();
+			}
 
-		void swap(shared_ptr_base<Type, LockPol>& __other) noexcept
-		{
-			using simstd::swap;
-			refctr.swap(__other.refctr);
-			swap(ptr, __other.ptr);
-		}
+			void swap(shared_ptr_base<Type, LockPol>& other) noexcept
+			{
+				using simstd::swap;
+				refctr.swap(other.refctr);
+				swap(ptr, other.ptr);
+			}
 
-		template<typename OType>
-		bool owner_before(shared_ptr_base<OType, LockPol> const& __rhs) const
-		{	return refctr._M_less(__rhs.refctr);}
+			template<typename OType>
+			bool owner_before(const shared_ptr_base<OType, LockPol>& other) const
+			{
+				return refctr.less(other.refctr);
+			}
 
-		template<typename OType>
-		bool owner_before(weak_ptr_base<OType, LockPol> const& __rhs) const {return refctr.less(__rhs.refctr);}
+			template<typename OType>
+			bool owner_before(const weak_ptr_base<OType, LockPol>& other) const
+			{
+				return refctr.less(other.refctr);
+			}
 
 #ifdef __GXX_RTTI
-	protected:
-		// This constructor is non-standard, it is used by allocate_shared.
-		template<typename Allocator, typename... Args>
-		shared_ptr_base(make_shared_tag tag, const Allocator& allocator, Args&&... args)
-			: refctr(tag, (Type*)nullptr, allocator, simstd::forward<Args>(args)...)
-			, ptr()
-		{
-			TraceFunc();
-			// ptr needs to point to the newly constructed object.
-			// This relies on _Sp_counted_ptr_inplace::_M_get_deleter.
-			void* __p = refctr.get_deleter(typeid(tag));
-			ptr = static_cast<Type*>(__p);
-			enable_shared_from_this_helper(refctr, ptr, ptr);
-		}
-#else
-		template<typename Allocator>
-		struct _Deleter
-		{
-			void operator()(Type* __ptr)
+		protected:
+			// This constructor is non-standard, it is used by allocate_shared.
+			template<typename Allocator, typename... Args>
+			shared_ptr_base(make_shared_tag tag, const Allocator& allocator, Args&&... args)
+				: refctr(tag, (Type*)nullptr, allocator, simstd::forward<Args>(args)...)
+				, ptr()
 			{
-				typedef simstd::allocator_traits<Allocator> _Alloc_traits;
-				_Alloc_traits::destroy(_M_alloc, __ptr);
-				_Alloc_traits::deallocate(_M_alloc, __ptr, 1);
+				// ptr needs to point to the newly constructed object.
+				// This relies on _Sp_counted_ptr_inplace::_M_get_deleter.
+				void* __p = refctr.get_deleter(typeid(tag));
+				ptr = static_cast<Type*>(__p);
+				enable_shared_from_this_helper(refctr, ptr, ptr);
 			}
-			Allocator _M_alloc;
-		};
+#else
+			template<typename Allocator>
+			struct _Deleter
+			{
+				void operator()(Type* __ptr)
+				{
+					typedef simstd::allocator_traits<Allocator> _Alloc_traits;
+					_Alloc_traits::destroy(_M_alloc, __ptr);
+					_Alloc_traits::deallocate(_M_alloc, __ptr, 1);
+				}
+				Allocator _M_alloc;
+			};
 
-		template<typename _Alloc, typename... _Args>
-		shared_ptr_base(make_shared_tag, const _Alloc& __a, _Args&&... __args)
-			: refctr()
-			, ptr()
-		{
-			typedef typename _Alloc::template rebind<Type>::other _Alloc2;
-			_Deleter<_Alloc2> __del = {_Alloc2(__a)};
-			typedef simstd::allocator_traits<_Alloc2> __traits;
-			ptr = __traits::allocate(__del._M_alloc, 1);
-			__traits::construct(__del._M_alloc, ptr, simstd::forward<_Args>(__args)...);
-			shared_count<LockPol> __count(ptr, __del, __del._M_alloc);
-			refctr.swap(__count);
-			enable_shared_from_this_helper(refctr, ptr, ptr);
-		}
+			template<typename _Alloc, typename... _Args>
+			shared_ptr_base(make_shared_tag, const _Alloc& __a, _Args&&... __args)
+				: refctr()
+				, ptr()
+			{
+				typedef typename _Alloc::template rebind<Type>::other _Alloc2;
+				_Deleter<_Alloc2> __del = {_Alloc2(__a)};
+				typedef simstd::allocator_traits<_Alloc2> __traits;
+				ptr = __traits::allocate(__del._M_alloc, 1);
+				__traits::construct(__del._M_alloc, ptr, simstd::forward<_Args>(__args)...);
+				shared_count<LockPol> __count(ptr, __del, __del._M_alloc);
+				refctr.swap(__count);
+				enable_shared_from_this_helper(refctr, ptr, ptr);
+			}
 #endif
 
 			template<typename OType, LockPolicy OLockPol, typename _Alloc, typename... _Args>
@@ -302,13 +311,9 @@ namespace simstd {
 			using this_type = weak_ptr_base;
 
 		public:
-			typedef Type element_type;
+			using element_type = Type;
 
-			constexpr weak_ptr_base() noexcept
-				: refctr()
-				, ptr()
-			{
-			}
+			constexpr weak_ptr_base() noexcept = default;
 
 			weak_ptr_base(const weak_ptr_base&) noexcept = default;
 			weak_ptr_base& operator =(const weak_ptr_base&) noexcept = default;
@@ -316,22 +321,22 @@ namespace simstd {
 			// The "obvious" converting constructor implementation:
 			//
 			//  template<typename OType>
-			//    weak_ptr(const weak_ptr<OType, LockPol>& __r)
-			//    : ptr(__r.ptr), refctr(__r.refctr) // never throws
-			//    { }
+			//  weak_ptr(const weak_ptr<OType, LockPol>& other)
+			//      : refctr(other.refctr), ptr(other.ptr)  // never throws
+			//  {}
 			//
 			// has a serious problem.
 			//
-			//  __r.ptr may already have been invalidated. The ptr(__r.ptr)
-			//  conversion may require access to *__r.ptr (virtual inheritance).
+			//  other.ptr may already have been invalidated. The ptr(other.ptr)
+			//  conversion may require access to *other.ptr (virtual inheritance).
 			//
 			// It is not possible to avoid spurious access violations since
-			// in multithreaded programs __r.ptr may be invalidated at any point.
+			// in multithreaded programs other.ptr may be invalidated at any point.
 			template<typename OType, typename = typename defstd::enable_if<defstd::is_convertible<OType*, Type*>::value>::type>
 			weak_ptr_base(const weak_ptr_base<OType, LockPol>& other) noexcept
 				: refctr(other.refctr)
 			{
-				ptr = other.lock().get();
+				ptr = other.lock().get(); // temporary shared_ptr will be created here
 			}
 
 			template<typename OType, typename = typename defstd::enable_if<defstd::is_convertible<OType*, Type*>::value>::type>
@@ -375,13 +380,13 @@ namespace simstd {
 			template<typename OType>
 			bool owner_before(const shared_ptr_base<OType, LockPol>& other) const
 			{
-				return refctr._M_less(other.refctr);
+				return refctr.less(other.refctr);
 			}
 
 			template<typename OType>
 			bool owner_before(const weak_ptr_base<OType, LockPol>& other) const
 			{
-				return refctr._M_less(other.refctr);
+				return refctr.less(other.refctr);
 			}
 
 			void reset() noexcept
@@ -411,7 +416,7 @@ namespace simstd {
 			friend class simstd::enable_shared_from_this<Type>;
 
 			weak_count<LockPol> refctr;
-			Type*               ptr;
+			Type*               ptr = nullptr;
 		};
 
 		template<typename Type, LockPolicy LockPol>

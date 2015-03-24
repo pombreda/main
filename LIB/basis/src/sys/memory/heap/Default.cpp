@@ -22,7 +22,7 @@ namespace memory {
 
 		void* Default::alloc(size_t size, const char* function, int line)
 		{
-			TraceFunc();
+//			TraceFunc();
 			UNUSED(function);
 			UNUSED(line);
 			return HeapAlloc(GetProcessHeap(), 0, size);
@@ -30,7 +30,7 @@ namespace memory {
 
 		void* Default::realloc(void* ptr, size_t size, const char* function, int line)
 		{
-			TraceFunc();
+//			TraceFunc();
 			UNUSED(function);
 			UNUSED(line);
 			return ptr ? HeapReAlloc(GetProcessHeap(), 0, ptr, size) : HeapAlloc(GetProcessHeap(), 0, size);
@@ -38,7 +38,7 @@ namespace memory {
 
 		void Default::free(const void* ptr, const char* function, int line)
 		{
-			TraceFunc();
+//			TraceFunc();
 			UNUSED(function);
 			UNUSED(line);
 			HeapFree(GetProcessHeap(), 0, const_cast<void*>(ptr));

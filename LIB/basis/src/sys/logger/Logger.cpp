@@ -119,17 +119,16 @@ namespace logger {
 
 	ModuleImpl* Logger::register_module(const wchar_t* name, const Target_t& target, Level lvl)
 	{
-		TraceFunc();
 		auto lockScope(simstd::auto_lock(m_sync));
-		TraceFunc();
 		auto range = simstd::equal_range(m_modules.begin(), m_modules.end(), name, pModule_less());
+		ModuleImpl* module = nullptr;
 		if (range.first != range.second) {
-			return *range.first;
+			module = *range.first;
+		} else {
+			module = create_Module_impl(name, target, lvl);
+			m_modules.insert(range.second, module);
 		}
-		TraceFunc();
-		auto module = create_Module_impl(name, target, lvl);
-		m_modules.insert(range.second, module);
-		TraceFunc();
+		TraceFormatFunc("[%S, %Id] -> %p\n", name, (ssize_t)lvl, module);
 		return module;
 	}
 

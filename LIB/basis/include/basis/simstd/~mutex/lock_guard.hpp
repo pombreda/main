@@ -1,9 +1,6 @@
 #ifndef BASIS_MUTEX_LOCK_GUARD_HPP_
 #define BASIS_MUTEX_LOCK_GUARD_HPP_
 
-#include <basis/simstd/~mutex/types.hpp>
-#include <basis/ext/pattern.hpp>
-
 namespace simstd {
 
 	template<typename Mutex>
@@ -62,7 +59,7 @@ namespace simstd {
 	template<typename Mutex>
 	lock_guard<Mutex> auto_lock(Mutex& mutex)
 	{
-		return simstd::move(lock_guard<Mutex>(mutex));
+		return lock_guard<Mutex>(mutex);
 	}
 
 }
