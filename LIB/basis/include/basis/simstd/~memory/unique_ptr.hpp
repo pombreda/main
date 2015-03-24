@@ -1,8 +1,8 @@
 ﻿#ifndef BASIS_MEMORY_UNIQUE_PTR_HPP_
 #define BASIS_MEMORY_UNIQUE_PTR_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Type, typename Deleter>
 	class unique_ptr: private pvt::ebo_helper<0, Deleter> {
 		using helper_type = pvt::ebo_helper<0, Deleter>;
@@ -60,11 +60,10 @@ namespace simstd {
 
 		pointer m_ptr;
 	};
-
 }
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>::~unique_ptr() noexcept
 	{
@@ -90,11 +89,10 @@ namespace simstd {
 
 	template<typename Type, typename Deleter>
 	unique_ptr<Type, Deleter>::unique_ptr(pointer ptr) noexcept
-		: helper_type(deleter_type())
-		, m_ptr(ptr)
+		: unique_ptr()
 	{
 		TraceObj();
-		static_assert(!simstd::is_pointer<deleter_type>::value, "constructed with null function pointer deleter");
+		m_ptr = ptr;
 	}
 
 	template<typename Type, typename Deleter>
@@ -134,7 +132,7 @@ namespace simstd {
 
 	template<typename Type, typename Deleter>
 	template<typename OType, typename ODeleter>
-	unique_ptr<Type, Deleter>& unique_ptr<Type, Deleter>::operator =(unique_ptr<OType, ODeleter> && other) noexcept
+	unique_ptr<Type, Deleter>& unique_ptr<Type, Deleter>::operator =(unique_ptr<OType, ODeleter>&& other) noexcept
 	{
 		TraceObj();
 		reset(other.release());
@@ -224,11 +222,10 @@ namespace simstd {
 		swap(m_ptr, other.m_ptr);
 		swap(static_cast<helper_type&>(*this), static_cast<helper_type&>(other));
 	}
-
 }
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Type, typename Deleter>
 	void swap(unique_ptr<Type, Deleter>& a, unique_ptr<Type, Deleter>& b) noexcept
 	{
@@ -349,7 +346,6 @@ namespace simstd {
 	{
 		return unique_ptr<Type>(new Type(simstd::forward<Args>(args)...));
 	}
-
 }
 
 #endif

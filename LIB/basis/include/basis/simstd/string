@@ -7,6 +7,7 @@
 #include <basis/simstd/memory>
 #include <basis/simstd/iterator>
 
+#include <basis/simstd/~common/pvt_normal_iterator.hpp>
 #include <basis/simstd/~string/string_fwd.hpp>
 #include <basis/simstd/~string/char_traits.hpp>
 #include <basis/simstd/~string/basic_string_base.hpp>

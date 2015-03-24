@@ -196,7 +196,7 @@ namespace simstd {
 				return ptr;
 			}
 
-			explicit operator bool() const // never throws
+			explicit operator bool() const noexcept
 			{
 				return ptr ? true : false;
 			}

@@ -1,9 +1,10 @@
-﻿#ifndef BASIS_SIMSTD_ITERATOR_NORMAL_ITERATOR_HPP_
-#define BASIS_SIMSTD_ITERATOR_NORMAL_ITERATOR_HPP_
+﻿#ifndef BASIS_SIMSTD_COMMON_NORMAL_ITERATOR_HPP_
+#define BASIS_SIMSTD_COMMON_NORMAL_ITERATOR_HPP_
 
 namespace simstd
 {
-	namespace pvt {
+	namespace pvt
+	{
 		template<typename Pointer>
 		class normal_iterator
 		{

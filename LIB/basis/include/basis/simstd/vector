@@ -6,6 +6,9 @@
 #include <basis/simstd/iterator>
 #include <basis/simstd/memory>
 
+#include <basis/simstd/~common/pvt_normal_iterator.hpp>
+#include <basis/simstd/~common/pvt_const_value_iterator.hpp>
+
 namespace simstd
 {
 	template<typename Type, typename Allocator = simstd::allocator<Type>>

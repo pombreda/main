@@ -347,6 +347,7 @@ namespace simstd
 			typename aligned_storage<sizeof(Type), alignment_of<Type>::value>::type storage;
 		};
 	}
+
 }
 
 //#ifdef __x86_64__

@@ -1,8 +1,9 @@
-﻿#ifndef BASIS_NUMERIC_HPP_
+﻿
+#ifndef BASIS_NUMERIC_HPP_
 #define BASIS_NUMERIC_HPP_
 
 #include <basis/simstd/~functional/functional.hpp>
-#include <basis/simstd/~iterator/base.hpp>
+#include <basis/simstd/~iterator/iterator_fwd.hpp>
 
 namespace simstd {
 	template<typename ForwardIterator, typename T>

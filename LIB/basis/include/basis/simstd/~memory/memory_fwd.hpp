@@ -18,6 +18,9 @@ namespace simstd {
 	template<typename Type, typename Deleter = default_delete<Type>>
 	class unique_ptr;
 
+	template<typename Type, typename... Args>
+	unique_ptr<Type> make_unique(Args&&... args);
+
 	template<typename Type>
 	class shared_ptr;
 

@@ -1,7 +1,8 @@
-﻿#ifndef BASIS_MEMORY_RAW_STORAGE_ITERATOR_HPP_
+﻿
+#ifndef BASIS_MEMORY_RAW_STORAGE_ITERATOR_HPP_
 #define BASIS_MEMORY_RAW_STORAGE_ITERATOR_HPP_
 
-#include <basis/simstd/~iterator/base.hpp>
+#include <basis/simstd/~iterator/iterator_fwd.hpp>
 
 namespace simstd {
 

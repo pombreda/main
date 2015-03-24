@@ -1,9 +1,10 @@
-﻿#ifndef BASIS_SIMSTD_ITERATOR_CONST_VALUE_ITERATOR_HPP_
-#define BASIS_SIMSTD_ITERATOR_CONST_VALUE_ITERATOR_HPP_
+﻿#ifndef BASIS_SIMSTD_COMMON_CONST_VALUE_ITERATOR_HPP_
+#define BASIS_SIMSTD_COMMON_CONST_VALUE_ITERATOR_HPP_
 
 namespace simstd
 {
-	namespace pvt {
+	namespace pvt
+	{
 		template<typename Iterator>
 		class _const_value_iterator : public iterator<random_access_iterator_tag, Iterator>
 		{
