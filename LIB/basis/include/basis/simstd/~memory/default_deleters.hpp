@@ -1,10 +1,8 @@
 ﻿#ifndef BASIS_MEMORY_DEFAULT_DELETERS_HPP_
 #define BASIS_MEMORY_DEFAULT_DELETERS_HPP_
 
-#include <type_traits>
-
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Type>
 	struct default_delete
 	{

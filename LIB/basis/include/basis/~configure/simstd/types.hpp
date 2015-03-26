@@ -1,8 +1,8 @@
 ﻿#ifndef BASIS_CONFIGURE_SIMSTD_TYPES_HPP_
 #define BASIS_CONFIGURE_SIMSTD_TYPES_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	typedef decltype(nullptr) nullptr_t;
 
 	struct nothrow_t
@@ -157,10 +157,10 @@ namespace simstd {
 		};
 
 	}
-
 }
 
-namespace simstd {
+namespace simstd
+{
 	template<typename Type, Type Val>
 	struct integral_constant
 	{
@@ -288,7 +288,6 @@ namespace simstd
 	struct is_reference : public _or_<is_lvalue_reference<Type>, is_rvalue_reference<Type>>::type
 	{
 	};
-
 }
 
 namespace simstd
@@ -347,7 +346,6 @@ namespace simstd
 			typename aligned_storage<sizeof(Type), alignment_of<Type>::value>::type storage;
 		};
 	}
-
 }
 
 //#ifdef __x86_64__

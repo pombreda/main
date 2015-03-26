@@ -12,7 +12,6 @@ namespace defstd = std;
 #include <basis/simstd/~memory/memory_fwd.hpp>
 #include <basis/simstd/~memory/allocator.hpp>
 #include <basis/simstd/~memory/AllocatorHeap.hpp>
-#include <basis/simstd/~memory/allocator_traits.hpp>
 #include <basis/simstd/~memory/base.hpp>
 #include <basis/simstd/~memory/movable_allocator.hpp>
 #include <basis/simstd/~memory/raw_storage_iterator.hpp>

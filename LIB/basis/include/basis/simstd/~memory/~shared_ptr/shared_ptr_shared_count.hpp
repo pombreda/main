@@ -37,9 +37,11 @@ public:
 		using allocator_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counted_type>;
 
 		typename allocator_traits::allocator_type l_allocator(allocator);
-		counted = allocator_traits::allocate(l_allocator, 1);
-		CRT_ASSERT(counted);
-		allocator_traits::construct(l_allocator, counted, ptr, simstd::move(deleter), simstd::move(allocator));
+		counted_type* tmp = allocator_traits::allocate(l_allocator, 1);
+		CRT_ASSERT(tmp);
+
+		allocator_traits::construct(l_allocator, tmp, ptr, simstd::move(deleter), simstd::move(allocator));
+		counted = tmp;
 	}
 
 	template<typename Type, typename Allocator, typename... Args>
@@ -50,10 +52,11 @@ public:
 		using allocator_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counted_type>;
 
 		typename allocator_traits::allocator_type l_allocator(allocator);
-		counted = allocator_traits::allocate(l_allocator, 1);
-		CRT_ASSERT(counted);
+		counted_type* tmp = allocator_traits::allocate(l_allocator, 1);
+		CRT_ASSERT(tmp);
 
-		allocator_traits::construct(l_allocator, counted, simstd::move(allocator), simstd::forward<Args>(args)...);
+		allocator_traits::construct(l_allocator, tmp, simstd::move(allocator), simstd::forward<Args>(args)...);
+		counted = tmp;
 	}
 
 	template<typename Type, typename Deleter>

@@ -1,8 +1,8 @@
 ﻿#ifndef BASIS_MEMORY_FWD_HPP_
 #define BASIS_MEMORY_FWD_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Type>
 	class allocator;
 
@@ -17,9 +17,6 @@ namespace simstd {
 
 	template<typename Type, typename Deleter = default_delete<Type>>
 	class unique_ptr;
-
-	template<typename Type, typename... Args>
-	unique_ptr<Type> make_unique(Args&&... args);
 
 	template<typename Type>
 	class shared_ptr;
@@ -59,7 +56,6 @@ namespace simstd {
 		template<typename Type, LockPolicy LockPol = DEFAULT_LOCK_POLICY>
 		class enable_shared_from_this;
 	}
-
 }
 
 #endif

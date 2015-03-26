@@ -15,7 +15,7 @@ namespace simstd
 		{
 			explicit ebo_helper(const Type& other): Type(other) {}
 
-			ebo_helper(Type&& other): Type(simstd::move(other)) {}
+			ebo_helper(Type&& other): Type(move(other)) {}
 
 			void swap(ebo_helper& other) noexcept {using simstd::swap; swap(static_cast<Type&>(*this), static_cast<Type&>(other));}
 
@@ -29,7 +29,7 @@ namespace simstd
 		{
 			explicit ebo_helper(const Type& other): value(other) {}
 
-			ebo_helper(Type&& other): value(simstd::move(other)) {}
+			ebo_helper(Type&& other): value(move(other)) {}
 
 			void swap(ebo_helper& other) noexcept {using simstd::swap; swap(value, other.value);}
 

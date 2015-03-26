@@ -132,7 +132,7 @@ namespace simstd
 			explicit counted_ptr(Ptr ptr) noexcept :
 				ptr(ptr)
 			{
-				static_assert(simstd::is_pointer<Ptr>::value, "constructed with nonpointer");
+				static_assert(is_pointer<Ptr>::value, "constructed with nonpointer");
 			}
 
 			void dispose() noexcept {delete ptr;}
@@ -172,17 +172,17 @@ namespace simstd
 			counted_ptr_inplace(Allocator allocator, Args&&... args)
 				: impl(allocator)
 			{
-				simstd::allocator_traits<Allocator>::construct(allocator, get_ptr(), simstd::forward<Args>(args)...);
+				allocator_traits<Allocator>::construct(allocator, get_ptr(), forward<Args>(args)...);
 			}
 
 			void dispose() noexcept
 			{
-				simstd::allocator_traits<Allocator>::destroy(impl.get_allocator(), get_ptr());
+				allocator_traits<Allocator>::destroy(impl.get_allocator(), get_ptr());
 			}
 
 			void destroy() noexcept
 			{
-				using Alloc_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counted_ptr_inplace>;
+				using Alloc_traits = typename allocator_traits<Allocator>::template rebind_traits<counted_ptr_inplace>;
 				typename Alloc_traits::allocator_type allocator(impl.get_allocator());
 				Alloc_traits::destroy(allocator, this);
 				Alloc_traits::deallocate(allocator, this, 1);
@@ -192,7 +192,7 @@ namespace simstd
 			{
 #ifdef __GXX_RTTI
 				if (ti == typeid(make_shared_tag))
-					return const_cast<typename simstd::remove_cv<Type>::type*>(get_ptr());
+					return const_cast<typename remove_cv<Type>::type*>(get_ptr());
 #endif
 				return nullptr;
 			}
@@ -200,9 +200,9 @@ namespace simstd
 		private:
 			Type* get_ptr() noexcept {return impl.storage.ptr();}
 
-			struct Impl: private simstd::pvt::ebo_helper<0, Allocator>
+			struct Impl: private pvt::ebo_helper<0, Allocator>
 			{
-				using base_type = simstd::pvt::ebo_helper<0, Allocator>;
+				using base_type = pvt::ebo_helper<0, Allocator>;
 				explicit Impl(Allocator allocator) noexcept: base_type(allocator) {}
 				Allocator& get_allocator() noexcept {return base_type::get(*this);}
 				aligned_buffer<Type> storage;
@@ -227,7 +227,7 @@ namespace simstd
 
 			void destroy() noexcept
 			{
-				using Alloc_traits = typename simstd::allocator_traits<Allocator>::template rebind_traits<counted_deleter>;
+				using Alloc_traits = typename allocator_traits<Allocator>::template rebind_traits<counted_deleter>;
 				typename Alloc_traits::allocator_type allocator(impl.get_allocator());
 				Alloc_traits::destroy(allocator, this);
 				Alloc_traits::deallocate(allocator, this, 1);
@@ -245,11 +245,11 @@ namespace simstd
 
 		private:
 			class Impl
-				: private simstd::pvt::ebo_helper<0, Deleter>
-				, private simstd::pvt::ebo_helper<1, Allocator>
+				: private pvt::ebo_helper<0, Deleter>
+				, private pvt::ebo_helper<1, Allocator>
 			{
-				using deleter_base_type = simstd::pvt::ebo_helper<0, Deleter>;
-				using allocator_base_type = simstd::pvt::ebo_helper<1, Allocator>;
+				using deleter_base_type = pvt::ebo_helper<0, Deleter>;
+				using allocator_base_type = pvt::ebo_helper<1, Allocator>;
 
 			public:
 				Impl(Ptr ptr, const Deleter& deleter, const Allocator& allocator) noexcept : deleter_base_type(deleter), allocator_base_type(allocator), ptr(ptr) {}

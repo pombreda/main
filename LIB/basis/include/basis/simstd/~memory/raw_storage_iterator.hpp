@@ -1,11 +1,10 @@
-﻿
-#ifndef BASIS_MEMORY_RAW_STORAGE_ITERATOR_HPP_
+﻿#ifndef BASIS_MEMORY_RAW_STORAGE_ITERATOR_HPP_
 #define BASIS_MEMORY_RAW_STORAGE_ITERATOR_HPP_
 
 #include <basis/simstd/~iterator/iterator_fwd.hpp>
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename OutputIterator, typename Type>
 	class raw_storage_iterator: public iterator<output_iterator_tag, void, void, void, void> {
 	public:
@@ -36,7 +35,7 @@ namespace simstd {
 	template<typename OutputIterator, typename Type>
 	raw_storage_iterator<OutputIterator, Type>& raw_storage_iterator<OutputIterator, Type>::operator =(const Type& element)
 	{
-		simstd::pvt::construct(simstd::addressof(*_M_iter), element);
+		pvt::construct(addressof(*_M_iter), element);
 		return *this;
 	}
 
@@ -52,7 +51,6 @@ namespace simstd {
 	{
 		return raw_storage_iterator(_M_iter++);
 	}
-
 }
 
 #endif
