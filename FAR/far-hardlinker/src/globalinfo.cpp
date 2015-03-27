@@ -32,7 +32,7 @@
 
 FarGlobalInfo::FarGlobalInfo()
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	cstr::copy(prefix, L"hardlinker");
 	m_cbOperation = 0;
 	m_cbMask = 0;
@@ -56,56 +56,56 @@ FarGlobalInfo::FarGlobalInfo()
 
 FarGlobalInfo::~FarGlobalInfo()
 {
-	LogTraceObj();
+	LogTraceObjLn();
 }
 
 const wchar_t* FarGlobalInfo::get_author() const
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	return L"© 2014 Andrew Grechkin";
 }
 
 const wchar_t* FarGlobalInfo::get_description() const
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	return L"Search duplicates and make hardlinks";
 }
 
 const GUID * FarGlobalInfo::get_guid() const
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	return &PluginGuid;
 }
 
 const wchar_t* FarGlobalInfo::get_title() const
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	return L"hardlinker";
 }
 
 VersionInfo FarGlobalInfo::get_version() const
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	using namespace AutoVersion;
 	return MAKEFARVERSION(MAJOR, MINOR, BUILD, FARMANAGERVERSION_BUILD, VS_RELEASE);
 }
 
 VersionInfo FarGlobalInfo::get_min_version() const
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	return MAKEFARVERSION(3, 0, 0, 3000, VS_RELEASE);
 }
 
 far3::Plugin_i* FarGlobalInfo::CreatePlugin(const PluginStartupInfo* psi) const
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	far3::Plugin_i* plugin = create_FarPlugin(psi);
 	return plugin;
 }
 
 void FarGlobalInfo::load_settings()
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	LogReport(L"m_cbOperation: %I64d\n", m_cbOperation);
 	LogReport(L"m_cbMask: %I64d\n", m_cbMask);
 	LogReport(L"m_cbDoHardlink: %I64d\n", m_cbDoHardlink);
@@ -128,7 +128,7 @@ void FarGlobalInfo::load_settings()
 
 void FarGlobalInfo::save_settings() const
 {
-	LogTraceObj();
+	LogTraceObjLn();
 }
 
 FarGlobalInfo* get_global_info()

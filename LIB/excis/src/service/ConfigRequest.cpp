@@ -97,7 +97,7 @@ namespace service {
 
 	Item& ConfigRequest::execute(Item& svc) const
 	{
-		LogNoise(L"(%p)\n", static_cast<SC_HANDLE>(svc));
+		LogTrace(L"(%p)\n", static_cast<SC_HANDLE>(svc));
 		CheckApi(
 		    ::ChangeServiceConfigW(static_cast<SC_HANDLE>(svc),
 		                           serviceType,

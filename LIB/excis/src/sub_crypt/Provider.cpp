@@ -7,9 +7,9 @@ namespace crypt {
 
 	Provider::~Provider()
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		::CryptReleaseContext(m_hnd, 0);
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	Provider::Provider(DWORD type) :
@@ -20,10 +20,10 @@ namespace crypt {
 	Provider::Provider(PCWSTR name, DWORD flags, PCWSTR prov, DWORD type) :
 		m_hnd()
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		if (!::CryptAcquireContextW(&m_hnd, name, prov, type, flags))
 			CheckApi(::CryptAcquireContextW(&m_hnd, name, prov, type, flags | CRYPT_NEWKEYSET));
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	bool Provider::is_exist_key(DWORD type) const

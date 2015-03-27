@@ -47,14 +47,14 @@ namespace sync {
 	{
 //		simstd::lock_guard<CriticalSection> guard(m_cs);
 		auto guard(simstd::auto_lock(m_cs));
-		LogNoise2(L"[%p, %p]\n", subject, observer);
+		LogTrace2(L"[%p, %p]\n", subject, observer);
 		emplace(simstd::upper_bound(cbegin(), cend(), subject, MappingLess()), subject, observer);
 	}
 
 	void SimpleMessageManager::unregister_observer(const Observable* subject, const Observer* observer)
 	{
 		auto guard(simstd::auto_lock(m_cs));
-		LogNoise2(L"[%p, %p]\n", subject, observer);
+		LogTrace2(L"[%p, %p]\n", subject, observer);
 		auto range = simstd::equal_range(begin(), end(), subject, MappingLess());
 		erase(remove(range.first, range.second, observer), range.second);
 	}
@@ -62,7 +62,7 @@ namespace sync {
 	void SimpleMessageManager::unregister_observable(const Observable* subject)
 	{
 		auto guard(simstd::auto_lock(m_cs));
-		LogNoise2(L"[%p]\n", subject);
+		LogTrace2(L"[%p]\n", subject);
 		auto range = simstd::equal_range(begin(), end(), subject, MappingLess());
 		erase(range.first, range.second);
 	}
@@ -70,14 +70,14 @@ namespace sync {
 	void SimpleMessageManager::unregister_observer(const Observer* observer)
 	{
 		auto guard(simstd::auto_lock(m_cs));
-		LogNoise2(L"[%p]\n", observer);
+		LogTrace2(L"[%p]\n", observer);
 		erase(remove(begin(), end(), observer), end());
 	}
 
 	void SimpleMessageManager::notify(const Observable* subject, const Message& event) const
 	{
 		auto guard(simstd::auto_lock(m_cs));
-		LogNoise2(L"[%p, %p]\n", subject, &event);
+		LogTrace2(L"[%p, %p]\n", subject, &event);
 		auto range = simstd::equal_range(begin(), end(), subject, MappingLess());
 		simstd::for_each(range.first, range.second, [&event](const Mapping& pair) {
 			pair.second->notify(event);

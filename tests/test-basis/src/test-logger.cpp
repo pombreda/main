@@ -5,7 +5,7 @@
 
 void test_logger()
 {
-	LogTrace();
+	LogTraceLn();
 	LogDebug(L"\n");
 	LogInfo(L"\n");
 	LogReport(L"\n");

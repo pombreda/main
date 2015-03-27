@@ -5,8 +5,8 @@
 ssize_t tst::_sync()
 {
 	auto queue1 = sync::create_queue(L"QueueTest1");
-	LogTrace();
-	LogTrace1(L"");
+	LogTraceLn();
+	LogTrace(L"");
 
 	queue1->empty();
 

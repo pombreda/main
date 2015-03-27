@@ -12,7 +12,7 @@ struct Routine: public thread::Routine
 		m_queue(queue),
 		m_num(num)
 	{
-		LogTrace();
+		LogTraceLn();
 	}
 
 	size_t run(void *) override
@@ -32,7 +32,7 @@ private:
 
 void test_threads()
 {
-	LogTrace();
+	LogTraceLn();
 	auto queue = sync::create_queue(L"QueueTestThreads");
 	Routine routine1(queue, 100);
 	Routine routine2(queue, 200);

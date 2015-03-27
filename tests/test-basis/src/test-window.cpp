@@ -14,7 +14,7 @@
 //struct CMyWnd: public Base::Window {
 //	CMyWnd()
 //	{
-//		LogTrace();
+//		LogTraceLn();
 //		add_handler(WM_CREATE, &CMyWnd::OnCreate);
 //		add_handler(WM_DESTROY, &CMyWnd::OnDestroy);
 //		add_handler(WM_CLOSE, &CMyWnd::OnClose);
@@ -25,13 +25,13 @@
 //
 //	LRESULT OnCreate(LPARAM lparam, WPARAM wparam)
 //	{
-//		LogNoise(L"lparam: %Id wparam: %Id\n", lparam, wparam);
+//		LogTrace(L"lparam: %Id wparam: %Id\n", lparam, wparam);
 //		return 0;
 //	}
 //
 //	LRESULT OnDestroy(LPARAM lparam, WPARAM wparam)
 //	{
-//		LogNoise(L"lparam: %Id wparam: %Id\n", lparam, wparam);
+//		LogTrace(L"lparam: %Id wparam: %Id\n", lparam, wparam);
 //		::PostQuitMessage(0);
 //		return 0;
 //	}
@@ -39,33 +39,33 @@
 //	LRESULT OnClose(LPARAM lparam, WPARAM wparam)
 //	{
 //		// chose close option
-//		LogNoise(L"lparam: %Id wparam: %Id\n", lparam, wparam);
+//		LogTrace(L"lparam: %Id wparam: %Id\n", lparam, wparam);
 //		::DestroyWindow(get_handle());
 //		return 0;
 //	}
 //
 //	LRESULT OnActivate(LPARAM lparam, WPARAM wparam)
 //	{
-//		LogNoise(L"lparam: %Id wparam: %Id\n", lparam, wparam);
+//		LogTrace(L"lparam: %Id wparam: %Id\n", lparam, wparam);
 //		return 0;
 //	}
 //
 //	LRESULT OnSetFocus(LPARAM lparam, WPARAM wparam)
 //	{
-//		LogNoise(L"lparam: %Id wparam: %Id\n", lparam, wparam);
+//		LogTrace(L"lparam: %Id wparam: %Id\n", lparam, wparam);
 //		return 0;
 //	}
 //
 //	LRESULT OnKillFocus(LPARAM lparam, WPARAM wparam)
 //	{
-//		LogNoise(L"lparam: %Id wparam: %Id\n", lparam, wparam);
+//		LogTrace(L"lparam: %Id wparam: %Id\n", lparam, wparam);
 //		return 0;
 //	}
 //};
 
 void test_window()
 {
-//	LogTrace();
+//	LogTraceLn();
 //	CMyWnd * wnd = new CMyWnd;
 //	wnd->create(0, L"HelloWorld!", 0, WS_OVERLAPPEDWINDOW | WS_VISIBLE, 300, 300, 500, 400, 0);
 //

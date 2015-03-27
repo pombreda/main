@@ -10,7 +10,7 @@ namespace thread {
 	Unit::~Unit() noexcept
 	{
 		if (m_handle) {
-			LogNoise(L"id: %u, exitcode: %Iu\n", m_id, get_exitcode());
+			LogTrace(L"id: %u, exitcode: %Iu\n", m_id, get_exitcode());
 			::CloseHandle(m_handle);
 		}
 	}
@@ -71,7 +71,7 @@ namespace thread {
 	{
 		DWORD ret;
 		WINBOOL good = ::GetExitCodeThread(m_handle, &ret);
-		LogNoiseIf(good, L"id: %u -> %u\n", m_id, ret);
+		LogDebugIf(good, L"id: %u -> %u\n", m_id, ret);
 		LogErrorIf(!good, L"id: %u -> %s\n", m_id, totext::api_error().c_str());
 		return ret;
 	}
@@ -94,7 +94,7 @@ namespace thread {
 	Priority Unit::get_priority() const
 	{
 		Priority prio = (Priority)::GetThreadPriority(m_handle);
-		LogNoise(L"id: %u -> '%s'\n", m_id, totext::c_str(prio));
+		LogTrace(L"id: %u -> '%s'\n", m_id, totext::c_str(prio));
 		return prio;
 	}
 
@@ -116,7 +116,7 @@ namespace thread {
 
 	sync::WaitResult_t Unit::wait(sync::Timeout_t timeout) const
 	{
-		LogNoise(L"id: %u, timeout: %Id\n", m_id, timeout);
+		LogTrace(L"id: %u, timeout: %Id\n", m_id, timeout);
 		return (sync::WaitResult_t)::WaitForSingleObjectEx(m_handle, timeout, true);
 	}
 

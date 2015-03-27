@@ -15,7 +15,7 @@
 #   define LogSetOptions(url)                 logger::set_options(url)
 #   define LogTrace()                         get_logger_module()->out(THIS_PLACE, logger::Level::Trace, L"\n")
 #   define LogTraceIf(condition)              if (condition) get_logger_module()->out(THIS_PLACE, logger::Level::Trace, L"\n")
-#   define LogTraceObj()                      get_logger_module()->out(THIS_PLACE, logger::Level::Trace, L"this: %p\n", this)
+#   define LogTraceObjLn()                      get_logger_module()->out(THIS_PLACE, logger::Level::Trace, L"this: %p\n", this)
 //#   ifdef _MSC_VER
 //#       define LogNoise(format, ...)              get_logger_module()->out(THIS_PLACE, logger::Level::Trace, format, __VA_ARGS__)
 //#       define LogNoiseIf(condition, format, ...) if (condition) get_logger_module()->out(THIS_PLACE, logger::Level::Trace, format, __VA_ARGS__)
@@ -74,7 +74,7 @@ namespace { \
 #   define LogSetOptions(url)
 #   define LogTrace()
 #   define LogTraceIf(condition)                       (void)(condition)
-#   define LogTraceObj()
+#   define LogTraceObjLn()
 #   define LogNoise(format, ...)
 #   define LogNoiseIf(condition, format, ...)          (void)(condition)
 #   define LogDebug(format, ...)

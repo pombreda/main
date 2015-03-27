@@ -161,7 +161,7 @@ namespace Ext {
 		WinSD():
 			m_sd(nullptr)
 		{
-			LogTrace();
+			LogTraceLn();
 		}
 	};
 

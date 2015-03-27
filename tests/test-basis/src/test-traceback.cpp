@@ -57,21 +57,21 @@ namespace local {
 
 void test_access_violation()
 {
-	LogTrace();
+	LogTraceLn();
 	local::do_acces_violation();
-	LogTrace();
+	LogTraceLn();
 }
 
 void test_zero_division()
 {
-	LogTrace();
+	LogTraceLn();
 	local::do_zero_division();
-	LogTrace();
+	LogTraceLn();
 }
 
 void test_traceback()
 {
-	LogTrace();
+	LogTraceLn();
 
 	local::init_print_trace();
 

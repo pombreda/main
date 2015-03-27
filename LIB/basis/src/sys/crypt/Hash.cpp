@@ -25,20 +25,20 @@ namespace crypt {
 
 	HashImpl::~HashImpl()
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		if (m_handle) {
 			bool ok = ::CryptDestroyHash(m_handle);
 			LogErrorIf(!ok, L"-> %s\n", totext::api_error().c_str());
 		}
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	HashImpl::HashImpl(const ProviderHolder& provider)
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		bool ok = ::CryptCreateHash(reinterpret_cast<HCRYPTPROV>(provider->get_native_handle()), CALG_SHA1, 0, 0, &m_handle);
 		LogErrorIf(!ok, L"-> %s\n", totext::api_error().c_str());
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	bool HashImpl::is_valid() const

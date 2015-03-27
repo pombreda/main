@@ -29,14 +29,14 @@ namespace far3 {
 
 		Item::~Item()
 		{
-			LogTraceObj();
+			LogTraceObjLn();
 			delete reinterpret_cast<ItemBinding*>(UserData);
 		}
 
 		Item::Item(ssize_t min_width, FARDIALOGITEMTYPES type, PCWSTR text, FARDIALOGITEMFLAGS flags)
 		{
-			LogTraceObj();
-			LogNoise(L"%Id, %d, 0x%I64X '%s'\n", min_width, type, flags, text);
+			LogTraceObjLn();
+			LogTrace(L"%Id, %d, 0x%I64X '%s'\n", min_width, type, flags, text);
 			memory::zero(*this);
 			Type = type;
 			Data = text;
@@ -46,8 +46,8 @@ namespace far3 {
 
 		Item::Item(ItemBinding* binding, FARDIALOGITEMTYPES type, PCWSTR text, FARDIALOGITEMFLAGS flags)
 		{
-			LogTraceObj();
-			LogNoise(L"%d, 0x%I64X, %p '%s'\n", type, flags, binding, text);
+			LogTraceObjLn();
+			LogTrace(L"%d, 0x%I64X, %p '%s'\n", type, flags, binding, text);
 			memory::zero(*this);
 			Type = type;
 			Data = text;
@@ -58,13 +58,13 @@ namespace far3 {
 		Item::Item(Item&& other) :
 			FarDialogItem(other)
 		{
-			LogTraceObj();
+			LogTraceObjLn();
 			other.UserData = 0;
 		}
 
 		Item& Item::operator =(Item&& other)
 		{
-			LogTraceObj();
+			LogTraceObjLn();
 			FarDialogItem::operator =(other);
 //			::memcpy(this, &other, sizeof(*this));
 			other.UserData = 0;
@@ -73,13 +73,13 @@ namespace far3 {
 
 		ssize_t Item::get_height() const
 		{
-			LogTrace2();
+			LogTrace2Ln();
 			return reinterpret_cast<ItemBinding*>(UserData)->get_height();
 		}
 
 		ssize_t Item::get_width() const
 		{
-			LogTrace2();
+			LogTrace2Ln();
 			ssize_t ret = 0;
 			switch (Type) {
 				case DI_TEXT:
@@ -117,7 +117,7 @@ namespace far3 {
 
 		ssize_t Item::get_text_width() const
 		{
-			LogTrace2();
+			LogTrace2Ln();
 			ssize_t ret = Data ? cstr::length(Data) : 0;
 			LogDebug2(L"-> %Id\n", ret);
 			return ret;
@@ -125,13 +125,13 @@ namespace far3 {
 
 		void Item::set_dialog(HANDLE dialog)
 		{
-			LogTrace2();
+			LogTrace2Ln();
 			reinterpret_cast<ItemBinding*>(UserData)->set_dialog(dialog);
 		}
 
 		void Item::set_index(ssize_t index)
 		{
-			LogTrace2();
+			LogTrace2Ln();
 			reinterpret_cast<ItemBinding*>(UserData)->set_index(index);
 		}
 
@@ -146,7 +146,7 @@ namespace far3 {
 
 		void Item::save() const
 		{
-			LogTrace2();
+			LogTrace2Ln();
 			reinterpret_cast<ItemBinding*>(UserData)->save();
 		}
 

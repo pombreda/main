@@ -15,33 +15,33 @@ namespace service {
 
 	Item::~Item()
 	{
-		LogTraceObjBegin();
-//		LogNoise2(L"%p\n", m_hndl);
+		LogTraceObj(L"begin\n");
+//		LogTrace2(L"%p\n", m_hndl);
 		if (m_hndl) {
 			::CloseServiceHandle(m_hndl);
 			m_hndl = nullptr;
 		}
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	Item::Item(SC_HANDLE scm, const wchar_t* name, ACCESS_MASK access) :
 		m_hndl(CheckHandleErr(::OpenServiceW(scm, name, access)))
 	{
-		LogTraceObjBegin();
-		LogNoise2(L"(%p, %s, 0x%X) -> %p\n", scm, name, access, m_hndl);
-		LogTraceObjEnd();
+		LogTraceObj(L"begin\n");
+		LogTrace2(L"(%p, %s, 0x%X) -> %p\n", scm, name, access, m_hndl);
+		LogTraceObj(L"end\n");
 	}
 
 	Item::Item(this_type&& other) :
 		m_hndl(other.m_hndl)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		other.m_hndl = nullptr;
 	}
 
 	Item& Item::operator =(this_type&& other)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		m_hndl = other.m_hndl;
 		other.m_hndl = nullptr;
 		return *this;

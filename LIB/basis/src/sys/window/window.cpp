@@ -9,12 +9,12 @@
 //
 //	WindowApplication::~WindowApplication()
 //	{
-//		LogTrace();
+//		LogTraceLn();
 //	}
 //
 //	int WindowApplication::Run()
 //	{
-//		LogTrace();
+//		LogTraceLn();
 //		MSG msg;
 //		BOOL ret;
 //		while ((ret = ::GetMessageW(&msg, 0, 0, 0))) {
@@ -33,7 +33,7 @@
 //
 //	bool Window::create(HWND parent, const wchar_t* title, DWORD exstyle, DWORD style, int x, int y, int w, int h, HMENU id)
 //	{
-//		LogTrace();
+//		LogTraceLn();
 //		WNDCLASSEX wndc;
 //		wndc.lpszClassName = L"BaseWindow";
 //		wndc.cbSize = sizeof(wndc);
@@ -70,7 +70,7 @@
 //	{
 //		Window * window = nullptr;
 //		if (message == WM_NCCREATE) {
-//			LogTrace();
+//			LogTraceLn();
 //			CREATESTRUCTW * createStruct = reinterpret_cast<CREATESTRUCTW*>(lparam);
 //			window = static_cast<Window*>(createStruct->lpCreateParams);
 //			::SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(window));

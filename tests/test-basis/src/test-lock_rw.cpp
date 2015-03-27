@@ -8,14 +8,14 @@
 //public:
 //	~WriterRoutine()
 //	{
-//		LogTraceObj();
+//		LogTraceObjLn();
 //	}
 //
 //	WriterRoutine(sync::Queue* queue, ssize_t num):
 //		m_queue(queue),
 //		m_num(num)
 //	{
-//		LogTraceObj();
+//		LogTraceObjLn();
 //	}
 //
 //	size_t run(void*) override

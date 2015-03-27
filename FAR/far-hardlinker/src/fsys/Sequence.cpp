@@ -14,7 +14,7 @@ namespace fsys {
 		m_mask(mask),
 		m_options(options)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		LogDebug(L"path:                '%s'\n", m_path.c_str());
 		LogDebug(L"options.mask:        '%s'\n", m_mask.c_str());
 	}
@@ -110,7 +110,7 @@ namespace fsys {
 	Sequence::ci_iterator::impl::~impl() noexcept
 	{
 		if (sequence) {
-			LogTraceObj();
+			LogTraceObjLn();
 			if (findHandle && findHandle != INVALID_HANDLE_VALUE ) {
 				::FindClose(findHandle);
 			}
@@ -127,14 +127,14 @@ namespace fsys {
 		sequence(&sequence),
 		findHandle(INVALID_HANDLE_VALUE)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 
 	Sequence::ci_iterator::impl::impl(impl&& other) noexcept :
 		sequence(),
 		findHandle()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		using simstd::swap;
 		swap(sequence, other.sequence);
 		swap(findHandle, other.findHandle);

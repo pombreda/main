@@ -179,7 +179,7 @@ namespace {
 
 	HANDLE Facade_impl::Open(const ustring& path, ACCESS_MASK access, DWORD share, PSECURITY_ATTRIBUTES sa, DWORD creat, DWORD flags)
 	{
-//		LogNoise(L"'%s', 0x%08X, 0x%08X, %p\n", path.c_str(), access, share, sa);
+//		LogTrace(L"'%s', 0x%08X, 0x%08X, %p\n", path.c_str(), access, share, sa);
 		return ::CreateFileW(path.c_str(), access, share, sa, creat, flags, nullptr);
 	}
 

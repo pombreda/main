@@ -66,23 +66,23 @@ namespace traceback {
 		memory::zero(modInfo);
 		modInfo.SizeOfStruct = sizeof(modInfo) - 8;
 
-		LogNoise(L"[%p]\n", address);
+		LogTrace(L"[%p]\n", address);
 		bool res = os::Dbghelp_dll::inst().SymGetModuleInfoW64(::GetCurrentProcess(), reinterpret_cast<DWORD64>(address), &modInfo);
 
 		if (res) {
 			m_module = modInfo.ModuleName;
 			m_module_base = modInfo.BaseOfImage;
 			m_image = modInfo.ImageName;
-			LogNoise(L"BaseOfImage:     0x%I64X\n", modInfo.BaseOfImage);
-			LogNoise(L"ImageSize:       %u\n", modInfo.ImageSize);
-			LogNoise(L"TimeDateStamp:   %u\n", modInfo.TimeDateStamp);
-			LogNoise(L"CheckSum:        %u\n", modInfo.CheckSum);
-			LogNoise(L"NumSyms:         %u\n", modInfo.NumSyms);
-			LogNoise(L"SymType:         %d\n", (int)modInfo.SymType);
-			LogNoise(L"ModuleName:      '%s'\n", modInfo.ModuleName);
-			LogNoise(L"ImageName:       '%s'\n", modInfo.ImageName);
-			LogNoise(L"LoadedImageName: '%s'\n", modInfo.LoadedImageName);
-			LogNoise(L"LoadedPdbName:   '%s'\n", modInfo.LoadedPdbName);
+			LogTrace(L"BaseOfImage:     0x%I64X\n", modInfo.BaseOfImage);
+			LogTrace(L"ImageSize:       %u\n", modInfo.ImageSize);
+			LogTrace(L"TimeDateStamp:   %u\n", modInfo.TimeDateStamp);
+			LogTrace(L"CheckSum:        %u\n", modInfo.CheckSum);
+			LogTrace(L"NumSyms:         %u\n", modInfo.NumSyms);
+			LogTrace(L"SymType:         %d\n", (int)modInfo.SymType);
+			LogTrace(L"ModuleName:      '%s'\n", modInfo.ModuleName);
+			LogTrace(L"ImageName:       '%s'\n", modInfo.ImageName);
+			LogTrace(L"LoadedImageName: '%s'\n", modInfo.LoadedImageName);
+			LogTrace(L"LoadedPdbName:   '%s'\n", modInfo.LoadedPdbName);
 		} else {
 			LogError(L"%s %p\n", totext::api_error().c_str(), address);
 		}
@@ -129,7 +129,7 @@ namespace traceback {
 	bool Frame::LoadFromPDB(void* address)
 	{
 		TraceFunc();
-		LogTrace();
+		LogTraceLn();
 		bool ret = false;
 
 		{
@@ -171,17 +171,17 @@ namespace traceback {
 	bool Frame::LoadFromBfd(void* address)
 	{
 		TraceFunc();
-		LogTrace();
+		LogTraceLn();
 		bool ret = false;
 		m_address = address;
 #if defined(__GNUC__) && defined(DEBUG)
 		const char* file = nullptr;
 		const char* func = nullptr;
 		bfd_fill(file, func, m_line, m_image.c_str(), m_address);
-		LogNoise(L"file: '%S'\n", file);
-		LogNoise(L"func: '%S'\n", func);
-		LogNoise(L"line: %Id\n", m_line);
-		LogNoise(L"offs: %Id\n", m_offset);
+		LogTrace(L"file: '%S'\n", file);
+		LogTrace(L"func: '%S'\n", func);
+		LogTrace(L"line: %Id\n", m_line);
+		LogTrace(L"offs: %Id\n", m_offset);
 
 		if (file)
 			m_file = sstr::cp2w(filename_only(file), CP_OEMCP);

@@ -17,7 +17,7 @@ struct LockMutexThead1: public thread::Routine {
 		while (true) {
 			simstd::lock(*m2, *m1);
 //			m2->lock();
-			LogTrace();
+			LogTraceLn();
 //			m1->lock();
 			Sleep(33);
 			m1->unlock();
@@ -36,7 +36,7 @@ struct LockMutexThead2: public thread::Routine {
 		while (true) {
 			simstd::lock(*m1, *m2);
 //			m1->lock();
-			LogTrace();
+			LogTraceLn();
 //			m2->lock();
 			Sleep(33);
 			m1->unlock();

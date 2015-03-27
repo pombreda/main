@@ -4,7 +4,7 @@
 //
 //ssize_t Base::wstr::unit_test()
 //{
-//	LogTrace();
+//	LogTraceLn();
 //	Base::wstr str1;
 //	Base::wstr str2 = L"str2";
 //	Base::wstr str3 = Base::wstr::format(L"%s, %s, %I64u", L"hello", L"world", 36ull);

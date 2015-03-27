@@ -25,7 +25,7 @@ namespace Ext {
 	}
 
 	WinAbsSD::~WinAbsSD() {
-		LogTrace();
+		LogTraceLn();
 		if (m_owner)
 			::LocalFree(m_owner);
 		if (m_group)
@@ -42,7 +42,7 @@ namespace Ext {
 		m_dacl(nullptr),
 		m_sacl(nullptr)
 	{
-		LogTrace();
+		LogTraceLn();
 		m_sd = alloc(SECURITY_DESCRIPTOR_MIN_LENGTH);
 		CheckApi(::InitializeSecurityDescriptor(m_sd, SECURITY_DESCRIPTOR_REVISION));
 	}

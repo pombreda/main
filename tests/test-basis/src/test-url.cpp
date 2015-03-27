@@ -44,7 +44,7 @@ void sample2(PCWSTR url)
 
 void test_url()
 {
-	LogTrace();
+	LogTraceLn();
 	sample2(L"http://msdn.microsoft.com/vstudio/");
 	sample2(L"mailto:someone@example.com");
 	sample2(L"file://C:\\AUTOEXEC.BAT");

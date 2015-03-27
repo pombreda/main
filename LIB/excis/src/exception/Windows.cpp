@@ -15,7 +15,7 @@ namespace exception {
 	WinError::WinError(DWORD code) :
 		m_code(code)
 	{
-		LogNoise(L"%s\n", what());
+		LogTrace(L"%s\n", what());
 	}
 
 	WinError::WinError(PCSTR file, size_t line, PCSTR func) :

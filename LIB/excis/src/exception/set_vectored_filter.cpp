@@ -14,14 +14,14 @@ namespace exception {
 		m_code(ep->ExceptionRecord->ExceptionCode),
 		m_address(ep->ExceptionRecord->ExceptionAddress)
 	{
-		LogNoise2(L"ep:      %p\n", ep);
-		LogNoise2(L"code:    0x%X\n", ep->ExceptionRecord->ExceptionCode);
-		LogNoise2(L"flags:   0x%X\n", ep->ExceptionRecord->ExceptionFlags);
-		LogNoise2(L"record:  0x%p\n", ep->ExceptionRecord->ExceptionRecord);
-		LogNoise2(L"address: 0x%p\n", ep->ExceptionRecord->ExceptionAddress);
-		LogNoise2(L"params:  %u\n", ep->ExceptionRecord->NumberParameters);
+		LogTrace2(L"ep:      %p\n", ep);
+		LogTrace2(L"code:    0x%X\n", ep->ExceptionRecord->ExceptionCode);
+		LogTrace2(L"flags:   0x%X\n", ep->ExceptionRecord->ExceptionFlags);
+		LogTrace2(L"record:  0x%p\n", ep->ExceptionRecord->ExceptionRecord);
+		LogTrace2(L"address: 0x%p\n", ep->ExceptionRecord->ExceptionAddress);
+		LogTrace2(L"params:  %u\n", ep->ExceptionRecord->NumberParameters);
 		for (DWORD i = 0; i < ep->ExceptionRecord->NumberParameters; ++i) {
-			LogNoise2(L"param[%u]:    0x%I64X\n", i, ep->ExceptionRecord->ExceptionInformation[i]);
+			LogTrace2(L"param[%u]:    0x%I64X\n", i, ep->ExceptionRecord->ExceptionInformation[i]);
 		}
 
 		traceback::LazyFrame frame(m_address);
@@ -30,7 +30,7 @@ namespace exception {
 #ifdef DEBUG
 		traceback::Enum bt;
 		for (auto it = bt.begin(); it != bt.end(); ++it) {
-			LogNoise(L"\tbt: %s\n", it->to_str().c_str());
+			LogTrace(L"\tbt: %s\n", it->to_str().c_str());
 		}
 #endif
 	}
@@ -59,7 +59,7 @@ namespace exception {
 
 	LONG WINAPI vectored_handler(PEXCEPTION_POINTERS ep)
 	{
-		LogTrace();
+		LogTraceLn();
 		if (ep->ExceptionRecord->ExceptionCode != 0x20474343) {
 			throw SehError(ep);
 		} else {
@@ -70,7 +70,7 @@ namespace exception {
 
 	void set_vectored_filter()
 	{
-		LogTrace();
+		LogTraceLn();
 		::AddVectoredExceptionHandler(1, vectored_handler);
 	}
 

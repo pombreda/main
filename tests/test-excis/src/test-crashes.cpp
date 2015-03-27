@@ -39,7 +39,7 @@ void do_zero_division()
 
 void crash_null_string()
 {
-	LogTrace();
+	LogTraceLn();
 	try {
 		do_null_string();
 	} catch (exception::Abstract & e) {
@@ -49,12 +49,12 @@ void crash_null_string()
 	} catch (...) {
 		LogFatal(L"cpp exception cought\n");
 	}
-	LogTrace();
+	LogTraceLn();
 }
 
 void crash_cpp_exception()
 {
-	LogTrace();
+	LogTraceLn();
 
 	try {
 		do_cpp_exception();
@@ -66,12 +66,12 @@ void crash_cpp_exception()
 		LogFatal(L"cpp exception cought\n");
 	}
 
-	LogTrace();
+	LogTraceLn();
 }
 
 void crash_access_violation()
 {
-	LogTrace();
+	LogTraceLn();
 	try {
 		do_acces_violation();
 	} catch (exception::Abstract & e) {
@@ -81,12 +81,12 @@ void crash_access_violation()
 	} catch (...) {
 		LogFatal(L"cpp exception cought\n");
 	}
-	LogTrace();
+	LogTraceLn();
 }
 
 void crash_zero_division()
 {
-	LogTrace();
+	LogTraceLn();
 	try {
 		do_zero_division();
 	} catch (exception::Abstract & e) {
@@ -96,7 +96,7 @@ void crash_zero_division()
 	} catch (...) {
 		LogFatal(L"cpp exception cought\n");
 	}
-	LogTrace();
+	LogTraceLn();
 }
 
 void crash_virtual_function_call()
@@ -107,7 +107,7 @@ void crash_virtual_function_call()
 
 		B()
 		{
-			LogTrace();
+			LogTraceLn();
 			nvf();
 		}
 
@@ -118,7 +118,7 @@ void crash_virtual_function_call()
 
 	struct D: public B
 	{
-		void vf() override {LogTrace();}
+		void vf() override {LogTraceLn();}
 	};
 
 	B* b = new D;

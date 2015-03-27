@@ -7,25 +7,25 @@ namespace fsys {
 
 	Folder::~Folder()
 	{
-		LogTraceObj();
-		LogNoise(L"'%s'\n", m_name.c_str());
-		LogNoise2If(m_parent, L"'%s'\n", get_full_path().c_str());
+		LogTraceObjLn();
+		LogTrace(L"'%s'\n", m_name.c_str());
+		LogTrace2If(m_parent, L"'%s'\n", get_full_path().c_str());
 		++global::statistics().folderObjectsDestroyed;
 	}
 
 	Folder::Folder(const ustring& name) :
 		Node(name, Node_t(nullptr))
 	{
-		LogTraceObj();
-		LogNoise(L"'%s'\n", m_name.c_str());
+		LogTraceObjLn();
+		LogTrace(L"'%s'\n", m_name.c_str());
 		++global::statistics().folderObjectsCreated;
 	}
 
 	Folder::Folder(const ustring& name, Node_t parent) :
 		Node(name, parent)
 	{
-		LogTraceObj();
-		LogNoise(L"'%s'\n", m_name.c_str());
+		LogTraceObjLn();
+		LogTrace(L"'%s'\n", m_name.c_str());
 		++global::statistics().folderObjectsCreated;
 	}
 

@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 //	test_zodiac();
 
 	TraceFunc();
-	LogTrace();
+	LogTraceLn();
 	return 0;
 }
 

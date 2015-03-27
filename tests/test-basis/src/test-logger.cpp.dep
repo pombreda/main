@@ -112,7 +112,7 @@ int main()
 	console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
 //	setup_logger();
 
-//	LogTrace();
+//	LogTraceLn();
 
 	simstd::Test::_vector(console::wprintf);
 	return 0;
@@ -158,7 +158,7 @@ int main()
 	console::printf(L"size: %Iu, capa: %Iu\n", va.size(), va.capacity());
 	qwe::for_each(va.begin(), va.end(), print_a);
 
-//	LogTrace();
+//	LogTraceLn();
 
 	return 0;
 }

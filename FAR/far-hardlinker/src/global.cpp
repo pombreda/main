@@ -6,18 +6,18 @@ namespace global {
 
 	Statistics::~Statistics()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 
 	Statistics::Statistics()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		memset(this, 0, sizeof(*this));
 	}
 
 	Options::Options()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		firstBlockHash = 65 * 1024;
 		showStatistics = 1;
 		attrMustMatch = 0;

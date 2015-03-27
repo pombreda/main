@@ -27,7 +27,7 @@ namespace far3 {
 		Item create_separator(const wchar_t* text, FARDIALOGITEMFLAGS flags)
 		{
 			flags |= DIF_SEPARATOR;
-			LogNoise(L"'%s' 0x%I64X\n", text, flags);
+			LogTrace(L"'%s' 0x%I64X\n", text, flags);
 			return Item(-1, DI_TEXT, text, flags);
 		}
 

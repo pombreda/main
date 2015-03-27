@@ -14,7 +14,7 @@ namespace traceback {
 	Enum::Enum(size_t depth)
 	{
 		TraceFunc();
-		LogNoise(L"depth: %Iu\n", depth);
+		LogTrace(L"depth: %Iu\n", depth);
 
 		{
 			void** tempFramesArray = static_cast<void**>(HostAlloc(memory::heap::DefaultStat, sizeof(void**) * get_max_depth()));
@@ -32,7 +32,7 @@ namespace traceback {
 	Enum::Enum(PCONTEXT context, void* address, size_t depth)
 	{
 		TraceFunc();
-		LogNoise(L"context: %p address: %p depth: %Iu\n", context, address, depth);
+		LogTrace(L"context: %p address: %p depth: %Iu\n", context, address, depth);
 
 		/* � ��� � Release-������������ ���������� ��������� ���� /Oy- (�� �������� ��������� �� ������), ����� ����� ������.
 		 * http://www.bytetalk.net/2011/06/why-rtlcapturecontext-crashes-on.html
@@ -79,7 +79,7 @@ namespace traceback {
 			if (!res || sf.AddrReturn.Offset == 0)
 				break;
 			emplace_back(reinterpret_cast<void*>(sf.AddrReturn.Offset));
-			LogNoise(L"frame: %p\n", (void*)sf.AddrReturn.Offset);
+			LogTrace(L"frame: %p\n", (void*)sf.AddrReturn.Offset);
 #else
 			if (!res || sf.AddrPC.Offset == 0)
 				break;

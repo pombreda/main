@@ -82,7 +82,7 @@ namespace fsys {
 
 		bool Facade::write_nt(const void* buf, size_t size, DWORD & written)
 		{
-//			LogNoise(L"%p, %Iu\n", buf, size);
+//			LogTrace(L"%p, %Iu\n", buf, size);
 			return ::WriteFile(m_hndl, buf, size, &written, nullptr);
 		}
 
@@ -209,7 +209,7 @@ namespace fsys {
 
 		HANDLE Facade::Open(const ustring& path, ACCESS_MASK access, DWORD share, PSECURITY_ATTRIBUTES sa, DWORD creat, DWORD flags)
 		{
-//			LogNoise(L"'%s', 0x%08X, 0x%08X, %p\n", path.c_str(), access, share, sa);
+//			LogTrace(L"'%s', 0x%08X, 0x%08X, %p\n", path.c_str(), access, share, sa);
 			return CheckHandleErr(::CreateFileW(path.c_str(), access, share, sa, creat, flags, nullptr));
 		}
 

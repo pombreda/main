@@ -23,12 +23,12 @@ namespace sync
 
 	QueueImpl::QueueImpl(const wchar_t* name)
 	{
-		LogTraceObjFormat(L"(%s)\n", name);
+		LogTraceObj(L"(%s)\n", name);
 	}
 
 	void QueueImpl::put_message(const value_type& message)
 	{
-		LogNoise(L"Message(type: %Id, code: %Id, param: %Id, data: %p)\n", message.get_type(), message.get_code(), message.get_param(), message.get_data());
+		LogTrace(L"Message(type: %Id, code: %Id, param: %Id, data: %p)\n", message.get_type(), message.get_code(), message.get_param(), message.get_data());
 		CriticalSection::lock();
 		emplace_back(message);
 		CriticalSection::unlock();
@@ -37,7 +37,7 @@ namespace sync
 
 	WaitResult_t QueueImpl::get_message(value_type& message, Timeout_t timeout_msec)
 	{
-		LogNoise(L"(wait: %Id)\n", timeout_msec);
+		LogTrace(L"(wait: %Id)\n", timeout_msec);
 		auto waitResult = Semaphore::try_lock_ex(timeout_msec);
 		if (waitResult == WaitResult_t::SUCCESS) {
 			CriticalSection::lock();
@@ -47,7 +47,7 @@ namespace sync
 			CriticalSection::unlock();
 		}
 		LogAttenIf(waitResult != WaitResult_t::SUCCESS, L"ret: '%s'\n", totext::c_str(waitResult));
-		LogNoiseIf(waitResult == WaitResult_t::SUCCESS, L"ret: '%s' Message(type: %Id, code: %Id, param: %Id, data: %p)\n", totext::c_str(waitResult), message.get_type(), message.get_code(), message.get_param(), message.get_data());
+		LogDebugIf(waitResult == WaitResult_t::SUCCESS, L"ret: '%s' Message(type: %Id, code: %Id, param: %Id, data: %p)\n", totext::c_str(waitResult), message.get_type(), message.get_code(), message.get_param(), message.get_data());
 		return waitResult;
 	}
 
@@ -61,7 +61,7 @@ namespace sync
 
 	Queue create_queue(const wchar_t* name)
 	{
-		LogNoise(L"('%s')\n", name);
+		LogTrace(L"('%s')\n", name);
 		return simstd::make_shared<QueueImpl>(name);
 	}
 }

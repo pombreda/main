@@ -133,25 +133,25 @@ namespace sync {
 
 		SubscribtionId Subscribe(Queue_i * queue, Message::type_t type_mask, Message::code_t code_mask, filter_t filter)
 		{
-			LogTrace();
+			LogTraceLn();
 			return Delivery_impl::inst().Subscribe(queue, type_mask, code_mask, filter);
 		}
 
 		void Unsubscribe(SubscribtionId id)
 		{
-			LogTrace();
+			LogTraceLn();
 			Delivery_impl::inst().Unsubscribe(id);
 		}
 
 		void Unsubscribe(const Queue_i * queue)
 		{
-			LogTrace();
+			LogTraceLn();
 			Delivery_impl::inst().Unsubscribe(queue);
 		}
 
 		void SendRound(const Message & message)
 		{
-			LogTrace();
+			LogTraceLn();
 			Delivery_impl::inst().SendRound(message);
 		}
 

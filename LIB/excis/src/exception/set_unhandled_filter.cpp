@@ -29,7 +29,7 @@ namespace exception {
 
 	void set_unhandled_filter()
 	{
-		LogTrace();
+		LogTraceLn();
 		::SetUnhandledExceptionFilter(unhandled_exception_filter);
 	}
 
