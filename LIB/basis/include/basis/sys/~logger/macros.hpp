@@ -3,11 +3,14 @@
 
 #if (defined(DEBUG) || defined(ENABLE_LOGGER)) && !defined(DISABLE_LOGGER)
 #   define LogSetOptions(url)                                logger::set_options(url)
+
 #   define LogTraceObj()                                     get_logger_module()->out_with_place(THIS_PLACE, logger::Level::TrObj, L"[%p, %I64u]\n", this, sizeof(*this))
 #   define LogTraceObjBegin()                                get_logger_module()->out_with_place(THIS_PLACE, logger::Level::TrObj, L"[%p, %I64u] begin\n", this, sizeof(*this))
 #   define LogTraceObjEnd()                                  get_logger_module()->out_with_place(THIS_PLACE, logger::Level::TrObj, L"[%p, %I64u] end\n", this, sizeof(*this))
+#   define LogTraceObjFormat(format, ...)                    get_logger_module()->out_with_place(THIS_PLACE, logger::Level::TrObj, L"[%p, %I64u] " format, this, sizeof(*this), ##__VA_ARGS__)
 #   define LogTrace2()                                       get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace2, L"\n")
 #   define LogTrace2If(condition)             if (condition) get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace2, L"\n")
+#   define LogTrace1(format, ...)                            get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace1, format, ##__VA_ARGS__)
 #   define LogTrace()                                        get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace1, L"\n")
 #   define LogTraceIf(condition)              if (condition) get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace1, L"\n")
 //#   ifdef _MSC_VER

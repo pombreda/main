@@ -36,6 +36,7 @@ namespace simstd
 
 		typename defstd::add_lvalue_reference<element_type>::type operator *() const noexcept
 		{
+			CRT_ASSERT(m_ptr);
 			return *get();
 		}
 
@@ -170,6 +171,7 @@ namespace simstd
 	template<typename Type, typename Deleter>
 	typename unique_ptr<Type, Deleter>::pointer unique_ptr<Type, Deleter>::operator ->() const noexcept
 	{
+		CRT_ASSERT(m_ptr);
 		return get();
 	}
 

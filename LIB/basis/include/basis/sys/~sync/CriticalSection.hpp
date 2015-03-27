@@ -1,57 +1,48 @@
 #ifndef BASIS_SYS_SYNC_CRITICALSECTION_HPP_
 #define BASIS_SYS_SYNC_CRITICALSECTION_HPP_
 
-#include <basis/sys/sync.hpp>
-#include <basis/sys/console.hpp>
-
-namespace sync {
-
+namespace sync
+{
 	class CriticalSection: private pattern::Uncopyable
 	{
-		typedef CRITICAL_SECTION native_impl_type;
+		using native_impl_type = CRITICAL_SECTION;
 
 	public:
-		typedef native_impl_type * native_handle_type;
+		using native_handle_type = native_impl_type*;
 
 		~CriticalSection()
 		{
-//			console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
-			::DeleteCriticalSection(&m_impl);
+			::DeleteCriticalSection(&impl);
 		}
 
 		CriticalSection()
 		{
-//			console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
-			::InitializeCriticalSection(&m_impl);
+			::InitializeCriticalSection(&impl);
 		}
 
-		void lock()
+		void lock() const noexcept
 		{
-//			console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
-			::EnterCriticalSection(&m_impl);
+			::EnterCriticalSection(&impl);
 		}
 
-		bool try_lock()
+		bool try_lock() const noexcept
 		{
-//			console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
-			return ::TryEnterCriticalSection(&m_impl);
+			return ::TryEnterCriticalSection(&impl);
 		}
 
-		void unlock()
+		void unlock() const noexcept
 		{
-//			console::printf(L"%S:%d\n", __PRETTY_FUNCTION__, __LINE__);
-			::LeaveCriticalSection(&m_impl);
+			::LeaveCriticalSection(&impl);
 		}
 
 		native_handle_type native_handle()
 		{
-			return &m_impl;
+			return &impl;
 		}
 
 	private:
-		native_impl_type m_impl;
+		mutable native_impl_type impl;
 	};
-
 }
 
 #endif

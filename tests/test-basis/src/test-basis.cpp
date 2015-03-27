@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 //
 //	test_crashes();
 //
-	tst::_list();
+//	tst::_list();
 //
 //	test_math();
 //
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 //
 //	test_traceback();
 //
-//	test_threads();
+	test_threads();
 //
 //	tst::_unique_ptr();
 //

@@ -9,7 +9,7 @@
 
 namespace sync {
 	struct DeliveryMapping {
-		DeliveryMapping(Queue * queue, Message::type_t type_mask, Message::code_t code_mask, Delivery::filter_t filter):
+		DeliveryMapping(Queue_i * queue, Message::type_t type_mask, Message::code_t code_mask, Delivery::filter_t filter):
 			m_queue(queue),
 			m_type_mask(type_mask),
 			m_code_mask(code_mask),
@@ -27,7 +27,7 @@ namespace sync {
 			return false;
 		}
 
-		bool operator == (const Queue * queue) const
+		bool operator == (const Queue_i * queue) const
 		{
 			return m_queue == queue;
 		}
@@ -43,7 +43,7 @@ namespace sync {
 			return !m_filter || m_filter(message);
 		}
 
-		Queue * m_queue;
+		Queue_i * m_queue;
 		Message::type_t m_type_mask;
 		Message::code_t m_code_mask;
 		Delivery::filter_t m_filter;
@@ -60,11 +60,11 @@ namespace sync {
 
 		static Delivery_impl & inst();
 
-		Delivery::SubscribtionId Subscribe(Queue * queue, Message::type_t type_mask, Message::code_t code_mask, Delivery::filter_t filter);
+		Delivery::SubscribtionId Subscribe(Queue_i * queue, Message::type_t type_mask, Message::code_t code_mask, Delivery::filter_t filter);
 
 		void Unsubscribe(Delivery::SubscribtionId id);
 
-		void Unsubscribe(const Queue * queue);
+		void Unsubscribe(const Queue_i * queue);
 
 		void SendRound(const Message & message) const;
 
@@ -88,7 +88,7 @@ namespace sync {
 		return m_instance;
 	}
 
-	Delivery::SubscribtionId Delivery_impl::Subscribe(Queue * queue, Message::type_t type_mask, Message::code_t code_mask, Delivery::filter_t filter)
+	Delivery::SubscribtionId Delivery_impl::Subscribe(Queue_i * queue, Message::type_t type_mask, Message::code_t code_mask, Delivery::filter_t filter)
 	{
 		simstd::lock_guard<CriticalSection> guard(m_cs);
 		auto id = GetNextId();
@@ -104,7 +104,7 @@ namespace sync {
 			erase(it);
 	}
 
-	void Delivery_impl::Unsubscribe(const Queue * queue)
+	void Delivery_impl::Unsubscribe(const Queue_i * queue)
 	{
 		simstd::lock_guard<CriticalSection> guard(m_cs);
 		for (auto it = rbegin(); it != rend(); ++it) {
@@ -131,7 +131,7 @@ namespace sync {
 
 	namespace Delivery {
 
-		SubscribtionId Subscribe(Queue * queue, Message::type_t type_mask, Message::code_t code_mask, filter_t filter)
+		SubscribtionId Subscribe(Queue_i * queue, Message::type_t type_mask, Message::code_t code_mask, filter_t filter)
 		{
 			LogTrace();
 			return Delivery_impl::inst().Subscribe(queue, type_mask, code_mask, filter);
@@ -143,7 +143,7 @@ namespace sync {
 			Delivery_impl::inst().Unsubscribe(id);
 		}
 
-		void Unsubscribe(const Queue * queue)
+		void Unsubscribe(const Queue_i * queue)
 		{
 			LogTrace();
 			Delivery_impl::inst().Unsubscribe(queue);

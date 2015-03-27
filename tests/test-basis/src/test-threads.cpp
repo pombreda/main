@@ -8,7 +8,7 @@
 
 struct Routine: public thread::Routine
 {
-	Routine(sync::Queue * queue, ssize_t num):
+	Routine(sync::Queue& queue, ssize_t num):
 		m_queue(queue),
 		m_num(num)
 	{
@@ -26,16 +26,16 @@ struct Routine: public thread::Routine
 	}
 
 private:
-	sync::Queue * m_queue;
+	sync::Queue& m_queue;
 	ssize_t m_num;
 };
 
 void test_threads()
 {
 	LogTrace();
-	sync::Queue queue;
-	Routine routine1(&queue, 100);
-	Routine routine2(&queue, 200);
+	auto queue = sync::create_queue(L"QueueTestThreads");
+	Routine routine1(queue, 100);
+	Routine routine2(queue, 200);
 	thread::Pool threads;
 	threads.create_thread(&routine1, true);
 	threads.create_thread(&routine2, true);
@@ -52,8 +52,8 @@ void test_threads()
 	threads[1].set_priority(thread::Priority::ABOVE_NORMAL);
 
 	sync::Message message(1, 2, 3, nullptr);
-	queue.put_message(message);
-	queue.put_message(message);
+	queue->put_message(message);
+	queue->put_message(message);
 
 	threads[0].resume();
 	threads[1].resume();

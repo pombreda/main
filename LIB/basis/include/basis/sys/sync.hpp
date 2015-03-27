@@ -4,17 +4,18 @@
 #include <basis/configure.hpp>
 #include <basis/ext/pattern.hpp>
 
-namespace sync {
+#include <basis/simstd/memory>
 
+namespace sync
+{
 	struct ScopeGuard;
 	struct Message;
-	class Queue;
+	class Queue_i;
 	class MessageManager;
 	class Observer;
 	class Observable;
 
-
-	typedef ssize_t Timeout_t;
+	using Timeout_t = ssize_t;
 
 	const Timeout_t WAIT_FOREVER = INFINITE;
 
@@ -25,13 +26,11 @@ namespace sync {
 		FAILED    = WAIT_FAILED,
 		ABANDONED = WAIT_ABANDONED,
 	};
-
 }
 
-namespace totext {
-
+namespace totext
+{
 	const wchar_t* c_str(sync::WaitResult_t waitResult);
-
 }
 
 #include <basis/sys/~sync/CriticalSection.hpp>
