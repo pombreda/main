@@ -1,24 +1,28 @@
 #include <basis/sys/sync.hpp>
 #include <basis/sys/logger.hpp>
 
+#include <basis/simstd/mutex>
 #include <basis/simstd/vector>
 
 namespace sync
 {
 	LogRegisterLocal(L"sync");
 
-	class QueueImpl: public Queue_i, private CriticalSection, private Semaphore, private simstd::vector<Message>
+	class QueueImpl: public QueueI, private Semaphore, private simstd::vector<Message>
 	{ // deque would bring exceptions dependence
 		using base_type = simstd::vector<Message>;
 
 	public:
 		QueueImpl(const wchar_t* name);
 
-		void put_message(const value_type& message) override;
+		void put_message(const Message& message) override;
 
-		WaitResult_t get_message(value_type& message, Timeout_t timeout_msec) override;
+		WaitResult_t get_message(Message& message, Timeout_t timeout_msec) override;
 
 		bool empty() const noexcept override;
+
+	private:
+		mutable CriticalSection cs;
 	};
 
 	QueueImpl::QueueImpl(const wchar_t* name)
@@ -26,37 +30,35 @@ namespace sync
 		LogTraceObj(L"(%s)\n", name);
 	}
 
-	void QueueImpl::put_message(const value_type& message)
+	void QueueImpl::put_message(const Message& message)
 	{
-		LogTrace(L"Message(type: %Id, code: %Id, param: %Id, data: %p)\n", message.get_type(), message.get_code(), message.get_param(), message.get_data());
-		CriticalSection::lock();
-		emplace_back(message);
-		CriticalSection::unlock();
+		LogTrace(L"MessageI(0x%IX(%Iu, %Iu, %Iu))\n", message->get_type(), message->get_a(), message->get_b(), message->get_c());
+		{
+			simstd::lock_guard<CriticalSection> guard(cs);
+			emplace_back(message->clone());
+		}
 		Semaphore::unlock();
 	}
 
-	WaitResult_t QueueImpl::get_message(value_type& message, Timeout_t timeout_msec)
+	WaitResult_t QueueImpl::get_message(Message& message, Timeout_t timeout_msec)
 	{
 		LogTrace(L"(wait: %Id)\n", timeout_msec);
 		auto waitResult = Semaphore::try_lock_ex(timeout_msec);
 		if (waitResult == WaitResult_t::SUCCESS) {
-			CriticalSection::lock();
-			message = front();
+			simstd::lock_guard<CriticalSection> guard(cs);
+			message = simstd::move(front());
 //			pop_front();
 			erase(begin());
-			CriticalSection::unlock();
 		}
 		LogAttenIf(waitResult != WaitResult_t::SUCCESS, L"ret: '%s'\n", totext::c_str(waitResult));
-		LogDebugIf(waitResult == WaitResult_t::SUCCESS, L"ret: '%s' Message(type: %Id, code: %Id, param: %Id, data: %p)\n", totext::c_str(waitResult), message.get_type(), message.get_code(), message.get_param(), message.get_data());
+		LogDebugIf(waitResult == WaitResult_t::SUCCESS, L"ret: '%s' MessageI(0x%IX(%Iu, %Iu, %Iu))\n", totext::c_str(waitResult), message->get_type(), message->get_a(), message->get_b(), message->get_c());
 		return waitResult;
 	}
 
 	bool QueueImpl::empty() const noexcept
 	{
-		CriticalSection::lock();
-		bool ret = base_type::empty();
-		CriticalSection::unlock();
-		return ret;
+		simstd::lock_guard<CriticalSection> guard(cs);
+		return base_type::empty();
 	}
 
 	Queue create_queue(const wchar_t* name)

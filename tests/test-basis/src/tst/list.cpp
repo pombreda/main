@@ -31,6 +31,7 @@ inline ssize_t get_random()
 template<typename Type>
 void check_emptiness(const Type& listContainer)
 {
+	UNUSED(listContainer);
 	CRT_ASSERT(listContainer.empty());
 	CRT_ASSERT(listContainer.size() == 0);
 	CRT_ASSERT(simstd::begin(listContainer) == simstd::end(listContainer));
@@ -44,6 +45,8 @@ void check_emptiness(const Type& listContainer)
 template<typename Type>
 void check_size(const Type& listContainer, size_t size)
 {
+	UNUSED(listContainer);
+	UNUSED(size);
 	CRT_ASSERT(!listContainer.empty());
 	CRT_ASSERT(listContainer.size() == size);
 	CRT_ASSERT(simstd::next(simstd::begin(listContainer), size) == simstd::end(listContainer));

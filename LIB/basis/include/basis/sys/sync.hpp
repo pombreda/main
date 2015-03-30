@@ -9,9 +9,9 @@
 namespace sync
 {
 	struct ScopeGuard;
-	struct Message;
-	class Queue_i;
-	class MessageManager;
+	class MessageI;
+	class QueueI;
+	class MessageManagerI;
 	class Observer;
 	class Observable;
 

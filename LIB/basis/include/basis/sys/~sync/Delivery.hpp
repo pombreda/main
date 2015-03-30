@@ -1,37 +1,39 @@
 #ifndef BASIS_SYS_SYNC_DELIVERY_HPP_
 #define BASIS_SYS_SYNC_DELIVERY_HPP_
 
-#include <basis/sys/sync.hpp>
+namespace sync
+{
+	namespace delivery
+	{
+		using SubscribtionId = ssize_t;
+		using filter_type = bool (*)(const Message& message);
 
-namespace sync {
+		SubscribtionId subscribe(const Queue& queue, MessageI::param_type type_mask = MessageI::MASK_ALL_TYPES, MessageI::param_type code_mask = MessageI::MASK_ALL_CODES, filter_type filter = nullptr);
 
-	namespace Delivery {
-		typedef ssize_t SubscribtionId;
+		void unsubscribe(SubscribtionId id);
 
-		typedef bool (*filter_t)(const Message & message);
+		void unsubscribe(const Queue& queue);
 
-		SubscribtionId Subscribe(Queue_i * queue, Message::type_t type_mask = Message::MASK_ALL_TYPES, Message::code_t code_mask = Message::MASK_ALL_CODES, filter_t filter = nullptr);
+		void send_round(const Message& message);
 
-		void Unsubscribe(SubscribtionId id);
-
-		void Unsubscribe(const Queue_i * queue);
-
-		void SendRound(const Message & message);
-
-		class Subscriber: private Queue_i {
+		class Subscriber
+		{
 		public:
-			Subscriber(Message::type_t type_mask = Message::MASK_ALL_TYPES, Message::code_t code_mask = Message::MASK_ALL_CODES, filter_t filter = nullptr)
+			Subscriber(MessageI::param_type type_mask = MessageI::MASK_ALL_TYPES, MessageI::param_type code_mask = MessageI::MASK_ALL_CODES, filter_type filter = nullptr) :
+				queue(create_queue())
 			{
-				Subscribe(this, type_mask, code_mask, filter);
+				subscribe(queue, type_mask, code_mask, filter);
 			}
 
 			~Subscriber()
 			{
-				Unsubscribe(this);
+				unsubscribe(queue);
 			}
+
+		private:
+			Queue queue;
 		};
 	}
-
 }
 
 #endif

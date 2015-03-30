@@ -2,7 +2,7 @@
 
 namespace thread {
 
-	DWORD WINAPI Routine::run_thread(void * routine)
+	DWORD WINAPI Routine::run_thread(void* routine)
 	{
 		LogTrace(L"%p\n", routine);
 		Routine * l_routine = reinterpret_cast<Routine*>(routine);
@@ -25,27 +25,27 @@ namespace thread {
 		LogTraceLn();
 	}
 
-	void Routine::alert(void * data)
+	void Routine::alert(void* data)
 	{
 		UNUSED(data);
 		LogTrace(L"data: %p\n", data);
 	}
 
-	size_t Routine::run(void * data)
+	size_t Routine::run(void* data)
 	{
 		UNUSED(data);
 		LogTrace(L"data: %p\n", data);
 		return 0;
 	}
 
-	void * Routine::get_parameter()
+	void* Routine::get_parameter()
 	{
 		return nullptr;
 	}
 
-	void Routine::put_message(const sync::Message & message)
+	void Routine::put_message(const sync::Message& message)
 	{
 		UNUSED(message);
-		LogTrace(L"type: %Id, code: %Id, param: %Id, data: %p\n", message.get_type(), message.get_code(), message.get_param(), message.get_data());
+		LogTrace(L"0x%IX(%Iu, %Iu, %Iu)\n", message->get_type(), message->get_a(), message->get_b(), message->get_c());
 	}
 }

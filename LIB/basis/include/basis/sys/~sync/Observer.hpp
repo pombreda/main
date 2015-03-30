@@ -1,15 +1,16 @@
 #ifndef BASIS_SYS_SYNC_OBSERVER_HPP_
 #define BASIS_SYS_SYNC_OBSERVER_HPP_
 
-#include <basis/sys/sync.hpp>
+namespace sync
+{
+	using MessageManager = MessageManagerI*;
 
-namespace sync {
-
-	class MessageManager {
+	class MessageManagerI
+	{
 	public:
-		static MessageManager* get_default();
+		static MessageManager get_default();
 
-		virtual ~MessageManager() = default;
+		virtual ~MessageManagerI() = default;
 
 		virtual void register_observer(const Observable* subject, Observer* observer) = 0;
 
@@ -19,11 +20,12 @@ namespace sync {
 
 		virtual void unregister_observer(const Observer* observer) = 0;
 
-		virtual void notify(const Observable* subject, const Message& event) const = 0;
+		virtual void notify(const Observable* subject, const Message& message) const = 0;
 	};
 
 	///================================================================================== Observable
-	class Observable {
+	class Observable
+	{
 	public:
 		virtual ~Observable();
 
@@ -33,7 +35,7 @@ namespace sync {
 
 		void unregister_observer(Observer* observer) const;
 
-		void notify_observers(const Message& event) const;
+		void notify_observers(const Message& message) const;
 
 	protected:
 		void set_changed(bool changed) const;
@@ -41,25 +43,25 @@ namespace sync {
 		bool get_changed() const;
 
 	private:
-		mutable MessageManager* m_manager;
+		mutable MessageManager m_manager;
 		mutable bool m_changed;
 	};
 
 	///==================================================================================== Observer
-	class Observer {
+	class Observer
+	{
 	public:
 		virtual ~Observer();
 
-		virtual void notify(const Message& event) = 0;
+		virtual void notify(const Message& message) = 0;
 
 		Observer();
 
 		Observer(const Observable* subject);
 
 	private:
-		MessageManager* m_manager;
+		MessageManager m_manager;
 	};
-
 }
 
 #endif

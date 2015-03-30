@@ -4,12 +4,13 @@
 #include <basis/sys/thread.hpp>
 #include <basis/sys/sync.hpp>
 
-namespace thread {
+namespace thread
+{
+	struct Routine
+	{
+		static DWORD WINAPI run_thread(void* routine);
 
-	struct Routine {
-		static DWORD WINAPI run_thread(void * routine);
-
-		static DWORD WINAPI run_thread_with_param(void * param);
+		static DWORD WINAPI run_thread_with_param(void* param);
 
 		static VOID WINAPI alert_thread(ULONG_PTR routine);
 
@@ -20,13 +21,13 @@ namespace thread {
 
 		virtual ~Routine();
 
-		virtual void alert(void * data);
+		virtual void alert(void* data);
 
-		virtual size_t run(void * data);
+		virtual size_t run(void* data);
 
-		virtual void * get_parameter();
+		virtual void* get_parameter();
 
-		virtual void put_message(const sync::Message & message);
+		virtual void put_message(const sync::Message& message);
 	};
 
 //	template <typename Type, size_t (Type::*mem_func)(void *)>
@@ -40,7 +41,6 @@ namespace thread {
 //	{
 //		(((Type*)(ptr))->*mem_func)(nullptr);
 //	}
-
 }
 
 #endif

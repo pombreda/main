@@ -3,10 +3,14 @@
 
 namespace sync
 {
-	class Queue_i
+	using Queue = simstd::shared_ptr<QueueI>;
+
+	Queue create_queue(const wchar_t* name = EMPTY_STR);
+
+	class QueueI
 	{
 	public:
-		virtual ~Queue_i() = default;
+		virtual ~QueueI() = default;
 
 		virtual void put_message(const Message& message) = 0;
 
@@ -14,10 +18,6 @@ namespace sync
 
 		virtual bool empty() const noexcept = 0;
 	};
-
-	using Queue = simstd::shared_ptr<Queue_i>;
-
-	Queue create_queue(const wchar_t* name = EMPTY_STR);
 }
 
 #endif

@@ -2,28 +2,13 @@
 #define BASIS_SYS_LOGGER_MACROS_HPP_
 
 #if (defined(DEBUG) || defined(ENABLE_LOGGER)) && !defined(DISABLE_LOGGER)
-#   define LogSetOptions(url)                                logger::set_options(url)
-
-#   define LogTraceObjLn()                                   get_logger_module()->out_with_place(THIS_PLACE, logger::Level::TrObj, L"[%p, %I64u]\n", this, sizeof(*this))
-#   define LogTraceObj(format, ...)                          get_logger_module()->out_with_place(THIS_PLACE, logger::Level::TrObj, L"[%p, %I64u] " format, this, sizeof(*this), ##__VA_ARGS__)
-#   define LogTrace2Ln()                                     get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace2, L"\n")
-#   define LogTrace2(format, ...)                            get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace2, format, ##__VA_ARGS__)
-#   define LogTraceLn()                                      get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace1, L"\n")
-#   define LogTrace(format, ...)                             get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace1, format, ##__VA_ARGS__)
-//#   ifdef _MSC_VER
-//#       define LogTrace(format, ...)              get_logger_module()->out(THIS_PLACE, logger::Level::Trace, format, __VA_ARGS__)
-//#       define LogDebugIf(condition, format, ...) if (condition) get_logger_module()->out(THIS_PLACE, logger::Level::Trace, format, __VA_ARGS__)
-//#       define LogDebug(format, ...)	            get_logger_module()->out(THIS_PLACE, logger::Level::Debug, format, __VA_ARGS__)
-//#       define LogDebugIf(condition, format, ...) if (condition) get_logger_module()->out(THIS_PLACE, logger::Level::Debug, format, __VA_ARGS__)
-//#       define LogInfo(format, ...)	            get_logger_module()->out(THIS_PLACE, logger::Level::Info, format, __VA_ARGS__)
-//#       define LogReport(format, ...)	            get_logger_module()->out(THIS_PLACE, logger::Level::Report, format, __VA_ARGS__)
-//#       define LogAtten(format, ...)	            get_logger_module()->out(THIS_PLACE, logger::Level::Atten, format, __VA_ARGS__)
-//#       define LogWarn(format, ...)	            get_logger_module()->out(THIS_PLACE, logger::Level::Warn, format, __VA_ARGS__)
-//#       define LogWarnIf(condition, format, ...)  if (condition) get_logger_module()->out(THIS_PLACE, logger::Level::Warn, format, __VA_ARGS__)
-//#       define LogError(format, ...)	            get_logger_module()->out(THIS_PLACE, logger::Level::Error, format, __VA_ARGS__)
-//#       define LogErrorIf(condition, format, ...) if (condition) get_logger_module()->out(THIS_PLACE, logger::Level::Error, format, __VA_ARGS__)
-//#       define LogFatal(format, ...)	            get_logger_module()->out(THIS_PLACE, logger::Level::Fatal, format, __VA_ARGS__)
-//#   else
+#   define LogSetOptions(url)                                 logger::set_options(url)
+#   define LogTraceObjLn()                                    get_logger_module()->out_with_place(THIS_PLACE, logger::Level::TrObj, L"[%p, %I64u]\n", this, sizeof(*this))
+#   define LogTraceObj(format, ...)                           get_logger_module()->out_with_place(THIS_PLACE, logger::Level::TrObj, L"[%p, %I64u] " format, this, sizeof(*this), ##__VA_ARGS__)
+#   define LogTrace2Ln()                                      get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace2, L"\n")
+#   define LogTrace2(format, ...)                             get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace2, format, ##__VA_ARGS__)
+#   define LogTraceLn()                                       get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace1, L"\n")
+#   define LogTrace(format, ...)                              get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Trace1, format, ##__VA_ARGS__)
 #   define LogDebug2(format, ...)                             get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Debug2, format, ##__VA_ARGS__)
 #   define LogDebug2If(condition, format, ...) if (condition) get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Debug2, format, ##__VA_ARGS__)
 #   define LogDebug(format, ...)                              get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Debug1, format, ##__VA_ARGS__)
@@ -46,7 +31,6 @@
 #   define LogEmergIf(condition, format, ...)  if (condition) get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Emerg, format, ##__VA_ARGS__)
 #   define LogForce(format, ...)                              get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Force, format, ##__VA_ARGS__)
 #   define LogForceIf(condition, format, ...)  if (condition) get_logger_module()->out_with_place(THIS_PLACE, logger::Level::Force, format, ##__VA_ARGS__)
-//#   endif
 
 #	define LogDeclare() \
 logger::Module* get_logger_module();

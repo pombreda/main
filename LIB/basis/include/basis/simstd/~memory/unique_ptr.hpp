@@ -349,6 +349,7 @@ namespace simstd
 	template<typename Type, typename... Args>
 	unique_ptr<Type> make_unique(Args&&... args)
 	{
+		TraceFunc();
 		return unique_ptr<Type>(new Type(forward<Args>(args)...));
 	}
 }
