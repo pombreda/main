@@ -6,8 +6,8 @@
 #include <basis/sys/thread.hpp>
 #include <basis/simstd/mutex>
 
-sync::SyncUnit_i * m1;
-sync::SyncUnit_i * m2;
+sync::CriticalSection* m1;
+sync::CriticalSection* m2;
 
 struct LockMutexThead1: public thread::Routine {
 	size_t run(void * data) override
@@ -49,8 +49,8 @@ struct LockMutexThead2: public thread::Routine {
 
 void test_lock()
 {
-	m1 = sync::get_CritSection();
-	m2 = sync::get_CritSection();
+	m1 = new sync::CriticalSection;
+	m2 = new sync::CriticalSection;
 
 	LockMutexThead1 routine1;
 	LockMutexThead2 routine2;
@@ -60,4 +60,7 @@ void test_lock()
 	threads.create_thread(&routine2);
 
 	threads.wait_all();
+
+	delete m2;
+	delete m1;
 }

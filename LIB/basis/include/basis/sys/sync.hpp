@@ -35,7 +35,6 @@ namespace totext
 #include <basis/sys/~sync/CriticalSection.hpp>
 #include <basis/sys/~sync/Mutex.hpp>
 #include <basis/sys/~sync/Semaphore.hpp>
-#include <basis/sys/~sync/ScopeGuard.hpp>
 #include <basis/sys/~sync/SRWlock.hpp>
 #include <basis/sys/~sync/Message.hpp>
 #include <basis/sys/~sync/Queue.hpp>

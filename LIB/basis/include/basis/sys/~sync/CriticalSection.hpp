@@ -10,12 +10,12 @@ namespace sync
 	public:
 		using native_handle_type = native_impl_type*;
 
-		~CriticalSection()
+		~CriticalSection() noexcept
 		{
 			::DeleteCriticalSection(&impl);
 		}
 
-		CriticalSection()
+		CriticalSection() noexcept
 		{
 			::InitializeCriticalSection(&impl);
 		}
@@ -35,7 +35,7 @@ namespace sync
 			::LeaveCriticalSection(&impl);
 		}
 
-		native_handle_type native_handle()
+		native_handle_type native_handle() noexcept
 		{
 			return &impl;
 		}
