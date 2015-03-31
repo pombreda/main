@@ -1,10 +1,8 @@
 #ifndef BASIS_SYS_SYNC_SRWLOCK_HPP_
 #define BASIS_SYS_SYNC_SRWLOCK_HPP_
 
-#include <basis/sys/sync.hpp>
-
-namespace sync {
-
+namespace sync
+{
 //	struct SRWlock {
 //		SRWlock() {
 //			::InitializeSRWLock(&m_impl);
@@ -27,7 +25,6 @@ namespace sync {
 //	private:
 //		PSLIST_HEADER m_impl;
 //	};
-
 }
 
 #endif

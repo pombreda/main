@@ -1,42 +1,41 @@
 #include <basis/configure.hpp>
 #include <basis/sys/~sync/Semaphore.hpp>
 
-namespace sync {
-
-	Semaphore::~Semaphore()
+namespace sync
+{
+	Semaphore::~Semaphore() noexcept
 	{
-		::CloseHandle(reinterpret_cast<HANDLE>(m_handle));
+		::CloseHandle(reinterpret_cast<HANDLE>(handle));
 	}
 
-	Semaphore::Semaphore(const wchar_t* name) :
-		m_handle(nullptr)
+	Semaphore::Semaphore(const wchar_t* name) noexcept :
+		handle(nullptr)
 	{
-		m_handle = reinterpret_cast<native_handle_type>(::CreateSemaphoreW(nullptr, 0, LONG_MAX, name));
+		handle = reinterpret_cast<native_handle_type>(::CreateSemaphoreW(nullptr, 0, LONG_MAX, name));
 	}
 
-	void Semaphore::lock()
+	void Semaphore::lock() noexcept
 	{
-		::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(m_handle), INFINITE, true);
+		::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(handle), INFINITE, true);
 	}
 
-	bool Semaphore::try_lock(size_t timeout_millisec)
+	bool Semaphore::try_lock(size_t timeout_millisec) noexcept
 	{
-		return WAIT_OBJECT_0 == ::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(m_handle), timeout_millisec, true);
+		return WAIT_OBJECT_0 == ::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(handle), timeout_millisec, true);
 	}
 
-	WaitResult_t Semaphore::try_lock_ex(size_t timeout_millisec)
+	WaitResult_t Semaphore::try_lock_ex(size_t timeout_millisec) noexcept
 	{
-		return static_cast<WaitResult_t>(::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(m_handle), timeout_millisec, true));
+		return static_cast<WaitResult_t>(::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(handle), timeout_millisec, true));
 	}
 
-	void Semaphore::unlock(size_t cnt)
+	void Semaphore::unlock(size_t cnt) noexcept
 	{
-		::ReleaseSemaphore(reinterpret_cast<HANDLE>(m_handle), cnt, nullptr);
+		::ReleaseSemaphore(reinterpret_cast<HANDLE>(handle), cnt, nullptr);
 	}
 
-	Semaphore::native_handle_type Semaphore::native_handle()
+	Semaphore::native_handle_type Semaphore::native_handle() noexcept
 	{
-		return m_handle;
+		return handle;
 	}
-
 }

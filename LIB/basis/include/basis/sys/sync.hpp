@@ -8,7 +8,6 @@
 
 namespace sync
 {
-	struct ScopeGuard;
 	class MessageI;
 	class QueueI;
 	class MessageManagerI;
