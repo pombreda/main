@@ -14,13 +14,13 @@ namespace sync
 
 		Semaphore(const wchar_t* name = nullptr) noexcept;
 
-		void lock() noexcept;
+		void lock() const noexcept;
 
-		bool try_lock(size_t timeout_millisec = 0) noexcept;
+		bool try_lock(size_t timeout_ms = 0) const noexcept;
 
-		WaitResult_t try_lock_ex(size_t timeout_millisec = 0) noexcept;
+		WaitResult_t try_lock_ex(size_t timeout_ms = 0) const noexcept;
 
-		void unlock(size_t cnt = 1) noexcept;
+		void unlock(size_t cnt = 1) const noexcept;
 
 		native_handle_type native_handle() noexcept;
 

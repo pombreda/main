@@ -14,15 +14,15 @@ namespace simstd
 		template<int Index, bool Continue = true>
 		struct try_lock_impl
 		{
-			template<typename ... Mutex>
-			static int do_try_lock(defstd::tuple<Mutex&...> & locks)
+			template<typename... Mutex>
+			static int do_try_lock(defstd::tuple<Mutex&...>& locks)
 			{
 				int idx = Index;
 				auto lock = try_to_lock(defstd::get<Index>(locks));
 				if (lock.owns_lock()) {
 					idx = try_lock_impl<Index + 1, Index + 2 < sizeof...(Mutex)>::do_try_lock(locks);
 					if (idx == -1)
-					lock.release();
+						lock.release();
 				}
 				return idx;
 			}
@@ -31,8 +31,8 @@ namespace simstd
 		template<int Index>
 		struct try_lock_impl<Index, false>
 		{
-			template<typename ... Mutex>
-			static int do_try_lock(defstd::tuple<Mutex&...> & locks)
+			template<typename... Mutex>
+			static int do_try_lock(defstd::tuple<Mutex&...>& locks)
 			{
 				int idx = Index;
 				auto lock = try_to_lock(defstd::get<Index>(locks));
@@ -64,7 +64,6 @@ namespace simstd
 			}
 		}
 	}
-
 }
 
 #endif

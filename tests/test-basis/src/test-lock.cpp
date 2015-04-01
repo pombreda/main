@@ -15,10 +15,12 @@ struct LockMutexThead1: public thread::Routine {
 		UNUSED(data);
 
 		while (true) {
-			simstd::lock(*m2, *m1);
-//			m2->lock();
 			LogTraceLn();
-//			m1->lock();
+//			simstd::lock(*m2, *m1);
+			m2->lock();
+			Sleep(10);
+//			LogTraceLn();
+			m1->lock();
 			Sleep(33);
 			m1->unlock();
 			m2->unlock();
@@ -34,10 +36,12 @@ struct LockMutexThead2: public thread::Routine {
 		UNUSED(data);
 
 		while (true) {
-			simstd::lock(*m1, *m2);
-//			m1->lock();
 			LogTraceLn();
-//			m2->lock();
+//			simstd::lock(*m1, *m2);
+			m1->lock();
+			Sleep(10);
+//			LogTraceLn();
+			m2->lock();
 			Sleep(33);
 			m1->unlock();
 			m2->unlock();
@@ -57,6 +61,12 @@ void test_lock()
 
 	thread::Pool threads;
 	threads.create_thread(&routine1);
+	threads.create_thread(&routine1);
+	threads.create_thread(&routine1);
+	threads.create_thread(&routine1);
+	threads.create_thread(&routine2);
+	threads.create_thread(&routine2);
+	threads.create_thread(&routine2);
 	threads.create_thread(&routine2);
 
 	threads.wait_all();

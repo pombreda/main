@@ -1,8 +1,8 @@
 #ifndef BASIS_MUTEX_RECURSIVE_TIMED_MUTEX_HPP_
 #define BASIS_MUTEX_RECURSIVE_TIMED_MUTEX_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	class recursive_timed_mutex: private sync::Mutex
 	{
 		typedef sync::Mutex base_type;
@@ -45,7 +45,6 @@ namespace simstd {
 
 		return base_type::try_lock(duration_cast<milliseconds>(timeout_time - clock_t::now()).count());
 	}
-
-}    // namespace simstd
+}
 
 #endif

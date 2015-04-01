@@ -14,7 +14,7 @@ namespace thread {
 		LogTraceLn();
 	}
 
-	sync::WaitResult_t Pool::wait_all(sync::Timeout_t timeout) const
+	sync::WaitResult_t Pool::wait_all(size_t timeout) const
 	{
 		LogTrace(L"timeout: %Id\n", timeout);
 		sync::WaitResult_t ret = (sync::WaitResult_t)::WaitForMultipleObjectsEx(m_handles.size(), &m_handles[0], TRUE, timeout, TRUE);
@@ -23,7 +23,7 @@ namespace thread {
 		return ret;
 	}
 
-	sync::WaitResult_t Pool::wait_any(size_t & index, sync::Timeout_t timeout) const
+	sync::WaitResult_t Pool::wait_any(size_t & index, size_t timeout) const
 	{
 		LogTrace(L"index: %Iu, timeout: %Id\n", index, timeout);
 		DWORD result = ::WaitForMultipleObjectsEx(m_handles.size(), &m_handles[0], FALSE, timeout, TRUE);

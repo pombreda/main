@@ -1,8 +1,8 @@
 #ifndef BASIS_MUTEX_TYPES_HPP_
 #define BASIS_MUTEX_TYPES_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	/// Do not acquire ownership of the mutex.
 	struct defer_lock_t
 	{
@@ -24,7 +24,6 @@ namespace simstd {
 	constexpr try_to_lock_t try_to_lock{};
 
 	constexpr adopt_lock_t adopt_lock{};
-
 }
 
 #endif

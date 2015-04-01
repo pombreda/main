@@ -1,8 +1,7 @@
-#include <basis/configure.hpp>
 #include <basis/sys/sync.hpp>
 
-namespace sync {
-
+namespace sync
+{
 	Observer::~Observer()
 	{
 		m_manager->unregister_observer(this);

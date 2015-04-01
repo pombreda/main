@@ -9,8 +9,7 @@
 #include <tuple>
 namespace defstd = std;
 
-#include <basis/simstd/~mutex/types.hpp>
-#include <basis/simstd/~mutex/once.hpp>
+#include <basis/simstd/~mutex/mutex_fwd.hpp>
 #include <basis/simstd/~mutex/lock_guard.hpp>
 #include <basis/simstd/~mutex/unique_lock.hpp>
 #include <basis/simstd/~mutex/functional.hpp>

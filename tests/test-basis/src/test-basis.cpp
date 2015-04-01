@@ -49,6 +49,8 @@ int main(int argc, char* argv[])
 //
 //	tst::_list();
 //
+	test_lock();
+//
 //	test_math();
 //
 //	test_memory();
@@ -59,7 +61,7 @@ int main(int argc, char* argv[])
 //
 //	test_traceback();
 //
-	test_threads();
+//	test_threads();
 //
 //	tst::_unique_ptr();
 //

@@ -1,4 +1,3 @@
-#include <basis/configure.hpp>
 #include <basis/sys/sync.hpp>
 #include <basis/sys/logger.hpp>
 

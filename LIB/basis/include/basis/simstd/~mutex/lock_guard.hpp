@@ -1,8 +1,8 @@
 #ifndef BASIS_MUTEX_LOCK_GUARD_HPP_
 #define BASIS_MUTEX_LOCK_GUARD_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Mutex>
 	class lock_guard: private pattern::Uncopyable
 	{
@@ -39,7 +39,7 @@ namespace simstd {
 
 	template<typename Mutex>
 	lock_guard<Mutex>::lock_guard(defer_lock_t) :
-		m_sync(nullptr)
+		m_sync()
 	{
 	}
 
@@ -61,7 +61,6 @@ namespace simstd {
 	{
 		return lock_guard<Mutex>(mutex);
 	}
-
 }
 
 #endif

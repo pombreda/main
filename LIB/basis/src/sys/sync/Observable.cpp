@@ -1,8 +1,7 @@
-#include <basis/configure.hpp>
 #include <basis/sys/sync.hpp>
 
-namespace sync {
-
+namespace sync
+{
 	Observable::~Observable()
 	{
 		m_manager->unregister_observable(this);
@@ -41,5 +40,4 @@ namespace sync {
 	{
 		return m_changed;
 	}
-
 }

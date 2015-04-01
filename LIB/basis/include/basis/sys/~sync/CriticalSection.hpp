@@ -15,24 +15,24 @@ namespace sync
 			::DeleteCriticalSection(&impl);
 		}
 
-		CriticalSection() noexcept
+		CriticalSection(const wchar_t* = EMPTY_STR) noexcept
 		{
 			::InitializeCriticalSection(&impl);
 		}
 
 		void lock() const noexcept
 		{
-			::EnterCriticalSection(&impl);
+			::EnterCriticalSection(const_cast<native_handle_type>(&impl));
 		}
 
 		bool try_lock() const noexcept
 		{
-			return ::TryEnterCriticalSection(&impl);
+			return ::TryEnterCriticalSection(const_cast<native_handle_type>(&impl));
 		}
 
 		void unlock() const noexcept
 		{
-			::LeaveCriticalSection(&impl);
+			::LeaveCriticalSection(const_cast<native_handle_type>(&impl));
 		}
 
 		native_handle_type native_handle() noexcept
@@ -41,7 +41,7 @@ namespace sync
 		}
 
 	private:
-		mutable native_impl_type impl;
+		native_impl_type impl;
 	};
 }
 

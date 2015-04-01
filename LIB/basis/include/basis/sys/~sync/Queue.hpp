@@ -14,7 +14,7 @@ namespace sync
 
 		virtual void put_message(const Message& message) = 0;
 
-		virtual WaitResult_t get_message(Message& message, Timeout_t timeout_msec = WAIT_FOREVER) = 0;
+		virtual WaitResult_t get_message(Message& message, size_t timeout_ms = WAIT_FOREVER) = 0;
 
 		virtual bool empty() const noexcept = 0;
 	};

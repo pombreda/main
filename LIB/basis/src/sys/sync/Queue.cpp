@@ -17,7 +17,7 @@ namespace sync
 
 		void put_message(const Message& message) override;
 
-		WaitResult_t get_message(Message& message, Timeout_t timeout_msec) override;
+		WaitResult_t get_message(Message& message, size_t timeout_msec) override;
 
 		bool empty() const noexcept override;
 
@@ -40,7 +40,7 @@ namespace sync
 		Semaphore::unlock();
 	}
 
-	WaitResult_t QueueImpl::get_message(Message& message, Timeout_t timeout_msec)
+	WaitResult_t QueueImpl::get_message(Message& message, size_t timeout_msec)
 	{
 		LogTrace(L"(wait: %Id)\n", timeout_msec);
 		auto waitResult = Semaphore::try_lock_ex(timeout_msec);

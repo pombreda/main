@@ -114,7 +114,7 @@ namespace thread {
 		return ret;
 	}
 
-	sync::WaitResult_t Unit::wait(sync::Timeout_t timeout) const
+	sync::WaitResult_t Unit::wait(size_t timeout) const
 	{
 		LogTrace(L"id: %u, timeout: %Id\n", m_id, timeout);
 		return (sync::WaitResult_t)::WaitForSingleObjectEx(m_handle, timeout, true);
