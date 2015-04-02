@@ -32,9 +32,10 @@
 #define HostNew2(Size, Func, Line)                    ::operator new(Size, simstd::nothrow, Func, Line)
 #define HostDelete2(Ptr, Func, Line)                  ::operator delete(Ptr, simstd::nothrow, Func, Line);
 
-namespace memory {
-	namespace heap {
-
+namespace memory
+{
+	namespace heap
+	{
 		typedef DecoratorStat<Default, StatCount> DefaultStatCount;
 
 		typedef DecoratorStat<Default, StatLog> DefaultStatLogged;
@@ -44,14 +45,15 @@ namespace memory {
 #else
 		typedef DefaultStatLogged DefaultStat;
 #endif
-
 	}
 }
 
-namespace memory {
-	namespace heap {
-
-		struct Heap {
+namespace memory
+{
+	namespace heap
+	{
+		struct Heap
+		{
 			~Heap();
 			Heap(size_t size = 0);
 			size_t size() const;
@@ -63,7 +65,6 @@ namespace memory {
 		private:
 			HANDLE m_heap;
 		};
-
 	}
 }
 

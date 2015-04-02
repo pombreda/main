@@ -24,6 +24,8 @@ namespace tst
 	ssize_t _string();
 	ssize_t _unique_ptr();
 	ssize_t _vector();
+
+	ssize_t _sync();
 }
 
 #include <basis/~tst/A.hpp>

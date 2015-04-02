@@ -8,34 +8,36 @@
 
 struct Routine: public thread::Routine
 {
-	Routine(sync::Queue * queue, ssize_t num):
+	Routine(const sync::Queue& queue, ssize_t num):
 		m_queue(queue),
 		m_num(num)
 	{
-		LogTrace();
+		LogTraceLn();
 	}
 
 	size_t run(void *) override
 	{
 		LogDebug(L"Start routine\n");
 		::Sleep(3000);
+
 		sync::Message message;
 		m_queue->get_message(message, 5000);
+
 		LogDebug(L"Exit routine\n");
 		return m_num;
 	}
 
 private:
-	sync::Queue * m_queue;
+	const sync::Queue& m_queue;
 	ssize_t m_num;
 };
 
 void test_threads()
 {
-	LogTrace();
-	sync::Queue queue;
-	Routine routine1(&queue, 100);
-	Routine routine2(&queue, 200);
+	LogTraceLn();
+	auto queue = sync::create_queue(L"QueueTestThreads");
+	Routine routine1(queue, 100);
+	Routine routine2(queue, 200);
 	thread::Pool threads;
 	threads.create_thread(&routine1, true);
 	threads.create_thread(&routine2, true);
@@ -51,9 +53,19 @@ void test_threads()
 	threads[0].set_priority(thread::Priority::TIME_CRITICAL);
 	threads[1].set_priority(thread::Priority::ABOVE_NORMAL);
 
-	sync::Message message(1, 2, 3, nullptr);
-	queue.put_message(message);
-	queue.put_message(message);
+	{
+		auto message = sync::create_message(1, 2, 3);
+		TraceFunc();
+		TraceFunc();
+		TraceFunc();
+		TraceFunc();
+		queue->put_message(message);
+//		queue->put_message(message);
+		TraceFunc();
+		TraceFunc();
+		TraceFunc();
+		TraceFunc();
+	}
 
 	threads[0].resume();
 	threads[1].resume();

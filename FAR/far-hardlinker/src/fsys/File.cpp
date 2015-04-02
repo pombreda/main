@@ -8,8 +8,8 @@ namespace fsys {
 
 	File::~File()
 	{
-		LogTraceObj();
-		LogNoise(L"'%s' [%I64u], '%s'\n", m_name.c_str(), size(), get_full_path().c_str());
+		LogTraceObjLn();
+		LogTrace(L"'%s' [%I64u], '%s'\n", m_name.c_str(), size(), get_full_path().c_str());
 		++global::statistics().fileObjectsDestroyed;
 	}
 
@@ -21,8 +21,8 @@ namespace fsys {
 		, m_volume_sn()
 		, m_inode()
 	{
-		LogTraceObj();
-		LogNoise(L"'%s'\n", m_name.c_str());
+		LogTraceObjLn();
+		LogTrace(L"'%s'\n", m_name.c_str());
 		++global::statistics().fileObjectsCreated;
 	}
 
@@ -34,8 +34,8 @@ namespace fsys {
 		, m_volume_sn()
 		, m_inode()
 	{
-		LogTraceObj();
-		LogNoise(L"'%s'\n", m_name.c_str());
+		LogTraceObjLn();
+		LogTrace(L"'%s'\n", m_name.c_str());
 		refresh_handle_info(true);
 		++global::statistics().fileObjectsCreated;
 	}

@@ -9,12 +9,12 @@
 
 void test_zodiac()
 {
-	LogTrace();
+	LogTraceLn();
 
 	LogConsoleReport(-1, L"Вносим элемент случайности\n");
 	std::srand(std::time(NULL));
 
 	ssize_t ret = Main().main();
 
-	LogNoise(L"-> %Id\n", ret);
+	LogTrace(L"-> %Id\n", ret);
 }

@@ -9,7 +9,7 @@ namespace Ext {
 //	WinServices::WinServices(RemoteConnection * conn, bool autocache):
 //		m_conn(conn),
 //		m_type(type_svc) {
-//		LogTrace();
+//		LogTraceLn();
 //		if (autocache)
 //			cache();
 //	}
@@ -76,7 +76,7 @@ namespace Ext {
 //	}
 //
 //	bool WinServices::cache_by_type(DWORD type, RemoteConnection * conn) {
-//		LogTrace();
+//		LogTraceLn();
 //		//	printf(L"%S: 0\n", __PRETTY_FUNCTION__);
 //		RemoteConnection * new_conn = conn ? conn : m_conn;
 //		WinScm scm(new_conn, SC_MANAGER_CONNECT | SC_MANAGER_ENUMERATE_SERVICE);

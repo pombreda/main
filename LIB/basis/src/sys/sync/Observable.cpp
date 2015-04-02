@@ -1,15 +1,14 @@
-#include <basis/configure.hpp>
 #include <basis/sys/sync.hpp>
 
-namespace sync {
-
+namespace sync
+{
 	Observable::~Observable()
 	{
 		m_manager->unregister_observable(this);
 	}
 
 	Observable::Observable() :
-		m_manager(MessageManager::get_default()),
+		m_manager(MessageManagerI::get_default()),
 		m_changed(false)
 	{
 	}
@@ -19,12 +18,12 @@ namespace sync {
 		m_manager->register_observer(this, observer);
 	}
 
-	void Observable::unregister_observer(Observer * observer) const
+	void Observable::unregister_observer(Observer* observer) const
 	{
 		m_manager->unregister_observer(this, observer);
 	}
 
-	void Observable::notify_observers(const Message & event) const
+	void Observable::notify_observers(const Message& event) const
 	{
 		if (m_changed) {
 			m_manager->notify(this, event);
@@ -41,5 +40,4 @@ namespace sync {
 	{
 		return m_changed;
 	}
-
 }

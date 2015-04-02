@@ -25,7 +25,7 @@ namespace far3 {
 
 	Plugin_i::Plugin_i(const PluginStartupInfo * info)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		m_psi = *info;
 		m_fsf = *info->FSF;
 		m_psi.FSF = &m_fsf;
@@ -33,14 +33,14 @@ namespace far3 {
 
 	void Plugin_i::GetPluginInfoW(PluginInfo * info)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		info->StructSize = sizeof(*info);
 		GetPluginInfo(info);
 	}
 
 	PanelController_i * Plugin_i::OpenW(const OpenInfo * info)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		if (info->StructSize < sizeof(*info))
 			return nullptr;
 		return Open(info);
@@ -48,7 +48,7 @@ namespace far3 {
 
 	void Plugin_i::ExitFARW(const ExitInfo * info)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		if (info->StructSize < sizeof(*info))
 			return;
 		return ExitFAR(info);
@@ -57,14 +57,14 @@ namespace far3 {
 	///=============================================================================================
 	PanelController_i * Plugin_i::Open(const OpenInfo * info)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		UNUSED(info);
 		return nullptr;
 	}
 
 	void Plugin_i::ExitFAR(const ExitInfo * info)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		UNUSED(info);
 	}
 

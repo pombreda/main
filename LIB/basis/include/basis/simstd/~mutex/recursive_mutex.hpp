@@ -1,8 +1,8 @@
 #ifndef BASIS_MUTEX_RECURSIVE_MUTEX_HPP_
 #define BASIS_MUTEX_RECURSIVE_MUTEX_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	class recursive_mutex: private sync::Mutex
 	{
 		using base_type = sync::Mutex;
@@ -18,7 +18,6 @@ namespace simstd {
 
 		using base_type::native_handle;
 	};
-
 }
 
 #endif

@@ -1,31 +1,23 @@
 #ifndef BASIS_SYS_SYNC_QUEUE_HPP_
 #define BASIS_SYS_SYNC_QUEUE_HPP_
 
-#include <basis/sys/sync.hpp>
+namespace sync
+{
+	using Queue = simstd::shared_ptr<QueueI>;
 
-namespace sync {
+	Queue create_queue(const wchar_t* name = EMPTY_STR);
 
-	class Queue: private pattern::Uncopyable {
+	class QueueI
+	{
 	public:
-		~Queue();
+		virtual ~QueueI() = default;
 
-		Queue();
+		virtual void put_message(const Message& message) = 0;
 
-		Queue(Queue&& right);
+		virtual WaitResult_t get_message(Message& message, size_t timeout_ms = WAIT_FOREVER) = 0;
 
-		Queue& operator =(Queue&& right);
-
-		void swap(Queue& right);
-
-		void put_message(const Message& message);
-
-		WaitResult_t get_message(Message& message, Timeout_t timeout_msec = WAIT_FOREVER);
-
-	private:
-		struct Queue_impl;
-		Queue_impl* m_impl;
+		virtual bool empty() const noexcept = 0;
 	};
-
 }
 
 #endif

@@ -69,7 +69,7 @@ namespace far3 {
 
 		FacadeImpl::~FacadeImpl()
 		{
-			LogTraceObj();
+			LogTraceObjLn();
 
 			HostFree(heap_type, m_dir);
 			HostFree(heap_type, m_ppi);
@@ -80,13 +80,13 @@ namespace far3 {
 			, m_ppi(nullptr)
 			, m_dir(nullptr)
 		{
-			LogTraceObjBegin();
-			LogNoise(L"[%d, %p]\n", activePanel, m_hndl);
+			LogTraceObj(L"begin\n");
+			LogTrace(L"[%d, %p]\n", activePanel, m_hndl);
 			memory::zero(m_pi);
 			m_pi.StructSize = sizeof(m_pi);
 
 			m_pi.StructSize = psi().PanelControl(m_hndl, FCTL_GETPANELINFO, 0, &m_pi);
-			LogTraceObjEnd();
+			LogTraceObj(L"end\n");
 		}
 
 		inline bool FacadeImpl::is_valid() const
@@ -133,20 +133,20 @@ namespace far3 {
 			if (psi().PanelControl(m_hndl, FCTL_GETPANELDIRECTORY, size, m_dir) && m_dir->Name) {
 				ret = m_dir->Name;
 			}
-			LogNoise(L"-> '%s'\n", ret);
+			LogTrace(L"-> '%s'\n", ret);
 			return ret;
 		}
 
 		const PluginPanelItem* FacadeImpl::operator [](size_t index) const
 		{
 			size_t m_ppiSize = psi().PanelControl(m_hndl, FCTL_GETPANELITEM, index, nullptr);
-			LogNoise2(L"size: %Iu\n", m_ppiSize);
+			LogTrace2(L"size: %Iu\n", m_ppiSize);
 			m_ppi = static_cast<decltype(m_ppi)>(HostRealloc(heap_type, m_ppi, m_ppiSize));
 
 			FarGetPluginPanelItem gpi = {sizeof(gpi), m_ppiSize, m_ppi};
 			psi().PanelControl(m_hndl, FCTL_GETPANELITEM, index, &gpi);
 
-			LogNoise(L"[%Iu] -> %p\n", index, m_ppi);
+			LogTrace(L"[%Iu] -> %p\n", index, m_ppi);
 			return m_ppi;
 		}
 
@@ -158,7 +158,7 @@ namespace far3 {
 			FarGetPluginPanelItem gpi = {sizeof(gpi), m_ppiSize, m_ppi};
 			psi().PanelControl(m_hndl, FCTL_GETSELECTEDPANELITEM, index, &gpi);
 
-			LogNoise(L"[%Iu] -> %p\n", index, m_ppi);
+			LogTrace(L"[%Iu] -> %p\n", index, m_ppi);
 			return m_ppi;
 		}
 
@@ -169,25 +169,25 @@ namespace far3 {
 
 		void FacadeImpl::start_selection()
 		{
-			LogTraceObj();
+			LogTraceObjLn();
 			psi().PanelControl(m_hndl, FCTL_BEGINSELECTION, 0, nullptr);
 		}
 
 		void FacadeImpl::select(size_t index, bool in)
 		{
-			LogTraceObj();
+			LogTraceObjLn();
 			psi().PanelControl(m_hndl, FCTL_SETSELECTION, index, (PVOID)in);
 		}
 
 		void FacadeImpl::unselect(size_t index)
 		{
-			LogTraceObj();
+			LogTraceObjLn();
 			psi().PanelControl(m_hndl, FCTL_CLEARSELECTION, index, nullptr);
 		}
 
 		void FacadeImpl::commit_selection()
 		{
-			LogTraceObj();
+			LogTraceObjLn();
 			psi().PanelControl(m_hndl, FCTL_ENDSELECTION, 0, nullptr);
 		}
 

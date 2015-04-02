@@ -38,7 +38,7 @@ namespace service {
 		errorControl(Error::IGNORE_ERROR),
 		tagId(0)
 	{
-		LogTrace();
+		LogTraceLn();
 		memset(&status, 0, sizeof(status));
 		try {
 			auto conf(QueryConfig(svc));

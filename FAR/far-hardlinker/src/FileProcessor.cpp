@@ -117,7 +117,7 @@ void scan_single_folder(fsys::Node_t folder)
 
 ssize_t FileProcessor::execute()
 {
-	LogTrace();
+	LogTraceLn();
 	LogConsoleInfo(-1, L"folders to process: %I64u\n", global::vars().folders.size());
 
 //	int m_width = 50;

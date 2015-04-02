@@ -51,7 +51,7 @@ namespace thread {
 
 		bool resume() const;
 
-		sync::WaitResult_t wait(sync::Timeout_t timeout = sync::WAIT_FOREVER) const;
+		sync::WaitResult_t wait(size_t timeout = sync::WAIT_FOREVER) const;
 
 	private:
 		Routine * m_routine;

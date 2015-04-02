@@ -41,5 +41,5 @@
 
 void test_future()
 {
-	LogTrace();
+	LogTraceLn();
 }

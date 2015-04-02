@@ -39,7 +39,7 @@ namespace far3 {
 			ItemBinding(min_width),
 			m_value(value)
 		{
-			LogTraceObj();
+			LogTraceObjLn();
 		}
 
 		void PluginEditFieldBinding::save() const
@@ -56,7 +56,7 @@ namespace far3 {
 
 		Item create_edit(simstd::wstring& value, ssize_t min_width, const wchar_t* history_id, bool use_last_history, FARDIALOGITEMFLAGS flags)
 		{
-			LogNoise(L"'%s', flags: 0x%I64X\n", value.c_str(), flags);
+			LogTrace(L"'%s', flags: 0x%I64X\n", value.c_str(), flags);
 			Item ret(new PluginEditFieldBinding(value, min_width), DI_EDIT, value.c_str(), flags);
 			if (min_width == -1)
 				min_width = 10;
@@ -75,7 +75,7 @@ namespace far3 {
 
 		Item create_password(simstd::wstring& value, ssize_t min_width, FARDIALOGITEMFLAGS flags)
 		{
-			LogNoise(L"%flags: 0x%I64X\n", flags);
+			LogTrace(L"%flags: 0x%I64X\n", flags);
 			Item ret(new PluginEditFieldBinding(value, min_width), DI_PSWEDIT, value.c_str(), flags);
 			if (min_width == -1)
 				min_width = 10;

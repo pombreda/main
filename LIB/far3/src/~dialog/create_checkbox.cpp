@@ -44,7 +44,7 @@ namespace far3 {
 		{
 			intptr_t Selected = psi().SendDlgMessage(get_dialog(), DM_GETCHECK, get_index(), 0);
 			m_value = Selected;
-			LogNoise(L"dlg: %p, index: %Id, value: %Id\n", get_dialog(), get_index(), m_value);
+			LogTrace(L"dlg: %p, index: %Id, value: %Id\n", get_dialog(), get_index(), m_value);
 		}
 
 //		ssize_t CheckBoxBinding::get_width() const
@@ -54,7 +54,7 @@ namespace far3 {
 
 		Item create_checkbox(ssize_t& value, const wchar_t* text, ssize_t min_width, FARDIALOGITEMFLAGS flags)
 		{
-			LogNoise(L"'%s' %Id, 0x%I64X\n", text, value, flags);
+			LogTrace(L"'%s' %Id, 0x%I64X\n", text, value, flags);
 			Item ret(new CheckBoxBinding(value, min_width), DI_CHECKBOX, text, flags);
 			ret.Selected = value;
 

@@ -8,7 +8,7 @@
 
 void add_auth()
 {
-	LogTrace();
+	LogTraceLn();
 }
 
 void test_auth()

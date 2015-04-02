@@ -1,10 +1,11 @@
 ﻿#ifndef BASIS_MEMORY_ALLOCATORHEAP_HPP_
 #define BASIS_MEMORY_ALLOCATORHEAP_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Type, typename HeapType>
-	class AllocatorHeap {
+	class AllocatorHeap
+	{
 	public:
 		using value_type      = Type;
 		using pointer         = Type*;
@@ -29,10 +30,10 @@ namespace simstd {
 		pointer       address(reference r) const noexcept;
 		const_pointer address(const_reference r) const noexcept;
 
-		pointer allocate(size_type cnt, simstd::allocator<void>::const_pointer hint = 0);
+		pointer allocate(size_type cnt, allocator<void>::const_pointer hint = 0);
 		void    deallocate(pointer ptr, size_type cnt);
 		pointer allocate(size_type cnt, const char* function, int line, allocator<void>::const_pointer hint = nullptr);
-		void    deallocate(pointer ptr, const char* function, int line, size_type cnt);
+		void    deallocate(pointer ptr, size_type cnt, const char* function, int line);
 
 		size_type max_size() const noexcept;
 
@@ -46,17 +47,17 @@ namespace simstd {
 	template<typename Type, typename HeapType>
 	typename AllocatorHeap<Type, HeapType>::pointer AllocatorHeap<Type, HeapType>::address(reference r) const noexcept
 	{
-		return simstd::addressof(r);
+		return addressof(r);
 	}
 
 	template<typename Type, typename HeapType>
 	typename AllocatorHeap<Type, HeapType>::const_pointer AllocatorHeap<Type, HeapType>::address(const_reference r) const noexcept
 	{
-		return simstd::addressof(r);
+		return addressof(r);
 	}
 
 	template<typename Type, typename HeapType>
-	typename AllocatorHeap<Type, HeapType>::pointer AllocatorHeap<Type, HeapType>::allocate(size_type cnt, simstd::allocator<void>::const_pointer /*hint*/)
+	typename AllocatorHeap<Type, HeapType>::pointer AllocatorHeap<Type, HeapType>::allocate(size_type cnt, allocator<void>::const_pointer /*hint*/)
 	{
 		return static_cast<pointer>(HostAlloc(HeapType, sizeof(Type) * cnt));
 	}
@@ -74,7 +75,7 @@ namespace simstd {
 	}
 
 	template<typename Type, typename HeapType>
-	void AllocatorHeap<Type, HeapType>::deallocate(pointer ptr, const char* function, int line, size_type /*cnt*/)
+	void AllocatorHeap<Type, HeapType>::deallocate(pointer ptr, size_type /*cnt*/, const char* function, int line)
 	{
 		HostFree2(HeapType, ptr, function, line);
 	}
@@ -86,17 +87,17 @@ namespace simstd {
 	}
 
 	template<typename Type, typename HeapType>
-	template<typename PtrType, typename ... Args>
+	template<typename PtrType, typename... Args>
 	void AllocatorHeap<Type, HeapType>::construct(PtrType* ptr, Args&&... args)
 	{
-		::new (static_cast<void*>(ptr), simstd::nothrow) Type(simstd::forward<Args>(args)...);
+		::new (static_cast<void*>(ptr), nothrow) PtrType(forward<Args>(args)...);
 	}
 
 	template<typename Type, typename HeapType>
 	template<typename PtrType>
 	void AllocatorHeap<Type, HeapType>::destroy(PtrType* ptr)
 	{
-		ptr->~Type();
+		ptr->~PtrType();
 	}
 
 	template<typename Type, typename HeapType>
@@ -122,7 +123,6 @@ namespace simstd {
 	{
 		return false;
 	}
-
 }
 
 #endif

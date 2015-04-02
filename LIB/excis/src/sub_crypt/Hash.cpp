@@ -8,24 +8,24 @@ namespace crypt {
 
 	Hash::~Hash()
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		if (m_handle)
 			::CryptDestroyHash(m_handle);
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	Hash::Hash(HCRYPTPROV prov, ALG_ID alg)
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		CheckApi(::CryptCreateHash(prov, alg, 0, 0, &m_handle));
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	Hash::Hash(HCRYPTHASH hash)
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		CheckApi(::CryptDuplicateHash(hash, nullptr, 0, &m_handle));
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 //		Hash::Hash(const Fsys::File::Facade & wf, uint64_t size) :

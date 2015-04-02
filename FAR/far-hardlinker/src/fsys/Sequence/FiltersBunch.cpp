@@ -174,14 +174,14 @@ fsys::Sequence::Filter* fsys::Sequence::Filter::ByAcTime::clone() const
 
 fsys::Sequence::FiltersBunch::~FiltersBunch()
 {
-	LogTraceObj();
+	LogTraceObjLn();
 }
 
 fsys::Sequence::FiltersBunch::FiltersBunch(Type type, const ustring& name):
 	name(name),
 	type(type)
 {
-	LogTraceObj();
+	LogTraceObjLn();
 	for (auto it = bunch.cbegin(); it != bunch.cend(); ++it)
 		(*it)->destroy();
 }

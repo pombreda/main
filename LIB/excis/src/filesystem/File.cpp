@@ -14,7 +14,7 @@ namespace fsys {
 		bool is_exist(PCWSTR path)
 		{
 			bool ret = fsys::is_exist(path) && fsys::is_file(path);
-			LogNoise(L"'%s' -> %d\n", path, ret);
+			LogTrace(L"'%s' -> %d\n", path, ret);
 			return ret;
 		}
 

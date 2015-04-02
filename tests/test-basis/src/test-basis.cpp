@@ -47,7 +47,9 @@ int main(int argc, char* argv[])
 //
 //	test_crashes();
 //
-	tst::_list();
+//	tst::_list();
+//
+	test_lock();
 //
 //	test_math();
 //
@@ -72,7 +74,7 @@ int main(int argc, char* argv[])
 //	test_zodiac();
 
 	TraceFunc();
-	LogTrace();
+	LogTraceLn();
 	return 0;
 }
 

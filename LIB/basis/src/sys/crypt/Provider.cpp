@@ -21,19 +21,19 @@ namespace crypt {
 
 	ProviderImpl::~ProviderImpl()
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		bool ok = ::CryptReleaseContext(m_handle, 0);
 		LogErrorIf(!ok, L"-> %s\n", totext::api_error().c_str());
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	ProviderImpl::ProviderImpl() :
 		m_handle()
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		bool ok = ::CryptAcquireContextW(&m_handle, nullptr, nullptr, PROV_RSA_AES, 0) || ::CryptAcquireContextW(&m_handle, nullptr, nullptr, PROV_RSA_AES, CRYPT_NEWKEYSET);
 		LogErrorIf(!ok, L"-> %s\n", totext::api_error().c_str());
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	bool ProviderImpl::is_valid() const

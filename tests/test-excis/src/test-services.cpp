@@ -12,13 +12,13 @@ struct ServicesView: public sync::Observer
 {
 	~ServicesView()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 
 	ServicesView(service::Enum* enumSvc):
 		m_svcs(enumSvc)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		m_svcs->register_observer(this);
 	}
 
@@ -41,21 +41,21 @@ void test_service()
 
 	service::Enum svcs;//(L"localhost");
 
-	LogTrace();
+	LogTraceLn();
 	ServicesView obs(&svcs);
 
 //	svcs.start_batch();
 
-	LogTrace();
+	LogTraceLn();
 	svcs.set_type(service::EnumerateType::SERVICES);
 
-	LogTrace();
+	LogTraceLn();
 	svcs.set_type(service::EnumerateType::DRIVERS);
 
-	LogTrace();
+	LogTraceLn();
 	svcs.set_host(L"localhost");
 
 //	svcs.stop_batch();
 
-	LogTrace();
+	LogTraceLn();
 }

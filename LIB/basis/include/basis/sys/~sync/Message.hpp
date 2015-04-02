@@ -1,46 +1,65 @@
 #ifndef BASIS_SYS_SYNC_MESSAGE_HPP_
 #define BASIS_SYS_SYNC_MESSAGE_HPP_
 
-#include <basis/sys/sync.hpp>
+namespace sync
+{
+	using Message = simstd::unique_ptr<MessageI>;
 
-namespace sync {
+	template<typename MessageType, typename... Args>
+	Message create_message(Args&&... args)
+	{
+		return simstd::make_unique<MessageType>(simstd::forward<Args>(args)...);
+	}
 
-	struct Message {
-		typedef ssize_t type_t;
-		typedef ssize_t code_t;
-		typedef ssize_t param_t;
-		typedef void * data_t;
+	class MessageI
+	{
+	public:
+		using param_type = size_t;
 
-		static const type_t MASK_ALL_TYPES = ~static_cast<type_t>(0);
-		static const code_t MASK_ALL_CODES = ~static_cast<code_t>(0);
+		static const param_type MASK_ALL_TYPES = ~static_cast<param_type>(0);
+		static const param_type MASK_ALL_CODES = ~static_cast<param_type>(0);
 
-		~Message();
+		enum Type {
+			SYSTEM = 0x01,
+		};
 
-		Message(const type_t & type = type_t(), const code_t & code = code_t(), const param_t & param = param_t(), const data_t & data = data_t());
+		virtual ~MessageI() = default;
 
-		type_t get_type() const;
+		virtual Message clone() const
+		{
+			return create_message<MessageI>(type, a, b, c);
+		}
 
-		code_t get_code() const;
+		param_type get_type() const noexcept {return type;}
+		param_type get_a() const noexcept {return a;}
+		param_type get_b() const noexcept {return b;}
+		param_type get_c() const noexcept {return c;}
 
-		param_t get_param() const;
+		void set_type(const param_type& type) noexcept {this->type = type;}
+		void set_a(const param_type& a) noexcept {this->a = a;}
+		void set_b(const param_type& b) noexcept {this->b = b;}
+		void set_c(const param_type& c) noexcept {this->c = c;}
 
-		data_t get_data() const;
-
-		void set_type(const type_t & in);
-
-		void set_code(const code_t & in);
-
-		void set_param(const param_t & in);
-
-		void set_data(const data_t & in);
+	protected:
+		MessageI(const param_type& type, const param_type& a, const param_type& b, const param_type& c) noexcept : type(type), a(a), b(b), c(c) {}
 
 	private:
-		type_t  m_type;
-		code_t  m_code;
-		param_t m_param;
-		data_t  m_data;
+		param_type type;
+		param_type a;
+		param_type b;
+		param_type c;
+
+		template<typename Type, typename... Args>
+		friend simstd::unique_ptr<Type> simstd::make_unique(Args&&... args);
 	};
 
+	inline Message create_message(const MessageI::param_type& type,
+		const MessageI::param_type& a = MessageI::param_type(),
+		const MessageI::param_type& b = MessageI::param_type(),
+		const MessageI::param_type& c = MessageI::param_type())
+	{
+		return create_message<MessageI>(type, a, b, c);
+	}
 }
 
 #endif

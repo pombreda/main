@@ -1,9 +1,10 @@
 ﻿#ifndef BASIS_EXTRA_PATTERN_UNCOPYABLE_HPP_
 #define BASIS_EXTRA_PATTERN_UNCOPYABLE_HPP_
 
-namespace pattern {
-
-	class Uncopyable {
+namespace pattern
+{
+	class Uncopyable
+	{
 	protected:
 		~Uncopyable() = default;
 
@@ -11,18 +12,17 @@ namespace pattern {
 
 	private:
 //#ifdef _MSC_VER
-//		Uncopyable(const Uncopyable &);
+//		Uncopyable(const Uncopyable&);
 //#else
-		Uncopyable(const Uncopyable &) = delete;
+		Uncopyable(const Uncopyable&) = delete;
 //#endif
 
 //#ifdef _MSC_VER
-//		Uncopyable & operator = (const Uncopyable &);
+//		Uncopyable& operator =(const Uncopyable&);
 //#else
-		Uncopyable & operator = (const Uncopyable &) = delete;
+		Uncopyable& operator =(const Uncopyable&) = delete;
 //#endif
 	};
-
 }
 
 #endif

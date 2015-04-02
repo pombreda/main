@@ -37,7 +37,7 @@ namespace far3 {
 
 	bool CompareWidth_less(const Item & a, const Item & b)
 	{
-		LogNoise(L"(%d, %s) cmp (%d, %s)\n", a.Type, a.Data, b.Type, b.Data);
+		LogTrace(L"(%d, %s) cmp (%d, %s)\n", a.Type, a.Data, b.Type, b.Data);
 		return (a.X1 + a.get_width()) < (b.X1 + b.get_width());
 	}
 
@@ -116,11 +116,11 @@ namespace far3 {
 
 	SimpleBuilder::~SimpleBuilder()
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		psi().DialogFree(DialogHandle);
 
 //		simstd::for_each(DialogItems.begin(), DialogItems.end(), std::bind(&Item::destroy, std::placeholders::_1));
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	SimpleBuilder::SimpleBuilder(size_t count, const GUID & guid, PCWSTR label, PCWSTR aHelpTopic, FARWINDOWPROC aDlgProc, void * aUserParam) :
@@ -135,15 +135,15 @@ namespace far3 {
 		OKButtonId(-1),
 		SingleBoxIndex(0)
 	{
-		LogTraceObj();
-		LogNoise(L"'%s'\n", label);
+		LogTraceObjLn();
+		LogTrace(L"'%s'\n", label);
 
 		DialogItems.reserve(count);
 
 		// create border
 		Item& item(add_dialog_item(22, DI_DOUBLEBOX, label));
 		item.set_dimensions(DEFAULT_BORDER_INDENT_X, DEFAULT_BORDER_INDENT_Y, item.get_width() + 4, 4);
-		LogNoise(L"NextY: %Id, size: %Iu\n", NextY, DialogItems.size());
+		LogTrace(L"NextY: %Id, size: %Iu\n", NextY, DialogItems.size());
 	}
 
 	bool SimpleBuilder::is_valid() const
@@ -155,7 +155,7 @@ namespace far3 {
 
 	Item& SimpleBuilder::add_item(Item&& it)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		Item& ret(add_dialog_item(simstd::move(it)));
 		set_next_y(ret);
 
@@ -179,7 +179,7 @@ namespace far3 {
 
 	Item& SimpleBuilder::add_item_after(Item&& it)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		Item& item(add_dialog_item(simstd::move(it)));
 		Item& RelativeTo(DialogItems[DialogItems.size() - 2]);
 		item.Y1 = item.Y2 = RelativeTo.Y1;
@@ -208,13 +208,13 @@ namespace far3 {
 
 	void SimpleBuilder::add_empty_line()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		NextY++;
 	}
 
 	void SimpleBuilder::add_OKCancel(PCWSTR OKLabel, PCWSTR CancelLabel, PCWSTR ExtraLabel)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		Item& OKButton(add_dialog_item(-1, DI_BUTTON, OKLabel, DIF_CENTERGROUP | DIF_DEFAULTBUTTON));
 		OKButton.Y1 = OKButton.Y2 = NextY++;
 		OKButtonId = DialogItems.size() - 1;
@@ -279,9 +279,9 @@ namespace far3 {
 
 	int SimpleBuilder::show()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		UpdateBorderSize();
-		LogTraceObj();
+		LogTraceObjLn();
 		int Result = show_dialog_();
 		if (Result == OKButtonId) {
 			save();
@@ -295,7 +295,7 @@ namespace far3 {
 	///---------------------------------------------------------------------------------------------
 	Item& SimpleBuilder::add_dialog_item(ssize_t min_width, FARDIALOGITEMTYPES type, PCWSTR text, FARDIALOGITEMFLAGS flags)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		LogFatalIf(DialogItems.size() == DialogItems.capacity(), L"dialog items container will be replaced\n");
 		CRT_ASSERT(DialogItems.size() != DialogItems.capacity());
 		DialogItems.emplace_back(min_width, type, text, flags);
@@ -303,14 +303,14 @@ namespace far3 {
 		ret.set_dialog(DialogHandle);
 		ret.set_index(DialogItems.size() - 1);
 
-		LogNoise(L"DialogItems.size(): %Iu\n", DialogItems.size());
+		LogTrace(L"DialogItems.size(): %Iu\n", DialogItems.size());
 		return ret;
 	}
 
 	Item& SimpleBuilder::add_dialog_item(Item&& item)
 	{
 		CRT_ASSERT(DialogItems.size() != DialogItems.capacity());
-		LogTraceObj();
+		LogTraceObjLn();
 		DialogItems.emplace_back(simstd::move(item));
 
 		Item& ret = DialogItems.back();
@@ -322,16 +322,16 @@ namespace far3 {
 
 	ssize_t SimpleBuilder::GetMaxItemX2() const
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		auto it = simstd::max_element(++DialogItems.begin(), DialogItems.end(), &CompareWidth_less);
 		ssize_t ret = it->X1 + it->get_width() - 1 - ZERO_X;
-		LogNoise(L"-> %Id\n", ret);
+		LogTrace(L"-> %Id\n", ret);
 		return ret;
 	}
 
 	void SimpleBuilder::save()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		for (Item& it : DialogItems) {
 			it.save();
 		}
@@ -339,9 +339,9 @@ namespace far3 {
 
 	void SimpleBuilder::set_next_y(Item& item)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		item.set_dimensions(ZERO_X + DEFAULT_PADDING + Indent, NextY++, (item.X2) ? item.X2 : item.get_width());
-		LogNoise(L"NextY: %Id\n", NextY);
+		LogTrace(L"NextY: %Id\n", NextY);
 
 //		Item->X1 = ZERO_X + DEFAULT_PADDING + Indent;
 //		if (Item->X2)
@@ -354,7 +354,7 @@ namespace far3 {
 
 	int SimpleBuilder::show_dialog_()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		ssize_t Width = DialogItems[0].X2 + (DEFAULT_BORDER_INDENT_X  + 1);
 		ssize_t Height = DialogItems[0].Y2 + (DEFAULT_BORDER_INDENT_Y  + 1);
 		DialogHandle = psi().DialogInit(get_plugin_guid(), &m_guid, -1, -1, Width, Height, HelpTopic, &DialogItems[0], DialogItems.size(), 0, 0, DlgProc, UserParam);
@@ -363,16 +363,16 @@ namespace far3 {
 
 	void SimpleBuilder::UpdateBorderSize()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		if (DialogItems.size() > 1) {
 			Item & border = DialogItems[0];
 			auto borderX2 = GetMaxItemX2() + DEFAULT_PADDING + 1;
-			LogTraceObj();
+			LogTraceObjLn();
 			borderX2 -= (border.X2 - border.X1);
-			LogTraceObj();
+			LogTraceObjLn();
 			if (borderX2 > 0)
 				border.X2 += borderX2;
-			LogTraceObj();
+			LogTraceObjLn();
 			border.Y2 = DialogItems.back().Y2 + 1;
 		}
 	}
@@ -380,7 +380,7 @@ namespace far3 {
 	///=============================================================================================
 	Builder create_builder(size_t count, const GUID & aId, PCWSTR TitleLabel, PCWSTR aHelpTopic, FARWINDOWPROC aDlgProc, void * aUserParam)
 	{
-		LogTrace();
+		LogTraceLn();
 		simstd::unique_ptr<SimpleBuilder> tmp(new SimpleBuilder(count, aId, TitleLabel, aHelpTopic, aDlgProc, aUserParam));
 		return tmp->is_valid() ? Builder(simstd::move(tmp)) : Builder();
 	}

@@ -1,10 +1,8 @@
 #ifndef BASIS_SYS_SYNC_MUTEX_HPP_
 #define BASIS_SYS_SYNC_MUTEX_HPP_
 
-#include <basis/sys/sync.hpp>
-
-namespace sync {
-
+namespace sync
+{
 	class Mutex: private pattern::Uncopyable
 	{
 		struct native_impl_type;
@@ -12,22 +10,21 @@ namespace sync {
 	public:
 		using native_handle_type = native_impl_type*;
 
-		~Mutex();
+		~Mutex() noexcept;
 
-		Mutex(const wchar_t* name = EMPTY_STR);
+		Mutex(const wchar_t* name = EMPTY_STR) noexcept;
 
-		void lock();
+		void lock() const noexcept;
 
-		bool try_lock(size_t timeout_millisec = 0);
+		bool try_lock(size_t timeout_ms = 0) const noexcept;
 
-		void unlock();
+		void unlock() const noexcept;
 
-		native_handle_type native_handle();
+		native_handle_type native_handle() noexcept;
 
 	private:
-		native_handle_type m_handle;
+		native_handle_type handle;
 	};
-
 }
 
 #endif

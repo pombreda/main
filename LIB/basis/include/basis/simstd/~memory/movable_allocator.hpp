@@ -3,9 +3,10 @@
 
 #include <basis/sys/~memory/heap/Default.hpp>
 
-namespace simstd {
-
-	namespace pvt {
+namespace simstd
+{
+	namespace pvt
+	{
 		template<typename Type>
 		struct movable_allocator {
 			typedef Type value_type;
@@ -67,13 +68,13 @@ namespace simstd {
 		template<typename Type>
 		void movable_allocator<Type>::construct(pointer ptr, const_reference val)
 		{
-			simstd::pvt::construct(ptr, val);
+			pvt::construct(ptr, val);
 		}
 
 		template<typename Type>
 		void movable_allocator<Type>::destroy(pointer ptr)
 		{
-			simstd::pvt::destroy(ptr);
+			pvt::destroy(ptr);
 		}
 	}
 

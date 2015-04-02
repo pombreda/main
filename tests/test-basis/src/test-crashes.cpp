@@ -53,7 +53,7 @@ void crash_virtual_function_call()
 
 		B()
 		{
-			LogTrace();
+			LogTraceLn();
 			nvf();
 		}
 
@@ -64,7 +64,7 @@ void crash_virtual_function_call()
 
 	struct D: public B
 	{
-		void vf() override {LogTrace();}
+		void vf() override {LogTraceLn();}
 	};
 
 	B* b = new D;

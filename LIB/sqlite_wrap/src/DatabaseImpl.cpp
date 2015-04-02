@@ -35,7 +35,7 @@ namespace sqlite {
 	DatabaseImpl::~DatabaseImpl()
 	{
 		close();
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 
 	bool DatabaseImpl::is_valid() const
@@ -46,7 +46,7 @@ namespace sqlite {
 	DatabaseImpl::DatabaseImpl(const wchar_t* path) :
 		m_db(internal::database_open(path))
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		LogDebug(L"[%s] -> %p\n", path, m_db);
 		if (is_valid()) {
 			sqlite3_extended_result_codes(m_db, 1);

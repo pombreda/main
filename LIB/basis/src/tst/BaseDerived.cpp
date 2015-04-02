@@ -7,59 +7,59 @@ namespace tst
 	ssize_t Base1::objects = 0;
 	Base1::~Base1()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		--objects;
 	}
 	Base1::Base1()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		++objects;
 	}
 	ssize_t Base1::get_value() const
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		return i;
 	}
 
 	Base2::~Base2()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 	Base2::Base2()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 	ssize_t Base2::get_value() const
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		return i;
 	}
 
 	Derived1::~Derived1()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 	Derived1::Derived1()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 	ssize_t Derived1::get_value() const
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		return i;
 	}
 
 	Derived2::~Derived2()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 	Derived2::Derived2()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 	}
 	ssize_t Derived2::get_value() const
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		return i;
 	}
 

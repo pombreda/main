@@ -8,21 +8,21 @@
 //public:
 //	~WriterRoutine()
 //	{
-//		LogTraceObj();
+//		LogTraceObjLn();
 //	}
 //
 //	WriterRoutine(sync::Queue* queue, ssize_t num):
 //		m_queue(queue),
 //		m_num(num)
 //	{
-//		LogTraceObj();
+//		LogTraceObjLn();
 //	}
 //
 //	size_t run(void*) override
 //	{
 //		LogDebug(L"Start routine\n");
 //		::Sleep(3000);
-//		sync::Message message;
+//		sync::MessageI message;
 //		m_queue->get_message(message, 5000);
 //		LogDebug(L"Exit routine\n");
 //		return m_num;

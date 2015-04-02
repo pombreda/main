@@ -39,17 +39,17 @@ namespace connection {
 
 	RemoteImpl::~RemoteImpl()
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		disconnect();
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	RemoteImpl::RemoteImpl(const ustring& host, const wchar_t* user, const wchar_t* pass) :
 		m_connected(false)
 	{
-		LogTraceObjBegin();
+		LogTraceObj(L"begin\n");
 		do_connect(host, user, pass);
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	void RemoteImpl::disconnect()

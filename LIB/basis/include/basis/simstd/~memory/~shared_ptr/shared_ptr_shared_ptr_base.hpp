@@ -1,8 +1,8 @@
 ﻿#ifndef BASIS_MEMORY_SHARED_PTR_SHARED_PTR_HPP_
 #define BASIS_MEMORY_SHARED_PTR_SHARED_PTR_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	// Friend of enable_shared_from_this.
 	template<typename Type, typename OType>
 	void enable_shared_from_this_helper(const pvt::shared_count<>&, const enable_shared_from_this<Type>*, const OType*) noexcept;
@@ -35,7 +35,7 @@ namespace simstd {
 				, ptr(ptr)
 			{
 //				__glibcxx_function_requires(_ConvertibleConcept<OType*, Type*>)
-				static_assert(!simstd::is_void<OType>::value, "incomplete type");
+				static_assert(!is_void<OType>::value, "incomplete type");
 				static_assert(sizeof(OType) > 0, "incomplete type");
 				enable_shared_from_this_helper(refctr, ptr, ptr);
 			}
@@ -51,7 +51,7 @@ namespace simstd {
 
 			template<typename OType, typename Deleter, typename Allocator>
 			shared_ptr_base(OType* ptr, Deleter deleter, Allocator allocator)
-				: refctr(ptr, deleter, simstd::move(allocator))
+				: refctr(ptr, deleter, move(allocator))
 				, ptr(ptr)
 			{
 //				__glibcxx_function_requires(_ConvertibleConcept<OType*, Type*>)
@@ -67,7 +67,7 @@ namespace simstd {
 
 			template<typename Deleter, typename Allocator>
 			shared_ptr_base(nullptr_t ptr, Deleter deleter, Allocator allocator)
-				: refctr(ptr, deleter, simstd::move(allocator))
+				: refctr(ptr, deleter, move(allocator))
 				, ptr()
 			{
 			}
@@ -105,17 +105,17 @@ namespace simstd {
 
 			template<typename OType>
 			explicit shared_ptr_base(const weak_ptr_base<OType, LockPol>& other)
-				: refctr(other.refctr, simstd::nothrow)
+				: refctr(other.refctr, nothrow)
 				, ptr(other.ptr)
 			{
 			}
 
 			template<typename OType, typename Deleter>
-			shared_ptr_base(simstd::unique_ptr<OType, Deleter>&& other)
+			shared_ptr_base(unique_ptr<OType, Deleter>&& other)
 				: ptr(other.get())
 			{
 				auto __raw = raw_ptr(other.get());
-				refctr = shared_count<LockPol>(simstd::move(other));
+				refctr = shared_count<LockPol>(move(other));
 				enable_shared_from_this_helper(refctr, __raw, __raw);
 			}
 
@@ -137,21 +137,21 @@ namespace simstd {
 
 			shared_ptr_base& operator =(shared_ptr_base&& other) noexcept
 			{
-				shared_ptr_base(simstd::move(other)).swap(*this);
+				shared_ptr_base(move(other)).swap(*this);
 				return *this;
 			}
 
 			template<class OType>
 			shared_ptr_base& operator =(shared_ptr_base<OType, LockPol>&& other) noexcept
 			{
-				shared_ptr_base(simstd::move(other)).swap(*this);
+				shared_ptr_base(move(other)).swap(*this);
 				return *this;
 			}
 
 			template<typename OType, typename Deleter>
-			shared_ptr_base& operator =(simstd::unique_ptr<OType, Deleter>&& other)
+			shared_ptr_base& operator =(unique_ptr<OType, Deleter>&& other)
 			{
-				shared_ptr_base(simstd::move(other)).swap(*this);
+				shared_ptr_base(move(other)).swap(*this);
 				return *this;
 			}
 
@@ -175,7 +175,7 @@ namespace simstd {
 			template<typename OType, typename Deleter, typename Allocator>
 			void reset(OType* ptr, Deleter deleter, Allocator allocator)
 			{
-				shared_ptr_base(ptr, deleter, simstd::move(allocator)).swap(*this);
+				shared_ptr_base(ptr, deleter, move(allocator)).swap(*this);
 			}
 
 			// Allow class instantiation when Type is [cv-qual] void.
@@ -196,7 +196,7 @@ namespace simstd {
 				return ptr;
 			}
 
-			explicit operator bool() const // never throws
+			explicit operator bool() const noexcept
 			{
 				return ptr ? true : false;
 			}
@@ -235,7 +235,7 @@ namespace simstd {
 			// This constructor is non-standard, it is used by allocate_shared.
 			template<typename Allocator, typename... Args>
 			shared_ptr_base(make_shared_tag tag, const Allocator& allocator, Args&&... args)
-				: refctr(tag, (Type*)nullptr, allocator, simstd::forward<Args>(args)...)
+				: refctr(tag, (Type*)nullptr, allocator, forward<Args>(args)...)
 				, ptr()
 			{
 				// ptr needs to point to the newly constructed object.
@@ -250,7 +250,7 @@ namespace simstd {
 			{
 				void operator()(Type* __ptr)
 				{
-					typedef simstd::allocator_traits<Allocator> _Alloc_traits;
+					typedef allocator_traits<Allocator> _Alloc_traits;
 					_Alloc_traits::destroy(_M_alloc, __ptr);
 					_Alloc_traits::deallocate(_M_alloc, __ptr, 1);
 				}
@@ -264,9 +264,9 @@ namespace simstd {
 			{
 				typedef typename _Alloc::template rebind<Type>::other _Alloc2;
 				_Deleter<_Alloc2> __del = {_Alloc2(__a)};
-				typedef simstd::allocator_traits<_Alloc2> __traits;
+				typedef allocator_traits<_Alloc2> __traits;
 				ptr = __traits::allocate(__del._M_alloc, 1);
-				__traits::construct(__del._M_alloc, ptr, simstd::forward<_Args>(__args)...);
+				__traits::construct(__del._M_alloc, ptr, forward<_Args>(__args)...);
 				shared_count<LockPol> __count(ptr, __del, __del._M_alloc);
 				refctr.swap(__count);
 				enable_shared_from_this_helper(refctr, ptr, ptr);
@@ -277,8 +277,8 @@ namespace simstd {
 			friend shared_ptr_base<OType, OLockPol> allocate_shared(const _Alloc& __a, _Args&&... __args);
 
 			// This constructor is used by weak_ptr::lock() and shared_ptr::shared_ptr(const weak_ptr&, defstd::nothrow_t).
-			shared_ptr_base(const weak_ptr_base<Type, LockPol>& other, simstd::nothrow_t)
-				: refctr(other.refctr, simstd::nothrow)
+			shared_ptr_base(const weak_ptr_base<Type, LockPol>& other, nothrow_t)
+				: refctr(other.refctr, nothrow)
 			{
 				ptr = refctr.get_use_count() ? other.ptr : nullptr;
 			}
@@ -292,7 +292,7 @@ namespace simstd {
 			static OType* raw_ptr(OType* ptr) {return ptr;}
 
 			template<typename OType>
-			static auto raw_ptr(OType notptr) -> decltype(simstd::addressof(*notptr)) {return simstd::addressof(*notptr);}
+			static auto raw_ptr(OType notptr) -> decltype(addressof(*notptr)) {return addressof(*notptr);}
 
 			template<typename OType, LockPolicy OLockPol> friend class shared_ptr_base;
 			template<typename OType, LockPolicy OLockPol> friend class weak_ptr_base;
@@ -364,7 +364,7 @@ namespace simstd {
 
 			shared_ptr_base<Type, LockPol> lock() const noexcept
 			{
-				return shared_ptr_base<element_type, LockPol>(*this, simstd::nothrow);
+				return shared_ptr_base<element_type, LockPol>(*this, nothrow);
 			}
 
 			ssize_t use_count() const noexcept

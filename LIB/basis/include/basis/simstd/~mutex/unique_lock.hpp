@@ -1,10 +1,10 @@
 #ifndef BASIS_MUTEX_UNIQUE_LOCK_HPP_
 #define BASIS_MUTEX_UNIQUE_LOCK_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Mutex>
-	class unique_lock: private pattern::Uncopyable
+	class unique_lock
 	{
 		using this_type = unique_lock<Mutex>;
 
@@ -17,7 +17,7 @@ namespace simstd {
 				unlock();
 		}
 
-		unique_lock() :
+		unique_lock() noexcept :
 			m_sync(nullptr),
 			m_owns(false)
 		{
@@ -30,21 +30,8 @@ namespace simstd {
 			lock();
 		}
 
-		unique_lock(mutex_type* mutex) :
-			m_sync(mutex),
-			m_owns(false)
-		{
-			lock();
-		}
-
-		unique_lock(mutex_type& mutex, defer_lock_t) :
+		unique_lock(mutex_type& mutex, defer_lock_t) noexcept :
 			m_sync(&mutex),
-			m_owns(false)
-		{
-		}
-
-		unique_lock(mutex_type* mutex, defer_lock_t) :
-			m_sync(mutex),
 			m_owns(false)
 		{
 		}
@@ -55,25 +42,13 @@ namespace simstd {
 		{
 		}
 
-		unique_lock(mutex_type* mutex, try_to_lock_t) :
-			m_sync(mutex),
-			m_owns(m_sync->try_lock())
-		{
-		}
-
 		unique_lock(mutex_type& mutex, adopt_lock_t) :
 			m_sync(&mutex),
 			m_owns(true)
 		{
 		}
 
-		unique_lock(mutex_type* mutex, adopt_lock_t) :
-			m_sync(mutex),
-			m_owns(true)
-		{
-		}
-
-		unique_lock(this_type&& other) :
+		unique_lock(this_type&& other) noexcept :
 			m_sync(nullptr),
 			m_owns(false)
 		{
@@ -110,14 +85,14 @@ namespace simstd {
 			}
 		}
 
-		void swap(this_type& other)
+		void swap(this_type& other) noexcept
 		{
 			using simstd::swap;
 			swap(m_sync, other.m_sync);
 			swap(m_owns, other.m_owns);
 		}
 
-		mutex_type* release()
+		mutex_type* release() noexcept
 		{
 			mutex_type* ret = m_sync;
 			m_sync = nullptr;
@@ -141,6 +116,9 @@ namespace simstd {
 		}
 
 	private:
+		unique_lock(const this_type&) = delete;
+		unique_lock& operator =(const this_type&) = delete;
+
 		mutex_type* m_sync;
 		bool        m_owns;
 	};
@@ -150,7 +128,6 @@ namespace simstd {
 	{
 		a.swap(b);
 	}
-
 }
 
 #endif

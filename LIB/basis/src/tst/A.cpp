@@ -7,8 +7,8 @@ namespace tst
 
 	A::~A()
 	{
-		LogTraceObj();
-		LogNoise2(L"val: %d\n", m_a);
+		LogTraceObjLn();
+		LogTrace2(L"val: %d\n", m_a);
 		--objects;
 	}
 
@@ -17,7 +17,7 @@ namespace tst
 		i(),
 		m_a()
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		++objects;
 	}
 
@@ -26,8 +26,8 @@ namespace tst
 		i(),
 		m_a(a)
 	{
-		LogTraceObj();
-		LogNoise2(L"%d\n", m_a);
+		LogTraceObjLn();
+		LogTrace2(L"%d\n", m_a);
 		++objects;
 	}
 
@@ -36,7 +36,7 @@ namespace tst
 		i(),
 		m_a(other.m_a)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		++objects;
 	}
 
@@ -45,20 +45,20 @@ namespace tst
 		i(),
 		m_a(simstd::move(other.m_a))
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		++objects;
 	}
 
 	A& A::operator =(const A& other)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		m_a = other.m_a;
 		return *this;
 	}
 
 	A& A::operator =(A&& other)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		m_a = other.m_a;
 		return *this;
 	}
@@ -82,7 +82,7 @@ namespace tst
 
 	void A::swap(A& other)
 	{
-		LogTraceObj();
+		LogTraceObjLn();
 		using simstd::swap;
 		swap(m_a, other.m_a);
 	}

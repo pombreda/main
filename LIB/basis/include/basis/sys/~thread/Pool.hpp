@@ -40,9 +40,9 @@ namespace thread {
 //			return m_threads[i];
 //		}
 
-		sync::WaitResult_t wait_all(sync::Timeout_t timeout = sync::WAIT_FOREVER) const;
+		sync::WaitResult_t wait_all(size_t timeout = sync::WAIT_FOREVER) const;
 
-		sync::WaitResult_t wait_any(size_t & index, sync::Timeout_t timeout = sync::WAIT_FOREVER) const;
+		sync::WaitResult_t wait_any(size_t& index, size_t timeout = sync::WAIT_FOREVER) const;
 
 	private:
 		simstd::vector<Unit::handle_type> m_handles;

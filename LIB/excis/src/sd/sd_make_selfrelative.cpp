@@ -5,7 +5,7 @@ namespace Ext {
 
 	WinSD::WinSD(const trustee_t & owner, const trustee_t & group, const ExpAccessArray * dacl, const ExpAccessArray * sacl) {
 		ULONG size = 0;
-		LogTrace();
+		LogTraceLn();
 		CheckApiError(
 			::BuildSecurityDescriptorW(
 			(PTRUSTEEW)&owner,

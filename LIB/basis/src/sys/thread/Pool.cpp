@@ -6,26 +6,26 @@ namespace thread {
 
 	Pool::Pool()
 	{
-		LogTrace();
+		LogTraceLn();
 	}
 
 	Pool::~Pool()
 	{
-		LogTrace();
+		LogTraceLn();
 	}
 
-	sync::WaitResult_t Pool::wait_all(sync::Timeout_t timeout) const
+	sync::WaitResult_t Pool::wait_all(size_t timeout) const
 	{
-		LogNoise(L"timeout: %Id\n", timeout);
+		LogTrace(L"timeout: %Id\n", timeout);
 		sync::WaitResult_t ret = (sync::WaitResult_t)::WaitForMultipleObjectsEx(m_handles.size(), &m_handles[0], TRUE, timeout, TRUE);
 		LogErrorIf(ret == sync::WaitResult_t::FAILED, L"-> %s\n", totext::api_error().c_str());
-		LogNoise(L"ret: '%s'\n", totext::c_str(ret));
+		LogTrace(L"ret: '%s'\n", totext::c_str(ret));
 		return ret;
 	}
 
-	sync::WaitResult_t Pool::wait_any(size_t & index, sync::Timeout_t timeout) const
+	sync::WaitResult_t Pool::wait_any(size_t & index, size_t timeout) const
 	{
-		LogNoise(L"index: %Iu, timeout: %Id\n", index, timeout);
+		LogTrace(L"index: %Iu, timeout: %Id\n", index, timeout);
 		DWORD result = ::WaitForMultipleObjectsEx(m_handles.size(), &m_handles[0], FALSE, timeout, TRUE);
 		sync::WaitResult_t ret = sync::WaitResult_t::FAILED;
 		if (result == WAIT_IO_COMPLETION || result == WAIT_TIMEOUT || result == WAIT_FAILED) {
@@ -38,7 +38,7 @@ namespace thread {
 			ret = sync::WaitResult_t::SUCCESS;
 		}
 		LogErrorIf(ret == sync::WaitResult_t::FAILED, L"%s\n", totext::api_error().c_str());
-		LogNoise(L"wait: %Id, ret: '%s', index: %Iu\n", timeout, totext::c_str(ret), index);
+		LogTrace(L"wait: %Id, ret: '%s', index: %Iu\n", timeout, totext::c_str(ret), index);
 		return ret;
 	}
 

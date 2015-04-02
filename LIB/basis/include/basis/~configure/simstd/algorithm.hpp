@@ -1,14 +1,14 @@
 ﻿#ifndef BASIS_CONFIGURE_SIMSTD_ALGORITHM_HPP_
 #define BASIS_CONFIGURE_SIMSTD_ALGORITHM_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Type>
 	void swap(Type & a, Type & b)
 	{
-		Type tmp(simstd::move(a));
-		a = simstd::move(b);
-		b = simstd::move(tmp);
+		Type tmp(move(a));
+		a = move(b);
+		b = move(tmp);
 	}
 
 	template<typename Type, size_t Num>
@@ -60,7 +60,6 @@ namespace simstd {
 	{
 		return (a < val) && (val < b);
 	}
-
 }
 
 #endif

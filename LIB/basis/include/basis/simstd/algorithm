@@ -1,4 +1,5 @@
-﻿#ifndef BASIS_SIMSTD_ALGORITHM_
+﻿
+#ifndef BASIS_SIMSTD_ALGORITHM_
 #define BASIS_SIMSTD_ALGORITHM_
 
 #include <basis/configure.hpp>
@@ -6,7 +7,7 @@
 #include <basis/simstd/memory>
 #include <basis/simstd/utility>
 
-#include <basis/simstd/~iterator/base.hpp>
+#include <basis/simstd/~iterator/iterator_fwd.hpp>
 
 #include <basis/simstd/~algorithm/base.hpp>
 #include <basis/simstd/~algorithm/extra.hpp>

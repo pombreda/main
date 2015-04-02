@@ -27,12 +27,12 @@ namespace {
 
 traceback::Bfd::Context::~Context()
 {
-	LogTraceObjBegin();
+	LogTraceObj(L"begin\n");
 	HostFree(memory::heap::DefaultStat, symbol);
 	if (handle)
 		bfd_close(handle);
 	HostFree(memory::heap::DefaultStat, image);
-	LogTraceObjEnd();
+	LogTraceObj(L"end\n");
 }
 
 traceback::Bfd::Context::Context(const wchar_t* image)
@@ -40,7 +40,7 @@ traceback::Bfd::Context::Context(const wchar_t* image)
 	, handle()
 	, symbol()
 {
-	LogTraceObj();
+	LogTraceObjLn();
 
 	bfd* b = bfd_openr(sstr::w2cp(image, CP_OEMCP).c_str(), 0);
 	if (!b) {
@@ -78,7 +78,7 @@ traceback::Bfd::Context::Context(Context && other)
 	, handle(other.handle)
 	, symbol(other.symbol)
 {
-	LogTraceObj();
+	LogTraceObjLn();
 
 	other.image = nullptr;
 	other.handle = nullptr;
@@ -122,12 +122,12 @@ void traceback::Bfd::Context::lookup_section(bfd* abfd, asection* sec, void* opa
 
 traceback::Bfd::~Bfd()
 {
-	LogTraceObj();
+	LogTraceObjLn();
 }
 
 traceback::Bfd::Bfd()
 {
-	LogTraceObj();
+	LogTraceObjLn();
 }
 
 void traceback::Bfd::fill(const char*& file, const char*& func, size_t& line, const wchar_t* image, void* address)

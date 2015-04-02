@@ -28,17 +28,17 @@ namespace service {
 
 	Filter::~Filter()
 	{
-		LogTraceObjBegin();
-		LogTraceObjEnd();
+		LogTraceObj(L"begin\n");
+		LogTraceObj(L"end\n");
 	}
 
 	Filter::Filter(const ustring& host, PCWSTR user, PCWSTR pass, EnumerateType type) :
 		m_writable(0)
 	{
-		LogTraceObjBegin();
-		LogNoise(L"host: '%s', user: '%s', type: %Id\n", host.c_str(), user, (ssize_t)type);
+		LogTraceObj(L"begin\n");
+		LogTrace(L"host: '%s', user: '%s', type: %Id\n", host.c_str(), user, (ssize_t)type);
 		set_host(host, user, pass);
-		LogTraceObjEnd();
+		LogTraceObj(L"end\n");
 	}
 
 	const connection::Remote & Filter::get_connection() const
@@ -68,7 +68,7 @@ namespace service {
 
 	void Filter::set_host(const ustring& host, PCWSTR user, PCWSTR pass)
 	{
-		LogNoise(L"host: '%s', user: '%s'\n", host.c_str(), user);
+		LogTrace(L"host: '%s', user: '%s'\n", host.c_str(), user);
 		simstd::shared_ptr<connection::Remote> tmp_conn(connection::Remote::create(host, user, pass));
 		simstd::shared_ptr<Manager> tmp_scm(new Manager(tmp_conn.get(), SC_MANAGER_CONNECT | SC_MANAGER_ENUMERATE_SERVICE));
 		m_writable = 0;
@@ -81,8 +81,8 @@ namespace service {
 	///==================================================================================== Services
 	Enum::~Enum()
 	{
-		LogTraceObjBegin();
-		LogTraceObjEnd();
+		LogTraceObj(L"begin\n");
+		LogTraceObj(L"end\n");
 	}
 
 	Enum::Enum(const ustring& host, PCWSTR user, PCWSTR pass) :
@@ -92,9 +92,9 @@ namespace service {
 		m_wait_state(false),
 		m_batch_started(false)
 	{
-		LogTraceObjBegin();
-		LogNoise(L"host: '%s', user: '%s'\n", host.c_str(), user);
-		LogTraceObjEnd();
+		LogTraceObj(L"begin\n");
+		LogTrace(L"host: '%s', user: '%s'\n", host.c_str(), user);
+		LogTraceObj(L"end\n");
 	}
 
 	EnumerateType Enum::get_type() const
@@ -104,7 +104,7 @@ namespace service {
 
 	void Enum::set_type(EnumerateType type)
 	{
-		LogNoise(L"type: 0x%X\n", (uint32_t)type);
+		LogTrace(L"type: 0x%X\n", (uint32_t)type);
 		m_type = type;
 		update();
 		notify_changed();
@@ -125,7 +125,7 @@ namespace service {
 	void Enum::update()
 	{
 		// filter is changed
-		LogNoise(L"type: 0x%X\n", (uint32_t)get_type());
+		LogTrace(L"type: 0x%X\n", (uint32_t)get_type());
 		DWORD bufNeed = 0, dwNumberOfService = 0;
 		::EnumServicesStatusExW(m_filter->get_read_manager(), SC_ENUM_PROCESS_INFO, (DWORD)get_type(), SERVICE_STATE_ALL, nullptr, 0, &bufNeed, &dwNumberOfService, nullptr, nullptr);
 		CheckApi(::GetLastError() == ERROR_MORE_DATA);
@@ -137,7 +137,7 @@ namespace service {
 		for (ULONG i = 0; i < dwNumberOfService; ++i) {
 			emplace_back(m_filter->get_read_manager(), enum_svc.data()[i]);
 		}
-		LogNoise(L"cached: %Iu\n", size());
+		LogTrace(L"cached: %Iu\n", size());
 //		notify_changed();
 	}
 
@@ -160,7 +160,7 @@ namespace service {
 	void Enum::del(iterator it)
 	{
 		if (it != end()) {
-			LogNoise(L"%s\n", it->name.c_str());
+			LogTrace(L"%s\n", it->name.c_str());
 //			try {
 			Item::del(m_filter->get_read_manager(), it->name.c_str());
 			erase(it);
@@ -174,7 +174,7 @@ namespace service {
 	void Enum::start(iterator it)
 	{
 		if (it != end()) {
-			LogNoise(L"%s size: %Iu\n", it->name.c_str(), size());
+			LogTrace(L"%s size: %Iu\n", it->name.c_str(), size());
 			Item svc(Item::start(m_filter->get_read_manager(), it->name.c_str()));
 			if (m_wait_state) {
 				svc.wait_state(State::STARTED, m_wait_timout);
@@ -187,7 +187,7 @@ namespace service {
 	void Enum::stop(iterator it)
 	{
 		if (it != end()) {
-			LogNoise(L"%s size: %Iu\n", it->name.c_str(), size());
+			LogTrace(L"%s size: %Iu\n", it->name.c_str(), size());
 			Item svc(Item::stop(m_filter->get_read_manager(), it->name.c_str()));
 			if (m_wait_state) {
 				svc.wait_state(State::STOPPED, m_wait_timout);
@@ -200,7 +200,7 @@ namespace service {
 	void Enum::restart(iterator it)
 	{
 		if (it != end()) {
-			LogNoise(L"%s\n", it->name.c_str());
+			LogTrace(L"%s\n", it->name.c_str());
 			Item svc(Item::restart(m_filter->get_read_manager(), it->name.c_str()));
 			if (m_wait_state) {
 				svc.wait_state(State::STARTED, m_wait_timout);
@@ -213,7 +213,7 @@ namespace service {
 	void Enum::contin(iterator it)
 	{
 		if (it != end()) {
-			LogNoise(L"%s\n", it->name.c_str());
+			LogTrace(L"%s\n", it->name.c_str());
 			Item svc(Item::contin(m_filter->get_read_manager(), it->name.c_str()));
 			if (m_wait_state) {
 				svc.wait_state(State::STARTED, m_wait_timout);
@@ -226,7 +226,7 @@ namespace service {
 	void Enum::pause(iterator it)
 	{
 		if (it != end()) {
-			LogNoise(L"%s\n", it->name.c_str());
+			LogTrace(L"%s\n", it->name.c_str());
 			Item svc(Item::pause(m_filter->get_read_manager(), it->name.c_str()));
 			if (m_wait_state) {
 				svc.wait_state(State::PAUSED, m_wait_timout);
@@ -239,7 +239,7 @@ namespace service {
 	void Enum::set_config(iterator it, const ConfigRequest& request)
 	{
 		if (it != end()) {
-			LogNoise(L"%s\n", it->name.c_str());
+			LogTrace(L"%s\n", it->name.c_str());
 			request.log();
 			*it = Info(it->name.c_str(), Item::set_config(m_filter->get_read_manager(), it->name.c_str(), request));
 			notify_changed();
@@ -248,7 +248,7 @@ namespace service {
 
 	void Enum::start_batch()
 	{
-		LogTrace();
+		LogTraceLn();
 		m_batch_started = true;
 	}
 
@@ -256,14 +256,14 @@ namespace service {
 	{
 		set_changed(true);
 		if (!m_batch_started) {
-			LogTrace();
+			LogTraceLn();
 			notify_observers(sync::Message());
 		}
 	}
 
 	void Enum::stop_batch()
 	{
-		LogTrace();
+		LogTraceLn();
 		m_batch_started = false;
 		notify_observers(sync::Message());
 	}

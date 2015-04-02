@@ -7,12 +7,12 @@ namespace Ext {
 	WinSD::WinSD(WinSD && rhs):
 		m_sd(nullptr)
 	{
-		LogTrace();
+		LogTraceLn();
 		this->swap(rhs);
 	}
 
 	WinSD & WinSD::operator = (WinSD && rhs) {
-		LogTrace();
+		LogTraceLn();
 		if (this != &rhs)
 			this->swap(rhs);
 //			WinSD(simstd::move(rhs)).swap(*this);
@@ -20,7 +20,7 @@ namespace Ext {
 	}
 
 	void WinSD::swap(WinSD & rhs) {
-		LogTrace();
+		LogTraceLn();
 		using simstd::swap;
 		swap(m_sd, rhs.m_sd);
 	}

@@ -44,7 +44,7 @@ void simstd::pvt::list_node_base::unhook() noexcept
 
 void simstd::pvt::list_node_base::swap(list_node_base& a, list_node_base& b) noexcept
 {
-//	LogTrace();
+//	LogTraceLn();
 	using simstd::swap;
 	swap(a.m_next, b.m_next);
 	swap(a.m_prev, b.m_prev);

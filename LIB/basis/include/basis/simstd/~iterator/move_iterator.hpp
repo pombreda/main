@@ -145,7 +145,6 @@ namespace simstd
 	{
 		return move_iterator<Iterator>(it);
 	}
-
 }
 
 #endif

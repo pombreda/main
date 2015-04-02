@@ -47,40 +47,40 @@ void WINAPI GetGlobalInfoW(GlobalInfo* info)
 {
 	setup_logger();
 
-	LogTrace();
+	LogTraceLn();
 	far3::helper_t::inst().init(new FarGlobalInfo);
 	get_global_info()->GetGlobalInfoW(info);
 }
 
 void WINAPI SetStartupInfoW(const PluginStartupInfo* info)
 {
-	LogTrace();
+	LogTraceLn();
 	get_global_info()->SetStartupInfoW(info);
 	get_global_info()->load_settings();
 }
 
 intptr_t WINAPI ConfigureW(const ConfigureInfo* info)
 {
-	LogTrace();
+	LogTraceLn();
 	return get_global_info()->ConfigureW(info);
 }
 
 /// Plugin
 void WINAPI GetPluginInfoW(PluginInfo* info)
 {
-	LogTrace();
+	LogTraceLn();
 	far3::helper_t::inst().get_plugin()->GetPluginInfoW(info);
 }
 
 HANDLE WINAPI OpenW(const OpenInfo* info)
 {
-	LogTrace();
+	LogTraceLn();
 	return far3::helper_t::inst().get_plugin()->OpenW(info);
 }
 
 void WINAPI ExitFARW(const ExitInfo* info)
 {
-	LogTrace();
+	LogTraceLn();
 	far3::helper_t::inst().get_plugin()->ExitFARW(info);
 }
 

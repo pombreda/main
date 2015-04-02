@@ -1,8 +1,8 @@
 ﻿#ifndef BASIS_MEMORY_FWD_HPP_
 #define BASIS_MEMORY_FWD_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename Type>
 	class allocator;
 
@@ -56,7 +56,6 @@ namespace simstd {
 		template<typename Type, LockPolicy LockPol = DEFAULT_LOCK_POLICY>
 		class enable_shared_from_this;
 	}
-
 }
 
 #endif

@@ -11,14 +11,14 @@ namespace Ext {
 
 	AnonPipe::AnonPipe(size_t size)
 	{
-		LogNoise(L"%Iu\n", size);
+		LogTrace(L"%Iu\n", size);
 		CheckApi(::CreatePipe(&m_rpipe, &m_wpipe, nullptr, size));
 	}
 
 	bool AnonPipe::read_nt(void * buffer, size_t size, DWORD & rd) noexcept
 	{
 		bool ret = ::ReadFile(m_rpipe, buffer, size, &rd, nullptr);
-		LogNoise(L"%p, %Iu, %u -> %d\n", buffer, size, rd, ret);
+		LogTrace(L"%p, %Iu, %u -> %d\n", buffer, size, rd, ret);
 		return ret;
 	}
 
@@ -30,7 +30,7 @@ namespace Ext {
 	bool AnonPipe::write_nt(const void * buffer, size_t size, DWORD & written) noexcept
 	{
 		bool ret = ::WriteFile(m_wpipe, buffer, size, &written, nullptr);
-		LogNoise(L"%p, %Iu, %u -> %d\n", buffer, size, written, ret);
+		LogTrace(L"%p, %Iu, %u -> %d\n", buffer, size, written, ret);
 		return ret;
 	}
 

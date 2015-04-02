@@ -1,37 +1,35 @@
-#include <basis/configure.hpp>
-#include <basis/sys/~sync/Mutex.hpp>
+#include <basis/sys/sync.hpp>
 
-namespace sync {
-
-	Mutex::~Mutex()
+namespace sync
+{
+	Mutex::~Mutex() noexcept
 	{
-		::CloseHandle(reinterpret_cast<HANDLE>(m_handle));
+		::CloseHandle(reinterpret_cast<HANDLE>(handle));
 	}
 
-	Mutex::Mutex(const wchar_t* name) :
-		m_handle(nullptr)
+	Mutex::Mutex(const wchar_t* name) noexcept :
+		handle(nullptr)
 	{
-		m_handle = reinterpret_cast<native_handle_type>(::CreateMutexW(nullptr, 0, name));
+		handle = reinterpret_cast<native_handle_type>(::CreateMutexW(nullptr, 0, name));
 	}
 
-	void Mutex::lock()
+	void Mutex::lock() const noexcept
 	{
-		::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(m_handle), INFINITE, true);
+		::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(const_cast<native_handle_type>(handle)), INFINITE, true);
 	}
 
-	bool Mutex::try_lock(size_t timeout_millisec)
+	bool Mutex::try_lock(size_t timeout_ms) const noexcept
 	{
-		return WAIT_OBJECT_0 == ::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(m_handle), timeout_millisec, true);
+		return WAIT_OBJECT_0 == ::WaitForSingleObjectEx(reinterpret_cast<HANDLE>(const_cast<native_handle_type>(handle)), timeout_ms, true);
 	}
 
-	void Mutex::unlock()
+	void Mutex::unlock() const noexcept
 	{
-		::ReleaseMutex(reinterpret_cast<HANDLE>(m_handle));
+		::ReleaseMutex(reinterpret_cast<HANDLE>(const_cast<native_handle_type>(handle)));
 	}
 
-	Mutex::native_handle_type Mutex::native_handle()
+	Mutex::native_handle_type Mutex::native_handle() noexcept
 	{
-		return m_handle;
+		return handle;
 	}
-
 }

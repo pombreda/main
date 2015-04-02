@@ -58,10 +58,10 @@ namespace far3 {
 			size_t width = 4;
 			for (size_t i = 0; i < m_items.ItemsNumber; ++i) {
 				width = simstd::max(width, cstr::length(m_items.Items[i].Text));
-//				LogNoise(L"'%s'\n", m_items.Items[i].Text);
+//				LogTrace(L"'%s'\n", m_items.Items[i].Text);
 			}
 			width = (width / 16 + 1) * 16 + 3;
-			LogNoise(L"-> %Iu\n", width);
+			LogTrace(L"-> %Iu\n", width);
 			return width;
 		}
 
@@ -72,13 +72,13 @@ namespace far3 {
 
 		Item create_combobox(ssize_t& value, FarListItem items[], size_t count, ssize_t min_width, FARDIALOGITEMFLAGS flags)
 		{
-			LogNoise(L"%Id, %Iu, %Id, 0x%I64X\n", value, count, min_width, flags);
+			LogTrace(L"%Id, %Iu, %Id, 0x%I64X\n", value, count, min_width, flags);
 			items[value].Flags |= LIF_SELECTED;
 			auto binding = new ComboBoxBinding(value, items, count, min_width);
 			Item ret(binding, DI_COMBOBOX, nullptr, flags);
 			ret.ListItems = binding->get_items();
 			ret.X2 = ret.X1 + ret.get_width() - 3;
-			LogNoise(L"X1: %Id, Y1: %Id, X2: %Id\n", ret.X1, ret.Y1, ret.X2);
+			LogTrace(L"X1: %Id, Y1: %Id, X2: %Id\n", ret.X1, ret.Y1, ret.X2);
 
 			return ret;
 		}
