@@ -1,6 +1,6 @@
-#if defined(PRINT_TRACE)
-#   undef PRINT_TRACE
-#   define PRINT_TRACE 0
+#if defined(TRACE_PRINT)
+#   undef TRACE_PRINT
+#   define TRACE_PRINT 0
 #endif
 
 #include <tests.hpp>

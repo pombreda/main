@@ -1,16 +1,16 @@
 #ifndef BASIS_CONFIGURE_DEFINES_HPP_
 #define BASIS_CONFIGURE_DEFINES_HPP_
 
-#ifndef MEMORY_TRACE
+#ifndef TRACE_MEMORY
 #   ifdef NDEBUG
-#       define MEMORY_TRACE 0
+#       define TRACE_MEMORY 0
 #   else
-#       define MEMORY_TRACE 2
+#       define TRACE_MEMORY 2
 #   endif
 #endif
 
-#ifndef PRINT_TRACE
-#   define PRINT_TRACE 0
+#ifndef TRACE_PRINT
+#   define TRACE_PRINT 0
 #endif
 
 #define UNUSED(val) ((void)val)
