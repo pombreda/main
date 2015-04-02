@@ -19,15 +19,14 @@
 #ifndef _FAR3_SETTINGS_COMMON_HPP_
 #define _FAR3_SETTINGS_COMMON_HPP_
 
-#include <far3/settings.hpp>
-#include <basis/ext/pattern.hpp>
-
-namespace far3 {
-
-	struct Settings_t: private pattern::Uncopyable {
+namespace far3
+{
+	struct Settings_t:
+		private pattern::Uncopyable
+	{
 		~Settings_t();
 
-		Settings_t(const GUID & guid);
+		Settings_t(const GUID& guid);
 
 		intptr_t create_key(PCWSTR name, FARSETTINGS_SUBFOLDERS root = FSSF_ROOT);
 
@@ -58,7 +57,6 @@ namespace far3 {
 	private:
 		HANDLE m_hndl;
 	};
-
 }
 
 #endif

@@ -17,10 +17,10 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#include <far3/~plugin/Settings_i.hpp>
+#include <far3/plugin.hpp>
 
-namespace far3 {
-
+namespace far3
+{
 	bool Settings_i::load_settings()
 	{
 		return false;
@@ -30,5 +30,4 @@ namespace far3 {
 	{
 		return false;
 	}
-
 }

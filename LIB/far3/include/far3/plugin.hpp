@@ -20,19 +20,18 @@
 #define _FAR3_PLUGIN_HPP_
 
 #include <basis/configure.hpp>
+#include <basis/ext/pattern.hpp>
 #include <far3/~3rdparty/plugin.hpp>
-#include <far3/~plugin/fwd.hpp>
+#include <far3/~plugin/plugin_fwd.hpp>
 #include <far3/~plugin/GlobalInfo_i.hpp>
 #include <far3/~plugin/PanelController_i.hpp>
 #include <far3/~plugin/Plugin_i.hpp>
 #include <far3/~plugin/Settings_i.hpp>
 
-//#include <basis/sys/cstr.hpp>
-//#include <basis/sys/memory.hpp>
-
-namespace far3 {
-
-	struct helper_t {
+namespace far3
+{
+	struct helper_t
+	{
 		static helper_t& inst();
 
 		~helper_t();
@@ -81,7 +80,8 @@ namespace far3 {
 //	};
 
 ///============================================================================== ProgressWindow
-	struct ProgressWindow {
+	struct ProgressWindow
+	{
 		ProgressWindow(size_t /*size*/, const wchar_t* /*title*/)
 		{
 		}
@@ -99,7 +99,6 @@ namespace far3 {
 //	inline uint64_t get_interface_settings() {
 //		return psi().AdvControl(get_plugin_guid(), ACTL_GETINTERFACESETTINGS, 0, nullptr);
 //	}
-
 }
 
 #endif

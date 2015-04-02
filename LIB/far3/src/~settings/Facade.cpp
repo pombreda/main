@@ -1,5 +1,4 @@
-﻿
-/**
+﻿/**
  © 2014 Andrew Grechkin
  Source code: <http://code.google.com/p/andrew-grechkin>
 
@@ -22,8 +21,8 @@
 #include <basis/sys/logger.hpp>
 #include <basis/sys/memory.hpp>
 
-namespace far3 {
-
+namespace far3
+{
 	Settings_t::~Settings_t()
 	{
 		LogTraceObj(L"begin\n");
@@ -31,7 +30,7 @@ namespace far3 {
 		LogTraceObj(L"end\n");
 	}
 
-	Settings_t::Settings_t(const GUID & guid) :
+	Settings_t::Settings_t(const GUID& guid) :
 		m_hndl(INVALID_HANDLE_VALUE )
 	{
 		LogTraceObjLn();
@@ -176,5 +175,4 @@ namespace far3 {
 		LogTraceObjLn();
 		return set(name, value ? 1ull : 0ull, root);
 	}
-
 }

@@ -18,13 +18,8 @@
 
 #include <far3/plugin.hpp>
 
-#include <far3/~plugin/GlobalInfo_i.hpp>
-#include <far3/~plugin/Plugin_i.hpp>
-
-#include <basis/sys/crt.hpp>
-
-namespace far3 {
-
+namespace far3
+{
 	helper_t& helper_t::inst()
 	{
 		static helper_t ret;
@@ -73,5 +68,4 @@ namespace far3 {
 		m_gi(nullptr)
 	{
 	}
-
 }

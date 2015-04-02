@@ -17,13 +17,12 @@
  **/
 
 #include <far3/plugin.hpp>
-#include <far3/~plugin/Plugin_i.hpp>
 
 #include <basis/sys/logger.hpp>
 
-namespace far3 {
-
-	Plugin_i::Plugin_i(const PluginStartupInfo * info)
+namespace far3
+{
+	Plugin_i::Plugin_i(const PluginStartupInfo* info)
 	{
 		LogTraceObjLn();
 		m_psi = *info;
@@ -31,14 +30,14 @@ namespace far3 {
 		m_psi.FSF = &m_fsf;
 	}
 
-	void Plugin_i::GetPluginInfoW(PluginInfo * info)
+	void Plugin_i::GetPluginInfoW(PluginInfo* info)
 	{
 		LogTraceObjLn();
 		info->StructSize = sizeof(*info);
 		GetPluginInfo(info);
 	}
 
-	PanelController_i * Plugin_i::OpenW(const OpenInfo * info)
+	PanelController_i* Plugin_i::OpenW(const OpenInfo* info)
 	{
 		LogTraceObjLn();
 		if (info->StructSize < sizeof(*info))
@@ -46,7 +45,7 @@ namespace far3 {
 		return Open(info);
 	}
 
-	void Plugin_i::ExitFARW(const ExitInfo * info)
+	void Plugin_i::ExitFARW(const ExitInfo* info)
 	{
 		LogTraceObjLn();
 		if (info->StructSize < sizeof(*info))
@@ -54,18 +53,16 @@ namespace far3 {
 		return ExitFAR(info);
 	}
 
-	///=============================================================================================
-	PanelController_i * Plugin_i::Open(const OpenInfo * info)
+	PanelController_i* Plugin_i::Open(const OpenInfo* info)
 	{
 		LogTraceObjLn();
 		UNUSED(info);
 		return nullptr;
 	}
 
-	void Plugin_i::ExitFAR(const ExitInfo * info)
+	void Plugin_i::ExitFAR(const ExitInfo* info)
 	{
 		LogTraceObjLn();
 		UNUSED(info);
 	}
-
 }

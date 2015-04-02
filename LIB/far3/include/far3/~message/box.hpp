@@ -19,11 +19,10 @@
 #ifndef _FAR3_MESSAGE_BOX_HPP_
 #define _FAR3_MESSAGE_BOX_HPP_
 
-#include <far3/message.hpp>
-
-namespace far3 {
-	namespace message {
-
+namespace far3
+{
+	namespace message
+	{
 		void ibox(const wchar_t* text, const wchar_t* tit = L"Info");
 
 		void mbox(const wchar_t* text, const wchar_t* tit = L"Message");
@@ -37,7 +36,6 @@ namespace far3 {
 		void ebox(DWORD err);
 
 		bool question(const wchar_t* text, const wchar_t* tit);
-
 	}
 }
 

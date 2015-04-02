@@ -20,12 +20,15 @@
 
 #include <basis/sys/logger.hpp>
 
-namespace far3 {
-	namespace panel {
-
+namespace far3
+{
+	namespace panel
+	{
 		using heap_type = memory::heap::DefaultStat;
 
-		struct FacadeImpl: public Facade {
+		struct FacadeImpl:
+			public Facade
+		{
 			~FacadeImpl();
 
 			FacadeImpl(bool active);
@@ -191,12 +194,10 @@ namespace far3 {
 			psi().PanelControl(m_hndl, FCTL_ENDSELECTION, 0, nullptr);
 		}
 
+		Panel open(bool activePanel)
+		{
+			auto tmp = simstd::make_unique<FacadeImpl>(activePanel);
+			return tmp->is_valid() ? Panel(simstd::move(tmp)) : Panel();
+		}
 	}
-}
-
-///=============================================================================================================
-far3::Panel far3::open_panel(bool activePanel)
-{
-	simstd::unique_ptr<panel::FacadeImpl> tmp(new panel::FacadeImpl(activePanel));
-	return tmp->is_valid() ? Panel(simstd::move(tmp)) : Panel();
 }

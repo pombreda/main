@@ -19,12 +19,12 @@
 #ifndef _FAR3_DIALOG_BUIDER_HPP_
 #define _FAR3_DIALOG_BUIDER_HPP_
 
-#include <far3/dialog.hpp>
-
-namespace far3 {
-	namespace dialog {
-
-		class Builder_i {
+namespace far3
+{
+	namespace dialog
+	{
+		class Builder_i
+		{
 		public:
 			virtual ~Builder_i() = default;
 
@@ -56,7 +56,6 @@ namespace far3 {
 		using Builder = simstd::unique_ptr<Builder_i>;
 
 		Builder create_builder(size_t count, const GUID& aId, PCWSTR TitleLabel, PCWSTR aHelpTopic = nullptr, FARWINDOWPROC aDlgProc = nullptr, void * aUserParam = nullptr);
-
 	}
 }
 

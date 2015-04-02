@@ -20,6 +20,7 @@
 #define _FAR3_SETTINGS_HPP_
 
 #include <far3/plugin.hpp>
-#include <far3/~settings/Facade.hpp>
+#include <basis/ext/pattern.hpp>
+#include <far3/~settings/settings_Facade.hpp>
 
 #endif

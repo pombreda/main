@@ -17,27 +17,23 @@
  **/
 
 #include <far3/plugin.hpp>
-#include <far3/~plugin/GlobalInfo_i.hpp>
-#include <far3/~plugin/Plugin_i.hpp>
-
 #include <basis/sys/logger.hpp>
 
-namespace far3 {
-
+namespace far3
+{
 	GlobalInfo_i::~GlobalInfo_i()
 	{
-		LogTraceObj(L"begin\n");
+		LogTraceObjLn();
 		m_plugin->destroy();
-		LogTraceObj(L"end\n");
 	}
 
 	GlobalInfo_i::GlobalInfo_i() :
-		m_plugin(nullptr)
+		m_plugin()
 	{
 		LogTraceObjLn();
 	}
 
-	void GlobalInfo_i::GetGlobalInfoW(GlobalInfo * info) const
+	void GlobalInfo_i::GetGlobalInfoW(GlobalInfo* info) const
 	{
 		LogTraceObjLn();
 		info->StructSize = sizeof(*info);
@@ -49,7 +45,7 @@ namespace far3 {
 		info->Title = get_title();
 	}
 
-	intptr_t GlobalInfo_i::ConfigureW(const ConfigureInfo * info)
+	intptr_t GlobalInfo_i::ConfigureW(const ConfigureInfo* info)
 	{
 		LogTraceObjLn();
 		if (info->StructSize < sizeof(*info))
@@ -58,7 +54,7 @@ namespace far3 {
 		return Configure(info);
 	}
 
-	void GlobalInfo_i::SetStartupInfoW(const PluginStartupInfo * info)
+	void GlobalInfo_i::SetStartupInfoW(const PluginStartupInfo* info)
 	{
 		LogTraceObjLn();
 		if (info->StructSize < sizeof(*info))
@@ -68,21 +64,20 @@ namespace far3 {
 			m_plugin = CreatePlugin(info);
 	}
 
-	Plugin_i * GlobalInfo_i::get_plugin() const
+	Plugin_i* GlobalInfo_i::get_plugin() const
 	{
 		return m_plugin;
 	}
 
-	///=============================================================================================
 	VersionInfo GlobalInfo_i::get_min_version() const
 	{
 		return FARMANAGERVERSION;
 	}
 
-	intptr_t GlobalInfo_i::Configure(const ConfigureInfo * /*info*/)
+	intptr_t GlobalInfo_i::Configure(const ConfigureInfo* info)
 	{
+		UNUSED(info);
 		LogTraceObjLn();
-		return 0;
+		return intptr_t();
 	}
-
 }

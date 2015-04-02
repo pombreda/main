@@ -16,35 +16,33 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef _FAR3_GLOBALINFO_I_HPP_
-#define _FAR3_GLOBALINFO_I_HPP_
+#ifndef _FAR3_PLUGIN_GLOBALINFO_I_HPP_
+#define _FAR3_PLUGIN_GLOBALINFO_I_HPP_
 
-#include <far3/plugin.hpp>
-
-namespace far3 {
-
-	///================================================================================ GlobalInfo_i
-	class GlobalInfo_i {
+namespace far3
+{
+	class GlobalInfo_i
+	{
 	public:
 		virtual ~GlobalInfo_i();
 
 		GlobalInfo_i();
 
 	public:
-		void GetGlobalInfoW(GlobalInfo * Info) const;
+		void GetGlobalInfoW(GlobalInfo* info) const;
 
-		intptr_t ConfigureW(const ConfigureInfo * Info);
+		intptr_t ConfigureW(const ConfigureInfo* info);
 
-		void SetStartupInfoW(const PluginStartupInfo * Info);
+		void SetStartupInfoW(const PluginStartupInfo* info);
 
-		Plugin_i * get_plugin() const;
+		Plugin_i* get_plugin() const;
 
 	public:
 		virtual const wchar_t* get_author() const = 0;
 
 		virtual const wchar_t* get_description() const = 0;
 
-		virtual const GUID * get_guid() const = 0;
+		virtual const GUID* get_guid() const = 0;
 
 		virtual const wchar_t* get_title() const = 0;
 
@@ -52,14 +50,13 @@ namespace far3 {
 
 		virtual VersionInfo get_min_version() const;
 
-		virtual intptr_t Configure(const ConfigureInfo * Info);
+		virtual intptr_t Configure(const ConfigureInfo* info);
 
-		virtual Plugin_i * CreatePlugin(const PluginStartupInfo * Info) const = 0;
+		virtual Plugin_i* CreatePlugin(const PluginStartupInfo* info) const = 0;
 
 	private:
-		Plugin_i * m_plugin;
+		Plugin_i* m_plugin;
 	};
-
 }
 
 #endif

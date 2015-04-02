@@ -16,14 +16,13 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef _FAR3_SETTINGS_I_HPP_
-#define _FAR3_SETTINGS_I_HPP_
+#ifndef _FAR3_PLUGIN_SETTINGS_I_HPP_
+#define _FAR3_PLUGIN_SETTINGS_I_HPP_
 
-#include <far3/plugin.hpp>
-
-namespace far3 {
-
-	struct Settings_i {
+namespace far3
+{
+	struct Settings_i
+	{
 		virtual ~Settings_i() = default;
 
 	public:
@@ -31,7 +30,6 @@ namespace far3 {
 
 		virtual bool save_settings() const;
 	};
-
 }
 
 #endif

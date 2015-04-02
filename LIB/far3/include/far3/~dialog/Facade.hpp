@@ -19,12 +19,12 @@
 #ifndef _FAR3_DIALOG_FACADE_HPP_
 #define _FAR3_DIALOG_FACADE_HPP_
 
-#include <far3/dialog.hpp>
-
-namespace far3 {
-	namespace dialog {
-
-		struct Facade_i {
+namespace far3
+{
+	namespace dialog
+	{
+		struct Facade_i
+		{
 			virtual ~Facade_i() = default;
 
 			virtual ssize_t show() = 0;
@@ -32,8 +32,7 @@ namespace far3 {
 
 		typedef simstd::unique_ptr<Facade_i> Facade;
 
-		Facade create(const GUID & guid, int x1, int y1, int x2, int y2, FarDialogItem* items, int count, DWORD flags);
-
+		Facade create(const GUID& guid, int x1, int y1, int x2, int y2, FarDialogItem* items, int count, DWORD flags);
 	}
 }
 

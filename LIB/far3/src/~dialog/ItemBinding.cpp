@@ -1,5 +1,4 @@
-﻿
-/**
+﻿/**
  © 2014 Andrew Grechkin
  Source code: <http://code.google.com/p/andrew-grechkin>
 
@@ -19,9 +18,10 @@
 
 #include <far3/dialog.hpp>
 
-namespace far3 {
-	namespace dialog {
-
+namespace far3
+{
+	namespace dialog
+	{
 		ItemBinding::ItemBinding(ssize_t min_width) :
 			m_dialog(),
 			m_index(),
@@ -69,6 +69,5 @@ namespace far3 {
 		{
 			return 1;
 		}
-
 	}
 }

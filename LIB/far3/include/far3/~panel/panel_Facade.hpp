@@ -19,12 +19,12 @@
 #ifndef _FAR3_PANEL_FACADE_HPP_
 #define _FAR3_PANEL_FACADE_HPP_
 
-#include <far3/plugin.hpp>
-
-namespace far3 {
-	namespace panel {
-
-		struct Facade {
+namespace far3
+{
+	namespace panel
+	{
+		struct Facade
+		{
 			virtual ~Facade() = default;
 
 			virtual const PanelInfo* get_info() const = 0;
@@ -56,12 +56,10 @@ namespace far3 {
 			virtual void commit_selection() = 0;
 		};
 
+		using Panel = simstd::unique_ptr<Facade>;
+
+		Panel open(bool activePanel = true);
 	}
-
-	using Panel = simstd::unique_ptr<panel::Facade>;
-
-	Panel open_panel(bool activePanel = true);
-
 }
 
 #endif

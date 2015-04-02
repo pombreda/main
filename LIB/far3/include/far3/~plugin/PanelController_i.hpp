@@ -16,81 +16,77 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef _FAR3_PANELCONTROLLER_I_HPP_
-#define _FAR3_PANELCONTROLLER_I_HPP_
+#ifndef _FAR3_PLUGIN_PANELCONTROLLER_I_HPP_
+#define _FAR3_PLUGIN_PANELCONTROLLER_I_HPP_
 
-#include <far3/plugin.hpp>
-
-namespace far3 {
-
-	class PanelController_i {
+namespace far3
+{
+	class PanelController_i
+	{
 	public:
 		virtual ~PanelController_i() = default;
 
-		PanelController_i() = default;
+		void ClosePanelW(const ClosePanelInfo* info);
 
-		void ClosePanelW(const ClosePanelInfo * info);
+		ssize_t CompareW(const CompareInfo* info);
 
-		ssize_t CompareW(const CompareInfo * info);
+		ssize_t DeleteFilesW(const DeleteFilesInfo* info);
 
-		ssize_t DeleteFilesW(const DeleteFilesInfo * info);
+		void FreeFindDataW(const FreeFindDataInfo* info);
 
-		void FreeFindDataW(const FreeFindDataInfo * info);
+		ssize_t GetFilesW(GetFilesInfo* info);
 
-		ssize_t GetFilesW(GetFilesInfo * info);
+		ssize_t GetFindDataW(GetFindDataInfo* info);
 
-		ssize_t GetFindDataW(GetFindDataInfo * info);
+		void GetOpenPanelInfoW(OpenPanelInfo* info);
 
-		void GetOpenPanelInfoW(OpenPanelInfo * info);
+		ssize_t MakeDirectoryW(MakeDirectoryInfo* info);
 
-		ssize_t MakeDirectoryW(MakeDirectoryInfo * info);
+		ssize_t ProcessPanelEventW(const ProcessPanelEventInfo* info);
 
-		ssize_t ProcessPanelEventW(const ProcessPanelEventInfo * info);
+		ssize_t ProcessHostFileW(const ProcessHostFileInfo* info);
 
-		ssize_t ProcessHostFileW(const ProcessHostFileInfo * info);
+		ssize_t ProcessPanelInputW(const ProcessPanelInputInfo* info);
 
-		ssize_t ProcessPanelInputW(const ProcessPanelInputInfo * info);
+		ssize_t PutFilesW(const PutFilesInfo* info);
 
-		ssize_t PutFilesW(const PutFilesInfo * info);
+		ssize_t SetDirectoryW(const SetDirectoryInfo* info);
 
-		ssize_t SetDirectoryW(const SetDirectoryInfo * info);
-
-		ssize_t SetFindListW(const SetFindListInfo * info);
+		ssize_t SetFindListW(const SetFindListInfo* info);
 
 		intptr_t update(bool keep_selection = true) const;
 
 		intptr_t redraw() const;
 
 	private:
-		virtual void Close(const ClosePanelInfo * info);
+		virtual void Close(const ClosePanelInfo* info);
 
-		virtual ssize_t Compare(const CompareInfo * info);
+		virtual ssize_t Compare(const CompareInfo* info);
 
-		virtual ssize_t DeleteFiles(const DeleteFilesInfo * info);
+		virtual ssize_t DeleteFiles(const DeleteFilesInfo* info);
 
-		virtual void FreeFindData(const FreeFindDataInfo * info);
+		virtual void FreeFindData(const FreeFindDataInfo* info);
 
-		virtual ssize_t GetFiles(GetFilesInfo * info);
+		virtual ssize_t GetFiles(GetFilesInfo* info);
 
-		virtual ssize_t GetFindData(GetFindDataInfo * info);
+		virtual ssize_t GetFindData(GetFindDataInfo* info);
 
-		virtual void GetOpenPanelInfo(OpenPanelInfo * info) = 0;
+		virtual void GetOpenPanelInfo(OpenPanelInfo* info) = 0;
 
-		virtual ssize_t MakeDirectory(MakeDirectoryInfo * info);
+		virtual ssize_t MakeDirectory(MakeDirectoryInfo* info);
 
-		virtual ssize_t ProcessEvent(const ProcessPanelEventInfo * info);
+		virtual ssize_t ProcessEvent(const ProcessPanelEventInfo* info);
 
-		virtual ssize_t ProcessInput(const ProcessPanelInputInfo * info);
+		virtual ssize_t ProcessInput(const ProcessPanelInputInfo* info);
 
-		virtual ssize_t ProcessHostFile(const ProcessHostFileInfo * info);
+		virtual ssize_t ProcessHostFile(const ProcessHostFileInfo* info);
 
-		virtual ssize_t PutFiles(const PutFilesInfo * info);
+		virtual ssize_t PutFiles(const PutFilesInfo* info);
 
-		virtual ssize_t SetDirectory(const SetDirectoryInfo * info);
+		virtual ssize_t SetDirectory(const SetDirectoryInfo* info);
 
-		virtual ssize_t SetFindList(const SetFindListInfo * info);
+		virtual ssize_t SetFindList(const SetFindListInfo* info);
 	};
-
 }
 
 #endif
