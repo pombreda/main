@@ -6,7 +6,8 @@
 #include <basis/sys/memory.hpp>
 #include <basis/tst.hpp>
 
-namespace {
+namespace
+{
 	void setup_logger()
 	{
 		TraceFunc();

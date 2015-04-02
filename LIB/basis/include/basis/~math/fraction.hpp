@@ -1,8 +1,8 @@
 #ifndef BASIS_MATH_FRACTION_HPP_
 #define BASIS_MATH_FRACTION_HPP_
 
-namespace math {
-
+namespace math
+{
 	struct fraction
 	{
 		ssize_t numerator;
@@ -15,7 +15,6 @@ namespace math {
 
 		void reduce();
 	};
-
 }
 
 #endif

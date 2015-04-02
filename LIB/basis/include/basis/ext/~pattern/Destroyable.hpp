@@ -1,7 +1,8 @@
-﻿#ifndef BASIS_EXTRA_PATTERN_DESTROYABLE_HPP_
-#define BASIS_EXTRA_PATTERN_DESTROYABLE_HPP_
+﻿#ifndef BASIS_EXT_PATTERN_DESTROYABLE_HPP_
+#define BASIS_EXT_PATTERN_DESTROYABLE_HPP_
 
-namespace pattern {
+namespace pattern
+{
 	struct Destroyable
 	{
 		virtual ~Destroyable() = default;

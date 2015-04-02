@@ -1,9 +1,10 @@
 #ifndef BASIS_TST_BASEDERIVED_HPP_
 #define BASIS_TST_BASEDERIVED_HPP_
 
-namespace tst {
-
-	class Base1 {
+namespace tst
+{
+	class Base1
+	{
 	public:
 		virtual ~Base1();
 
@@ -16,7 +17,8 @@ namespace tst {
 		static ssize_t objects;
 	};
 
-	class Base2 {
+	class Base2
+	{
 	public:
 		virtual ~Base2();
 
@@ -27,7 +29,9 @@ namespace tst {
 		ssize_t i = ssize_t();
 	};
 
-	class Derived1: public Base1 {
+	class Derived1:
+	    public Base1
+	{
 	public:
 		~Derived1();
 
@@ -38,7 +42,10 @@ namespace tst {
 		ssize_t i = ssize_t();
 	};
 
-	class Derived2: public Base1, public Base2 {
+	class Derived2:
+	    public Base1,
+	    public Base2
+	{
 	public:
 		~Derived2();
 

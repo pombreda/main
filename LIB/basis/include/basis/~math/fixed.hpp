@@ -1,8 +1,8 @@
 #ifndef BASIS_MATH_FIXED_HPP_
 #define BASIS_MATH_FIXED_HPP_
 
-namespace math {
-
+namespace math
+{
 	template<int FractalBits>
 	struct fixed
 	{
@@ -48,7 +48,6 @@ namespace math {
 		this_type ceil() const;
 		this_type abs() const;
 	};
-
 }
 
 #endif

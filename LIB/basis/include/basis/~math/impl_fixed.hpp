@@ -1,8 +1,8 @@
 #ifndef BASIS_MATH_IMPL_FIXED_HPP_
 #define BASIS_MATH_IMPL_FIXED_HPP_
 
-namespace math {
-
+namespace math
+{
 	template<int FractalBits>
 	fixed<FractalBits>::fixed():
 		value()
@@ -196,7 +196,6 @@ namespace math {
 	{
 		return !operator <(left, right);
 	}
-
 }
 
 #endif

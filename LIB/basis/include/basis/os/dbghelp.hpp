@@ -5,9 +5,11 @@
 
 #include <dbghelp.h>
 
-namespace os {
-
-	struct Dbghelp_dll: private linkage::DynamicLibrary {
+namespace os
+{
+	struct Dbghelp_dll:
+		private linkage::DynamicLibrary
+	{
 		typedef DWORD64 (WINAPI *FSymGetModuleBase64)(HANDLE hProcess, DWORD64 qwAddr);
 		typedef PVOID   (WINAPI *FSymFunctionTableAccess64)(HANDLE hProcess, DWORD64 AddrBase);
 		typedef WINBOOL (WINAPI *FStackWalk64)(DWORD, HANDLE, HANDLE, LPSTACKFRAME64, PVOID, PREAD_PROCESS_MEMORY_ROUTINE64, PFUNCTION_TABLE_ACCESS_ROUTINE64, PGET_MODULE_BASE_ROUTINE64, PTRANSLATE_ADDRESS_ROUTINE64);
@@ -30,12 +32,11 @@ namespace os {
 		DEFINE_FUNC(SymFromAddrW);
 		DEFINE_FUNC(SymGetLineFromAddrW64);
 
-		static Dbghelp_dll & inst();
+		static Dbghelp_dll& inst();
 
 	private:
 		Dbghelp_dll();
 	};
-
 }
 
 #endif

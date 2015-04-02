@@ -1,7 +1,8 @@
 ﻿#ifndef BASIS_CONFIGURE_OBLIGATORY_VA_LIST_HPP_
 #define BASIS_CONFIGURE_OBLIGATORY_VA_LIST_HPP_
 
-struct Va_list {
+struct Va_list
+{
 	~Va_list();
 
 	operator va_list& ()
@@ -18,7 +19,7 @@ struct Va_list {
 	{
 		return &m_args;
 	}
-	
+
 	Va_list& operator =(va_list vl)
 	{
 		m_args = vl;

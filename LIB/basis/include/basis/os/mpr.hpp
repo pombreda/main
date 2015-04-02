@@ -3,9 +3,11 @@
 
 #include <basis/sys/linkage.hpp>
 
-namespace os {
-
-	struct mpr_dll: private linkage::DynamicLibrary {
+namespace os
+{
+	struct mpr_dll:
+		private linkage::DynamicLibrary
+	{
 		typedef DWORD (WINAPI *FWNetAddConnection2W)(LPNETRESOURCEW, LPCWSTR, LPCWSTR, DWORD);
 		typedef DWORD (WINAPI *FWNetCancelConnection2W)(LPCWSTR, DWORD, WINBOOL);
 
@@ -17,7 +19,6 @@ namespace os {
 	private:
 		mpr_dll();
 	};
-
 }
 
 #endif

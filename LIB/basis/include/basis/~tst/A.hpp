@@ -1,9 +1,10 @@
 #ifndef BASIS_TST_A_HPP_
 #define BASIS_TST_A_HPP_
 
-namespace tst {
-
-	class A {
+namespace tst
+{
+	class A
+	{
 	public:
 		~A();
 
@@ -33,7 +34,6 @@ namespace tst {
 	private:
 		int m_a;
 	};
-
 }
 
 #endif
