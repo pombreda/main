@@ -186,7 +186,8 @@ protected:
 		allocator.deallocate(node, 1);
 	}
 
-	struct list_base_impl: public node_allocator_type
+	struct list_base_impl:
+		public node_allocator_type
 	{
 		list_base_impl() = default;
 		list_base_impl(const node_allocator_type& other): node_allocator_type(other) {}
@@ -269,7 +270,7 @@ public:
 	size_type size() const;
 	size_type max_size() const;
 
-	void     clear();
+	void      clear();
 
 	template<typename InputIterator>
 	iterator insert(const_iterator cpos, InputIterator first, InputIterator last);
@@ -329,7 +330,6 @@ public:
 	void     unique(BinaryPredicate predicate);
 
 	void     sort();
-	void     sort1();
 	template<class Compare>
 	void     sort(Compare comp);
 
@@ -1200,7 +1200,6 @@ namespace simstd
 
 		_transfer(cpos, first, last);
 	}
-
 }
 
 #endif

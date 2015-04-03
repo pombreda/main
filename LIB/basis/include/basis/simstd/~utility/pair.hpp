@@ -1,8 +1,8 @@
 ﻿#ifndef BASIS_SIMSTD_UTILITY_PAIR_HPP_
 #define BASIS_SIMSTD_UTILITY_PAIR_HPP_
 
-namespace simstd {
-
+namespace simstd
+{
 	template<typename T1, typename T2>
 	struct pair
 	{
@@ -109,7 +109,6 @@ namespace simstd {
 	{
 		lhs.swap(rhs);
 	}
-
 }
 
 #endif

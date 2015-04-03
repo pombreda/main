@@ -8,7 +8,8 @@
 
 #include <basis/tst.hpp>
 
-namespace {
+namespace
+{
 	typedef memory::heap::DecoratorStat<memory::heap::Default, memory::heap::StatCount, tst::A> heap_type;
 	typedef simstd::AllocatorHeap<tst::A, heap_type> Allocator;
 	typedef simstd::vector<tst::A, Allocator> vector_type;

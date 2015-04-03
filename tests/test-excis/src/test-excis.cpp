@@ -1,6 +1,8 @@
 #include <tests.hpp>
 
 #include <basis/configure.hpp>
+#include <basis/sys/crt.hpp>
+#include <basis/sys/console.hpp>
 #include <basis/sys/cstr.hpp>
 #include <basis/sys/linkage.hpp>
 #include <basis/sys/logger.hpp>

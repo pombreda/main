@@ -44,7 +44,7 @@ public:
 //	basic_string(std::initializer_list<value_type> ilist, const allocator_type& allocator = allocator_type());
 
 	this_type& operator =(const this_type& other);
-	this_type& operator =(this_type&& other);
+	this_type& operator =(this_type&& other) noexcept;
 	this_type& operator =(const_pointer other);
 	this_type& operator =(value_type ch);
 
@@ -325,14 +325,14 @@ namespace simstd
 	}
 
 	template<typename C, typename T, typename A>
-	basic_string<C, T, A>::basic_string(this_type&& other):
+	basic_string<C, T, A>::basic_string(this_type&& other) noexcept:
 		base_type(simstd::move(other))
 	{
 		TraceObj();
 	}
 
 	template<typename C, typename T, typename A>
-	basic_string<C, T, A>::basic_string(this_type&& other, const allocator_type& allocator):
+	basic_string<C, T, A>::basic_string(this_type&& other, const allocator_type& allocator) noexcept:
 		base_type(simstd::move(other), allocator)
 	{
 		TraceObj();
