@@ -9,76 +9,90 @@
 #include <basis/simstd/memory>
 #include <basis/simstd/string>
 
-namespace fsys {
-
+namespace fsys
+{
 	LogDeclare();
 
-	namespace file {
+	namespace file
+	{
 		struct Facade;
 	}
 
 	bool is_exist(const wchar_t* path);
-	inline bool is_exist(const ustring& path) {
+	inline bool is_exist(const ustring& path)
+	{
 		return is_exist(path.c_str());
 	}
 
 	DWORD get_attr(const wchar_t* path);
-	inline DWORD get_attr(const ustring& path) {
+	inline DWORD get_attr(const ustring& path)
+	{
 		return get_attr(path.c_str());
 	}
 
 	void set_attr(const wchar_t* path, DWORD attr);
-	inline void set_attr(const ustring& path, DWORD attr) {
+	inline void set_attr(const ustring& path, DWORD attr)
+	{
 		return set_attr(path.c_str(), attr);
 	}
 
 	bool is_file(const wchar_t* path);
-	inline bool is_file(const ustring &path) {
+	inline bool is_file(const ustring& path)
+	{
 		return is_file(path.c_str());
 	}
 
 	bool is_dir(const wchar_t* path);
-	inline bool is_dir(const ustring &path) {
+	inline bool is_dir(const ustring& path)
+	{
 		return is_dir(path.c_str());
 	}
 
 	void del(const wchar_t* path);
-	inline void del(const ustring &path) {
+	inline void del(const ustring& path)
+	{
 		del(path.c_str());
 	}
 
 	void del_sh(const wchar_t* path);
-	inline void del_sh(const ustring &path) {
+	inline void del_sh(const ustring& path)
+	{
 		del_sh(path.c_str());
 	}
 
 	void del_recycle(const wchar_t* path);
-	inline void del_recycle(const ustring &path) {
+	inline void del_recycle(const ustring& path)
+	{
 		del_recycle(path.c_str());
 	}
 
 	void del_on_reboot(const wchar_t* path);
-	inline void del_on_reboot(const ustring& path) {
+	inline void del_on_reboot(const ustring& path)
+	{
 		del_on_reboot(path.c_str());
 	}
 
 	bool del_by_mask(const wchar_t* mask);
-	inline bool del_by_mask(const ustring &mask) {
+	inline bool del_by_mask(const ustring& mask)
+	{
 		return del_by_mask(mask.c_str());
 	}
 
 	bool is_link(const wchar_t* path);
-	inline bool is_link(const ustring &path) {
+	inline bool is_link(const ustring& path)
+	{
 		return is_link(path.c_str());
 	}
 
 	bool is_symlink(const wchar_t* path);
-	inline bool is_symlink(const ustring &path) {
+	inline bool is_symlink(const ustring& path)
+	{
 		return is_symlink(path.c_str());
 	}
 
 	bool is_junction(const wchar_t* path);
-	inline bool is_junction(const ustring &path) {
+	inline bool is_junction(const ustring& path)
+	{
 		return is_junction(path.c_str());
 	}
 
@@ -88,11 +102,16 @@ namespace fsys {
 
 	HANDLE DuplicateHandle(HANDLE hndl);
 
-	struct DeleteCmd: public pattern::Command {
+	struct DeleteCmd:
+		public pattern::Command
+	{
 		DeleteCmd(const ustring &path):
-			m_path(path) {
+			m_path(path)
+		{
 		}
-		bool Execute() const {
+
+		bool Execute() const
+		{
 			del(m_path);
 			return true;
 		}
@@ -104,26 +123,31 @@ namespace fsys {
 
 	HANDLE HandleWrite(const wchar_t* path);
 
-	inline HANDLE HandleRead(const ustring& path) {
+	inline HANDLE HandleRead(const ustring& path)
+	{
 		return HandleRead(path.c_str());
 	}
 
-	inline HANDLE HandleWrite(const ustring& path) {
+	inline HANDLE HandleWrite(const ustring& path)
+	{
 		return HandleWrite(path.c_str());
 	}
 
-	///======================================================================================== Stat
-	typedef struct _EXT_FILE_ID_128 {
-	  ULONGLONG LowPart;
-	  ULONGLONG HighPart;
+	typedef struct _EXT_FILE_ID_128
+	{
+		ULONGLONG LowPart;
+		ULONGLONG HighPart;
 	} EXT_FILE_ID_128, *PEXT_FILE_ID_128;
 
-	typedef struct _FILE_ID_INFO {
-	  ULONGLONG       VolumeSerialNumber;
-	  EXT_FILE_ID_128 FileId;
+	typedef struct _FILE_ID_INFO
+	{
+		ULONGLONG VolumeSerialNumber;
+		EXT_FILE_ID_128 FileId;
 	} FILE_ID_INFO, *PFILE_ID_INFO;
 
-	struct Stat: private BY_HANDLE_FILE_INFORMATION {
+	struct Stat:
+		private BY_HANDLE_FILE_INFORMATION
+	{
 		Stat(HANDLE hndl)
 		{
 			refresh(hndl);
@@ -226,12 +250,14 @@ namespace fsys {
 		friend struct file::Facade;
 	};
 
-	inline bool operator ==(const Stat & f1, const Stat & f2) {
+	inline bool operator ==(const Stat & f1, const Stat & f2)
+	{
 		return f1.operator ==(f2);
 	}
 
-	///==================================================================================== Sequence
-	class Sequence: private pattern::Uncopyable {
+	class Sequence:
+		private pattern::Uncopyable
+	{
 		typedef Sequence this_type;
 		class const_input_iterator;
 
@@ -342,7 +368,8 @@ namespace fsys {
 		flags_type m_flags;
 	};
 
-	class Sequence::const_input_iterator {
+	class Sequence::const_input_iterator
+	{
 		typedef const_input_iterator this_type;
 
 	public:
@@ -378,14 +405,17 @@ namespace fsys {
 		friend class Sequence;
 	};
 
-	namespace file {
+	namespace file
+	{
 		bool is_exist(const wchar_t* path);
-		inline bool is_exist(const ustring& path) {
+		inline bool is_exist(const ustring& path)
+		{
 			return is_exist(path.c_str());
 		}
 
 		uint64_t get_size(const wchar_t* path);
-		inline uint64_t get_size(const ustring& path) {
+		inline uint64_t get_size(const ustring& path)
+		{
 			return get_size(path.c_str());
 		}
 
@@ -396,73 +426,95 @@ namespace fsys {
 		void set_position(HANDLE hFile, uint64_t pos, DWORD m = FILE_BEGIN);
 
 		void create(const wchar_t* path, LPSECURITY_ATTRIBUTES lpsa = nullptr);
-		inline void create(const ustring &path, LPSECURITY_ATTRIBUTES lpsa = nullptr) {
+		inline void create(const ustring &path, LPSECURITY_ATTRIBUTES lpsa = nullptr)
+		{
 			create(path.c_str(), lpsa);
 		}
 
 		void create(const wchar_t* path, PCSTR content, LPSECURITY_ATTRIBUTES lpsa = nullptr);
-		inline void create(const ustring &path, PCSTR content, LPSECURITY_ATTRIBUTES lpsa = nullptr) {
+		inline void create(const ustring &path, PCSTR content, LPSECURITY_ATTRIBUTES lpsa = nullptr)
+		{
 			create(path.c_str(), content, lpsa);
 		}
 
 		void create_hardlink(const wchar_t* path, const wchar_t* new_path);
-		inline void create_hardlink(const ustring &path, const ustring &new_path) {
+		inline void create_hardlink(const ustring &path, const ustring &new_path)
+		{
 			create_hardlink(path.c_str(), new_path.c_str());
 		}
 
 		void del(const wchar_t* path);
-		inline void del(const ustring &path) {
+		inline void del(const ustring &path)
+		{
 			del(path.c_str());
 		}
 
 		bool wipe(const wchar_t* path);
 
 		void replace(const wchar_t* from, const wchar_t* to, const wchar_t* backup = nullptr);
-		inline void replace(const ustring& from, const ustring& to, const wchar_t* backup = nullptr) {
+		inline void replace(const ustring& from, const ustring& to, const wchar_t* backup = nullptr)
+		{
 			replace(from.c_str(), to.c_str(), backup);
 		}
 
 		uint64_t get_inode(const wchar_t* path, size_t * nlink);
 
 		size_t write(HANDLE file, const void* data, size_t bytesToWrite);
-		inline size_t write(HANDLE file, const ustring& data) {
+		inline size_t write(HANDLE file, const ustring& data)
+		{
 			return write(file, (const void*)data.c_str(), data.size() * sizeof(wchar_t));
 		}
 
 		void write(const wchar_t* path, const void* data, size_t bytesToWrite, bool rewrite = false);
-		inline void write(const wchar_t* path, const wchar_t* data, size_t size, bool rewrite = false) {
+		inline void write(const wchar_t* path, const wchar_t* data, size_t size, bool rewrite = false)
+		{
 			write(path, data, size * sizeof(wchar_t), rewrite);
 		}
-		inline void write(const ustring& path, const ustring& data, bool rewrite = false) {
+		inline void write(const ustring& path, const ustring& data, bool rewrite = false)
+		{
 			write(path.c_str(), (const void*)data.c_str(), data.size() * sizeof(wchar_t), rewrite);
 		}
 
-		struct CopyCmd: public pattern::Command {
-			CopyCmd(const ustring& path, const ustring& dest):
+		struct CopyCmd:
+		    public pattern::Command
+		{
+			CopyCmd(const ustring& path, const ustring& dest) :
 				m_path(path),
-				m_dest(dest) {
+				m_dest(dest)
+			{
 			}
-			bool Execute() const {
+
+			bool Execute() const
+			{
 				return fsys::file::copy(m_path.c_str(), m_dest.c_str());
 			}
+
 		private:
 			ustring m_path, m_dest;
 		};
 
-		struct MoveCmd: public pattern::Command {
-			MoveCmd(const ustring& path, const ustring& dest):
+		struct MoveCmd:
+		    public pattern::Command
+		{
+			MoveCmd(const ustring& path, const ustring& dest) :
 				m_path(path),
-				m_dest(dest) {
+				m_dest(dest)
+			{
 			}
-			bool Execute() const {
+
+			bool Execute() const
+			{
 				return fsys::file::move(m_path.c_str(), m_dest.c_str());
 			}
+
 		private:
 			ustring m_path, m_dest;
 		};
 
-		///=========================================================================================
-		struct Facade: private fsys::Stat, private pattern::Uncopyable {
+		struct Facade:
+		    private fsys::Stat,
+		    private pattern::Uncopyable
+		{
 			~Facade();
 
 			explicit Facade(HANDLE hndl);
@@ -517,16 +569,19 @@ namespace fsys {
 
 			bool set_atime_nt(const FILETIME & atime);
 
-			ustring path() const {
+			ustring path() const
+			{
 				return m_path;
 			}
 
-			operator HANDLE() const {
+			operator HANDLE() const
+			{
 				return m_hndl;
 			}
 
 			template<typename Type>
-			bool io_control_out_nt(DWORD code, Type & data) throw() {
+			bool io_control_out_nt(DWORD code, Type & data) throw()
+			{
 				DWORD size_ret;
 				return ::DeviceIoControl(m_hndl, code, nullptr, 0, &data, sizeof(Type), &size_ret, nullptr) != 0;
 			}
@@ -545,7 +600,9 @@ namespace fsys {
 
 		///=============================================================================== File::Map
 		/// Отображение файла в память блоками
-		class Map: private pattern::Uncopyable {
+		class Map:
+		    private pattern::Uncopyable
+		{
 			class file_map_iterator;
 			typedef Map this_type;
 
@@ -558,21 +615,25 @@ namespace fsys {
 
 			Map(const Facade & wf, size_type size = (size_type)-1, bool write = false);
 
-			HANDLE map() const {
+			HANDLE map() const
+			{
 				return m_map;
 			}
 
-			size_type size() const {
+			size_type size() const
+			{
 				return m_size;
 			}
 
-			size_type get_frame() const {
+			size_type get_frame() const
+			{
 				return m_frame;
 			}
 
 			size_type set_frame(size_type size);
 
-			bool is_writeble() const {
+			bool is_writeble() const
+			{
 				return m_write;
 			}
 
@@ -597,7 +658,8 @@ namespace fsys {
 			bool m_write;
 		};
 
-		class Map::file_map_iterator {
+		class Map::file_map_iterator
+		{
 			typedef file_map_iterator this_type;
 
 		public:
@@ -628,20 +690,23 @@ namespace fsys {
 		};
 	}
 
-	///=================================================================================== Directory
-	namespace directory {
+	namespace directory
+	{
 		bool is_exist(const wchar_t* path);
-		inline bool is_exist(const ustring& path) {
+		inline bool is_exist(const ustring& path)
+		{
 			return is_exist(path.c_str());
 		}
 
 		bool is_empty(const wchar_t* path);
-		inline bool is_empty(const ustring &path) {
+		inline bool is_empty(const ustring& path)
+		{
 			return is_empty(path.c_str());
 		}
 
 		void create(const wchar_t* path, LPSECURITY_ATTRIBUTES lpsa = nullptr);
-		inline void create(const ustring &path, LPSECURITY_ATTRIBUTES lpsa = nullptr) {
+		inline void create(const ustring& path, LPSECURITY_ATTRIBUTES lpsa = nullptr)
+		{
 			create(path.c_str(), lpsa);
 		}
 
@@ -649,81 +714,97 @@ namespace fsys {
 		void create_full(const ustring& p, LPSECURITY_ATTRIBUTES sa = nullptr);
 
 		bool create_dir(const wchar_t* path, LPSECURITY_ATTRIBUTES lpsa = nullptr);
-		inline bool create_dir(const ustring &path, LPSECURITY_ATTRIBUTES lpsa = nullptr) {
+		inline bool create_dir(const ustring& path, LPSECURITY_ATTRIBUTES lpsa = nullptr)
+		{
 			return create_dir(path.c_str(), lpsa);
 		}
 
 		void del(const wchar_t* path);
-		inline void del(const ustring &path) {
+		inline void del(const ustring& path)
+		{
 			del(path.c_str());
 		}
 
 		bool remove_dir(const wchar_t* path, bool follow_links = false);
-		inline bool remove_dir(const ustring &path, bool follow_links = false) {
+		inline bool remove_dir(const ustring& path, bool follow_links = false)
+		{
 			return remove_dir(path.c_str(), follow_links);
 		}
 
 		bool ensure_dir_exist(const wchar_t* path, LPSECURITY_ATTRIBUTES lpsa = nullptr);
-		inline bool ensure_dir_exist(const ustring &path, LPSECURITY_ATTRIBUTES lpsa = nullptr) {
+		inline bool ensure_dir_exist(const ustring& path, LPSECURITY_ATTRIBUTES lpsa = nullptr)
+		{
 			return ensure_dir_exist(path.c_str(), lpsa);
 		}
 	}
 
-	///======================================================================================== Link
-	namespace link {
+	namespace link
+	{
 		void copy(const wchar_t* from, const wchar_t* to);
-		inline void copy(const ustring& from, const ustring& to) {
+		inline void copy(const ustring& from, const ustring& to)
+		{
 			copy(from.c_str(), to.c_str());
 		}
 
 		void create_sym(const wchar_t* path, const wchar_t* new_path);
-		inline void	create_sym(const ustring& path, const ustring& new_path) {
+		inline void create_sym(const ustring& path, const ustring& new_path)
+		{
 			create_sym(path.c_str(), new_path.c_str());
 		}
 
 		void create_junc(const wchar_t* path, const wchar_t* new_path);
-		inline void	create_junc(const ustring& path, const ustring& new_path) {
+		inline void create_junc(const ustring& path, const ustring& new_path)
+		{
 			return create_junc(path.c_str(), new_path.c_str());
 		}
 
 		void break_link(const wchar_t* path);
-		inline void break_link(const ustring& path) {
+		inline void break_link(const ustring& path)
+		{
 			break_link(path.c_str());
 		}
 
 		void del(const wchar_t* path);
-		inline void del(const ustring& path) {
+		inline void del(const ustring& path)
+		{
 			del(path.c_str());
 		}
 
-		ustring	read(const wchar_t* path);
-		inline ustring read(const ustring& path) {
+		ustring read(const wchar_t* path);
+		inline ustring read(const ustring& path)
+		{
 			return read(path.c_str());
 		}
 
-		struct CreateSymCmd: public pattern::Command {
-			CreateSymCmd(const ustring& path, const ustring& new_path):
+		struct CreateSymCmd:
+		    public pattern::Command
+		{
+			CreateSymCmd(const ustring& path, const ustring& new_path) :
 				m_path(path),
-				m_new_path(new_path) {
+				m_new_path(new_path)
+			{
 			}
-			bool Execute() const {
+
+			bool Execute() const
+			{
 				create_sym(m_path, m_new_path);
 				return true;
 			}
+
 		private:
 			ustring m_path, m_new_path;
 		};
 	}
 
-	///=============================================================================================
 	void copy_file_security(const wchar_t* path, const wchar_t* dest);
-	inline void copy_file_security(const ustring& path, const ustring& dest) {
+	inline void copy_file_security(const ustring& path, const ustring& dest)
+	{
 		copy_file_security(path.c_str(), dest.c_str());
 	}
-
 }
 
-namespace Ext {
+namespace Ext
+{
 	///========================================================================================== WinVol
 	//class WinVol: private Uncopyable, public WinErrorCheck {
 	//public:
@@ -801,7 +882,6 @@ namespace Ext {
 	//	HANDLE	m_hnd;
 	//	ustring	name;
 	//};
-
 }
 
 #endif

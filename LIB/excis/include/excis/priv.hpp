@@ -6,10 +6,11 @@
 #include <basis/simstd/iosfwd>
 #include <basis/ext/pattern.hpp>
 
-namespace Ext {
-
-	///==================================================================================== WinToken
-	struct WinToken: private pattern::Uncopyable {
+namespace Ext
+{
+	struct WinToken:
+		private pattern::Uncopyable
+	{
 		WinToken(ACCESS_MASK mask = TOKEN_QUERY);
 
 		WinToken(HANDLE process, ACCESS_MASK mask);
@@ -25,8 +26,8 @@ namespace Ext {
 		memory::auto_close<HANDLE> m_token;
 	};
 
-	///===================================================================================== WinPriv
-	namespace WinPriv {
+	namespace WinPriv
+	{
 		bool is_exist(HANDLE token, const LUID & priv);
 		bool is_exist(HANDLE token, const wchar_t* priv_name);
 		bool is_exist(const LUID & priv);
@@ -63,8 +64,9 @@ namespace Ext {
 		ustring GetName(const wchar_t* priv_name);
 	}
 
-	///=================================================================================== Privilege
-	struct Privilege: private pattern::Uncopyable {
+	struct Privilege:
+		private pattern::Uncopyable
+	{
 		~Privilege();
 
 		explicit Privilege(const wchar_t* priv_name);
@@ -73,7 +75,6 @@ namespace Ext {
 		TOKEN_PRIVILEGES m_tp;
 		bool m_disable;
 	};
-
 }
 
 #endif

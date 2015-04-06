@@ -3,20 +3,21 @@
 
 #include <basis/configure.hpp>
 
-namespace Ext {
-
-	struct AnonPipe {
+namespace Ext
+{
+	struct AnonPipe
+	{
 		~AnonPipe();
 
 		AnonPipe(size_t size = 0);
 
-		bool read_nt(void * buffer, size_t size, DWORD & rd) noexcept;
+		bool read_nt(void* buffer, size_t size, DWORD& rd) noexcept;
 
-		void read(void * buffer, size_t bufSize, DWORD & rd);
+		void read(void* buffer, size_t bufSize, DWORD& rd);
 
-		bool write_nt(const void * buffer, size_t size, DWORD & written) noexcept;
+		bool write_nt(const void* buffer, size_t size, DWORD& written) noexcept;
 
-		void write(const void * buffer, size_t bufSize, DWORD & written);
+		void write(const void* buffer, size_t bufSize, DWORD& written);
 
 		void close_write() noexcept;
 
@@ -27,7 +28,8 @@ namespace Ext {
 		HANDLE m_wpipe;
 	};
 
-	struct Pipe {
+	struct Pipe
+	{
 		~Pipe();
 
 		Pipe(const wchar_t* name, DWORD openMode, DWORD pipeMode, DWORD maxInstances, LPSECURITY_ATTRIBUTES securityAttributes = nullptr);
@@ -40,14 +42,13 @@ namespace Ext {
 
 		operator HANDLE() const;
 
-		void read(void * buffer, size_t bufSize, DWORD & read);
+		void read(void* buffer, size_t bufSize, DWORD& read);
 
-		void write(const void * buffer, size_t bufSize, DWORD & written);
+		void write(const void* buffer, size_t bufSize, DWORD& written);
 
 	private:
 		HANDLE m_pipe;
 	};
-
 }
 
 #endif

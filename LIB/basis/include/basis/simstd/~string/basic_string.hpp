@@ -2,7 +2,9 @@
 #define BASIS_SIMSTD_STRING_BASIC_STRING_HPP_
 
 template<typename CharType, typename Traits, typename Allocator>
-class simstd::basic_string: private pvt::basic_string_base<CharType, Allocator> {
+class simstd::basic_string:
+	private pvt::basic_string_base<CharType, Allocator>
+{
 	using this_type = basic_string;
 	using base_type = pvt::basic_string_base<CharType, Allocator>;
 	using base_type::impl;
@@ -220,6 +222,8 @@ private:
 
 	static int _compare(const_pointer str1, size_type len1, const_pointer str2, size_type len2);
 
+	void _swap(this_type& other) noexcept;
+
 	size_type find(const_pointer str, size_type index, size_type length) const;
 
 	bool is_same_str(const_pointer str) const;
@@ -385,7 +389,7 @@ namespace simstd
 	{
 		TraceObj();
 		if (impl != other.impl) {
-			this_type(other).swap(*this);
+			this_type(other)._swap(*this);
 		}
 		return *this;
 	}
@@ -405,7 +409,7 @@ namespace simstd
 	{
 		TraceObj();
 		CRT_ASSERT(impl != other.impl); // UB
-		swap(other);
+		_swap(other);
 		return *this;
 	}
 
@@ -414,7 +418,7 @@ namespace simstd
 	{
 		TraceFormatObj("(%p, %Iu)\n", str, len);
 		if (is_same_str(str)) {
-			this_type(get_allocator(), len, str, len).swap(*this);
+			this_type(get_allocator(), len, str, len)._swap(*this);
 		} else {
 			split_and_clear(len);
 			_raw_append(str, len);
@@ -642,7 +646,7 @@ namespace simstd
 	{
 		TraceObj();
 		if (size() < capacity())
-			this_type(get_allocator(), size(), c_str(), size()).swap(*this);
+			this_type(get_allocator(), size(), c_str(), size())._swap(*this);
 	}
 
 	template<typename C, typename T, typename A>
@@ -741,7 +745,7 @@ namespace simstd
 		CRT_ASSERT(index <= size());
 		CRT_ASSERT(indexLast <= size());
 		if (impl->is_shared()) {
-			this_type(get_allocator(), capacity(), c_str(), index, c_str() + indexLast, size() - indexLast).swap(*this);
+			this_type(get_allocator(), capacity(), c_str(), index, c_str() + indexLast, size() - indexLast)._swap(*this);
 		} else {
 			traits_type::move(impl->get_data() + index, impl->get_data() + indexLast, size() - indexLast);
 			impl->set_size(size() - count);
@@ -797,7 +801,7 @@ namespace simstd
 		if (len) {
 			auto capa = get_necessary_capacity(len);
 			if (is_same_str(str)) {
-				this_type(get_allocator(), capa, c_str(), size(), str, len).swap(*this);
+				this_type(get_allocator(), capa, c_str(), size(), str, len)._swap(*this);
 			} else {
 				split_and_copy(capa);
 				_raw_append(str, len);
@@ -938,7 +942,7 @@ namespace simstd
 //			printf("      (%Iu, %Iu): '%s'\n", tmp.size(), tmp.capacity(), tmp.c_str());
 			tmp._raw_append(c_str() + index, size() - index);
 //			printf("      (%Iu, %Iu): '%s'\n", tmp.size(), tmp.capacity(), tmp.c_str());
-			tmp.swap(*this);
+			tmp._swap(*this);
 		} else {
 //			printf("      (%Iu, %Iu): '%s'\n", size(), capacity(), c_str());
 //			printf("replace before: '%s'\n", c_str());
@@ -987,7 +991,7 @@ namespace simstd
 			this_type tmp(get_allocator(), capa, c_str(), index);
 			tmp._raw_append(ch, len);
 			tmp._raw_append(c_str() + index, size() - index);
-			tmp.swap(*this);
+			tmp._swap(*this);
 		} else {
 			traits_type::move(impl->get_data() + index + len, impl->get_data() + index + count, size() - (index + count));
 			traits_type::assign(impl->get_data() + index, len, ch);
@@ -1012,7 +1016,7 @@ namespace simstd
 		this_type tmp(get_allocator(), capacity(), c_str(), index);
 		tmp._append(first2, last2, tag);
 		tmp.append(c_str() + index + count, size() - (index + count));
-		tmp.swap(*this);
+		tmp._swap(*this);
 		return *this;
 	}
 
@@ -1026,7 +1030,7 @@ namespace simstd
 		this_type tmp(get_allocator(), get_necessary_capacity(len - count), c_str(), index);
 		tmp._raw_append(first2, last2);
 		tmp._raw_append(c_str() + index + count, size() - (index + count));
-		tmp.swap(*this);
+		tmp._swap(*this);
 		return *this;
 	}
 
@@ -1066,8 +1070,7 @@ namespace simstd
 	void basic_string<C, T, A>::swap(this_type& other) noexcept
 	{
 		TraceObj();
-		using simstd::swap;
-		swap(impl, other.impl);
+		_swap(other);
 	}
 
 	template<typename C, typename T, typename A>
@@ -1235,7 +1238,7 @@ namespace simstd
 	void basic_string<C, T, A>::split_and_clear(size_type minCapacity)
 	{
 		if (must_be_splitted(minCapacity))
-			this_type(get_allocator(), simstd::max(minCapacity, capacity()), nullptr, 0).swap(*this);
+			this_type(get_allocator(), simstd::max(minCapacity, capacity()), nullptr, 0)._swap(*this);
 		else
 			impl->set_size(0);
 	}
@@ -1244,7 +1247,7 @@ namespace simstd
 	void basic_string<C, T, A>::split_and_copy(size_type minCapacity)
 	{
 		if (must_be_splitted(minCapacity))
-			this_type(get_allocator(), simstd::max(minCapacity, capacity()), c_str(), size()).swap(*this);
+			this_type(get_allocator(), simstd::max(minCapacity, capacity()), c_str(), size())._swap(*this);
 	}
 
 	template<typename C, typename T, typename A>
@@ -1254,6 +1257,13 @@ namespace simstd
 		if (result != 0 || len1 == len2)
 			return result;
 		return (len1 < len2) ? -1 : 1;
+	}
+
+	template<typename C, typename T, typename A>
+	void basic_string<C, T, A>::_swap(this_type& other) noexcept
+	{
+		using simstd::swap;
+		swap(impl, other.impl);
 	}
 
 //	template<typename C, typename T, typename A>
@@ -1432,7 +1442,6 @@ namespace simstd
 	{
 		a.swap(b);
 	}
-
 }
 
 #endif

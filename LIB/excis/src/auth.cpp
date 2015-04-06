@@ -1,5 +1,4 @@
 #include <excis/auth.hpp>
-
 #include <excis/exception.hpp>
 
 #include <basis/sys/sstr.hpp>
@@ -8,8 +7,8 @@
 #include <wincred.h>
 #include <ntsecapi.h>
 
-namespace auth {
-
+namespace auth
+{
 	//typedef enum _CRED_PROTECTION_TYPE {
 	//	CredUnprotected         = 0,
 	//	CredUserProtection      = 1,
@@ -23,68 +22,69 @@ namespace auth {
 
 	Credential::~Credential()
 	{
-		if (m_delete) {
+		if (owned) {
 //			::SecureZeroMemory(m_cred->CredentialBlob, m_cred->CredentialBlobSize);
-			::CredFree(reinterpret_cast<PCREDENTIALW>(m_cred));
+			::CredFree(reinterpret_cast<CREDENTIALW*>(cred));
 		}
 	}
 
 	Credential::Credential(native_handle_type handle):
-		m_cred(reinterpret_cast<native_handle_type>(handle)),
-		m_delete(false)
+		cred(reinterpret_cast<native_handle_type>(handle)),
+		owned(false)
 	{
 	}
 
 	Credential::Credential(const wchar_t* name):
-		m_delete(true)
+		cred(),
+		owned(true)
 	{
-		CheckApi(::CredReadW(name, CRED_TYPE_GENERIC, 0, reinterpret_cast<CREDENTIALW**>(&m_cred)));
+		CheckApi(::CredReadW(name, CRED_TYPE_GENERIC, 0, reinterpret_cast<CREDENTIALW**>(&cred)));
 	}
 
-	Credential::Credential(Credential && right):
-		m_cred(nullptr),
-		m_delete(false)
+	Credential::Credential(Credential&& other):
+		cred(),
+		owned(false)
 	{
-		swap(right);
+		swap(other);
 	}
 
-	Credential & Credential::operator = (Credential && right)
+	Credential& Credential::operator =(Credential&& other)
 	{
-		if (this != &right)
-			Credential(simstd::move(right)).swap(*this);
+		if (this != &other)
+			Credential(simstd::move(other)).swap(*this);
 		return *this;
 	}
 
-	void Credential::swap(Credential & right)
+	void Credential::swap(Credential& other)
 	{
 		using simstd::swap;
-		swap(m_cred, right.m_cred);
-		swap(m_delete, right.m_delete);
+		swap(cred, other.cred);
+		swap(owned, other.owned);
 	}
 
 	ustring Credential::marshal() const
 	{
-		return ustring(reinterpret_cast<CREDENTIALW*>(m_cred)->Comment);
+		return ustring(reinterpret_cast<CREDENTIALW*>(cred)->Comment);
 	}
 
 	ustring Credential::comment() const
 	{
-		return ustring(reinterpret_cast<CREDENTIALW*>(m_cred)->Comment);
+		return ustring(reinterpret_cast<CREDENTIALW*>(cred)->Comment);
 	}
 
 	ustring Credential::name() const
 	{
-		return ustring(reinterpret_cast<CREDENTIALW*>(m_cred)->TargetName);
+		return ustring(reinterpret_cast<CREDENTIALW*>(cred)->TargetName);
 	}
 
 	ustring Credential::alias() const
 	{
-		return ustring(reinterpret_cast<CREDENTIALW*>(m_cred)->TargetAlias);
+		return ustring(reinterpret_cast<CREDENTIALW*>(cred)->TargetAlias);
 	}
 
 	ustring Credential::user() const
 	{
-		return ustring(reinterpret_cast<CREDENTIALW*>(m_cred)->UserName);
+		return ustring(reinterpret_cast<CREDENTIALW*>(cred)->UserName);
 	}
 
 	ustring Credential::pass() const
@@ -94,22 +94,22 @@ namespace auth {
 
 	size_t Credential::pass_size() const
 	{
-		return reinterpret_cast<CREDENTIALW*>(m_cred)->CredentialBlobSize;
+		return reinterpret_cast<CREDENTIALW*>(cred)->CredentialBlobSize;
 	}
 
 	size_t Credential::flags() const
 	{
-		return reinterpret_cast<CREDENTIALW*>(m_cred)->Flags;
+		return reinterpret_cast<CREDENTIALW*>(cred)->Flags;
 	}
 
 	size_t Credential::type() const
 	{
-		return reinterpret_cast<CREDENTIALW*>(m_cred)->Type;
+		return reinterpret_cast<CREDENTIALW*>(cred)->Type;
 	}
 
 	size_t Credential::persist() const
 	{
-		return reinterpret_cast<CREDENTIALW*>(m_cred)->Persist;
+		return reinterpret_cast<CREDENTIALW*>(cred)->Persist;
 	}
 
 	void Credential::add(const wchar_t* name, const wchar_t* pass, const wchar_t* target)
@@ -137,6 +137,11 @@ namespace auth {
 	}
 
 	Credentials::Credentials()
+	{
+		update();
+	}
+
+	void Credentials::update()
 	{
 		const DWORD CRED_ENUMERATE_ALL_CREDENTIALS = 0x1;
 
@@ -182,5 +187,4 @@ namespace auth {
 	{
 		CheckApi(::CredUnprotectW(true, (PWSTR )prot, ps, pass, &size));
 	}
-
 }

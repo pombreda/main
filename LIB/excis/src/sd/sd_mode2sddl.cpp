@@ -18,7 +18,7 @@ namespace Ext {
 				if (bits::Flags::check(mode, (mode_t)S_IXUSR))
 					sm += L"FX";
 			}
-			Result += ustring(L"(A;OICI;") + sm + L";;;" + Sid(owner).as_str() + L")";
+			Result += ustring(L"(A;OICI;") + sm + L";;;" + Sid(owner.c_str()).as_str() + L")";
 		}
 		sm.clear();
 		if ((mode & 070) && !group.empty()) {
@@ -32,7 +32,7 @@ namespace Ext {
 				if (bits::Flags::check(mode, (mode_t)S_IXGRP))
 					sm += L"FX";
 			}
-			Result += ustring(L"(A;OICI;") + sm + L";;;" + Sid(group).as_str() + L")";
+			Result += ustring(L"(A;OICI;") + sm + L";;;" + Sid(group.c_str()).as_str() + L")";
 		}
 		sm.clear();
 		if (mode & 07) {

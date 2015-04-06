@@ -29,9 +29,8 @@
 #define S_IXOTH 0x0001
 #endif
 
-namespace Ext {
-
-	///▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒ net_SD
+namespace Ext
+{
 	const DWORD ALL_SD_INFO =
 		OWNER_SECURITY_INFORMATION |
 		GROUP_SECURITY_INFORMATION |
@@ -39,8 +38,8 @@ namespace Ext {
 		SACL_SECURITY_INFORMATION |
 		LABEL_SECURITY_INFORMATION;
 
-	///=============================================================================== sddl_string_t
-	struct sddl_string_t {
+	struct sddl_string_t
+	{
 		sddl_string_t(const ustring& str);
 
 		ustring as_str() const;
@@ -59,7 +58,9 @@ namespace Ext {
 	/// Group SID	- sid группы (не используется вендой, лишь для совместимости с POSIX)
 	/// DACL		- список записей контроля доступа
 	/// SACL		- список записей аудита
-	struct WinSD: private pattern::Uncopyable {
+	struct WinSD:
+		private pattern::Uncopyable
+	{
 		typedef WinSD this_class;
 
 		virtual ~WinSD();
@@ -269,7 +270,6 @@ namespace Ext {
 	ustring	MakeSDDL(const ustring &name, const ustring &group, mode_t mode, bool protect = false);
 
 	void SetOwnerRecur(const ustring& path, PSID owner, SE_OBJECT_TYPE type = SE_FILE_OBJECT);
-
 }
 
 #endif

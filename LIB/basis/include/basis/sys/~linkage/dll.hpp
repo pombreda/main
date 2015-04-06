@@ -1,9 +1,11 @@
 ﻿#ifndef BASIS_SYS_LINKAGE_DLL_HPP_
 #define BASIS_SYS_LINKAGE_DLL_HPP_
 
-namespace linkage {
-
-	struct DynamicLibrary: private pattern::Uncopyable {
+namespace linkage
+{
+	struct DynamicLibrary:
+		private pattern::Uncopyable
+	{
 		virtual ~DynamicLibrary() noexcept;
 
 		virtual bool is_valid() const noexcept;
@@ -33,7 +35,6 @@ namespace linkage {
 		HMODULE m_hnd;
 		DWORD m_flags;
 	};
-
 }
 
 #endif

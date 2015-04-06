@@ -3,7 +3,8 @@
 
 #include <basis/configure.hpp>
 #include <basis/simstd/iosfwd>
+#include <basis/simstd/memory>
 
-#include <excis/~connection/Remote.hpp>
+#include <excis/~connection/RemoteI.hpp>
 
 #endif

@@ -18,9 +18,10 @@
 #include <excis/~exception/exception_debug.hpp>
 #endif
 
-namespace exception {
-
-	struct HiddenFunctions {
+namespace exception
+{
+	struct HiddenFunctions
+	{
 		static bool CheckApiFunc(bool r);
 
 		static bool CheckApiThrowErrorFunc(bool r, DWORD err);
@@ -117,7 +118,6 @@ namespace exception {
 
 		static void RethrowExceptionFunc(const Abstract& prev, const ustring& what, PCSTR file, size_t line, PCSTR func);
 	};
-
 }
 
 #endif

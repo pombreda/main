@@ -5,9 +5,10 @@
 
 #include <ntsecapi.h>
 
-namespace Ext {
-
-	namespace Policy {
+namespace Ext
+{
+	namespace Policy
+	{
 		LSA_UNICODE_STRING ToLsaString(const wchar_t* in);
 
 		LSA_HANDLE GetHandle(const wchar_t* dom = EMPTY_STR);
@@ -18,7 +19,6 @@ namespace Ext {
 
 		bool GetTokenUser(HANDLE hToken, ustring& name);
 	}
-
 }
 
 #endif

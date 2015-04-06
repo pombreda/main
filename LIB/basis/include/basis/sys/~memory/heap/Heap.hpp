@@ -36,14 +36,14 @@ namespace memory
 {
 	namespace heap
 	{
-		typedef DecoratorStat<Default, StatCount> DefaultStatCount;
+		using DefaultStatCount = DecoratorStat<Default, StatCount>;
 
-		typedef DecoratorStat<Default, StatLog> DefaultStatLogged;
+		using DefaultStatLogged = DecoratorStat<Default, StatLog>;
 
 #if !defined(MEMORY_LOGGING) || MEMORY_LOGGING == 0
-		typedef DefaultStatCount DefaultStat;
+		using DefaultStat = DefaultStatCount;
 #else
-		typedef DefaultStatLogged DefaultStat;
+		using DefaultStat = DefaultStatLogged;
 #endif
 	}
 }

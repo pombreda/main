@@ -352,7 +352,7 @@ namespace Ext {
 		User::add(name, pass);
 		push_back(UserInfo(UserBuf(name).data()));
 		if (!m_group.empty())
-			Group::add_member(m_group, Sid(name));
+			Group::add_member(m_group, Sid(name.c_str()));
 	}
 
 	void WinUsers::del(const ustring& name) {

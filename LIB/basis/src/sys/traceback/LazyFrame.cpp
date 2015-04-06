@@ -2,41 +2,30 @@
 
 #include <basis/simstd/string>
 
-namespace traceback {
-
-	Frame_i::~Frame_i()
+namespace traceback
+{
+	LazyFrame::LazyFrame(void* address) :
+		m_address(address)
 	{
 	}
 
-	LazyFrame::~LazyFrame()
-	{
-		delete m_data;
-	}
-
-	LazyFrame::LazyFrame(void * address) :
-		m_address(address),
-		m_data(nullptr)
+	LazyFrame::LazyFrame(LazyFrame&& other) :
+		m_address(other.m_address),
+		frame(simstd::move(other.frame))
 	{
 	}
 
-	LazyFrame::LazyFrame(LazyFrame && other) :
-		m_address(nullptr),
-		m_data(nullptr)
+	LazyFrame& LazyFrame::operator =(LazyFrame&& other)
 	{
-		swap(other);
-	}
-
-	LazyFrame & LazyFrame::operator =(LazyFrame && right)
-	{
-		LazyFrame(simstd::move(right)).swap(*this);
+		LazyFrame(simstd::move(other)).swap(*this);
 		return *this;
 	}
 
-	void LazyFrame::swap(LazyFrame & other)
+	void LazyFrame::swap(LazyFrame& other)
 	{
 		using simstd::swap;
 		swap(m_address, other.m_address);
-		swap(m_data, other.m_data);
+		swap(frame, other.frame);
 	}
 
 	void* LazyFrame::address() const
@@ -47,31 +36,31 @@ namespace traceback {
 	const ustring& LazyFrame::module() const
 	{
 		init_data();
-		return m_data->module();
+		return frame->module();
 	}
 
 	const ustring& LazyFrame::file() const
 	{
 		init_data();
-		return m_data->file();
+		return frame->file();
 	}
 
 	const ustring& LazyFrame::function() const
 	{
 		init_data();
-		return m_data->function();
+		return frame->function();
 	}
 
 	size_t LazyFrame::line() const
 	{
 		init_data();
-		return m_data->line();
+		return frame->line();
 	}
 
 	size_t LazyFrame::offset() const
 	{
 		init_data();
-		return m_data->offset();
+		return frame->offset();
 	}
 
 	ustring LazyFrame::to_str() const
@@ -89,8 +78,7 @@ namespace traceback {
 
 	void LazyFrame::init_data() const
 	{
-		if (!m_data)
-			m_data = read_frame_data(m_address);
+		if (!frame)
+			frame = read_frame_data(m_address);
 	}
-
 }

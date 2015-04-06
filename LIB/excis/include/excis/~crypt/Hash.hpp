@@ -1,13 +1,12 @@
 ﻿#ifndef EXCIS_CRYPT_HASH_HPP_
 #define EXCIS_CRYPT_HASH_HPP_
 
-#include <excis/crypt.hpp>
-
 #include <wincrypt.h>
 
-namespace crypt {
-
-	struct Hash {
+namespace crypt
+{
+	struct Hash
+	{
 		~Hash();
 
 		// alg = (CALG_MD5, CALG_SHA1, CALG_SHA_512)
@@ -43,7 +42,6 @@ namespace crypt {
 	{
 		return m_handle;
 	}
-
 }
 
 #endif

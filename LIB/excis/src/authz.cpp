@@ -74,7 +74,7 @@ namespace Ext {
 		dacl.set_access(SidString(L"S-1-5-19").get_name().c_str(), mode2access(07));
 		if (!name.empty()) {
 			try {
-				Sid usr(name);
+				Sid usr(name.c_str());
 				DWORD	ownerSize = SECURITY_MAX_SID_SIZE;
 				m_owner = (PSID)::LocalAlloc(LPTR, ownerSize);
 				usr.copy_to(m_owner, ownerSize);
@@ -87,7 +87,7 @@ namespace Ext {
 			try {
 				DWORD	groupSize = SECURITY_MAX_SID_SIZE;
 				m_group = (PSID)::LocalAlloc(LPTR, groupSize);
-				Sid grp(group);
+				Sid grp(group.c_str());
 				grp.copy_to(m_group, groupSize);
 				dacl.set_access(grp.get_name().c_str(), mode2access((mode >> 3) & 07));
 			} catch (...) {

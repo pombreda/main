@@ -5,7 +5,8 @@
 
 #include <wininet.h>
 
-typedef struct tagPARSEDURL {
+typedef struct tagPARSEDURL
+{
 	DWORD cbSize;
 	PCWSTR pszProtocol;
 	UINT cchProtocol;
@@ -14,12 +15,11 @@ typedef struct tagPARSEDURL {
 	UINT nScheme;
 } PARSEDURL, *PPARSEDURL;
 
-namespace url {
+namespace url
+{
+	HRESULT parse(const wchar_t* url, PARSEDURL* parsedUrl);
 
-	HRESULT parse(const wchar_t* url, PARSEDURL * parsedUrl);
-
-	bool crack(const wchar_t* url, URL_COMPONENTSW * info);
-
+	bool crack(const wchar_t* url, URL_COMPONENTSW* info);
 }
 
 #endif

@@ -3,10 +3,12 @@
 
 #include <basis/ext/pattern.hpp>
 
-namespace memory {
-	namespace heap {
-
-		struct AllocatedItem {
+namespace memory
+{
+	namespace heap
+	{
+		struct AllocatedItem
+		{
 			AllocatedItem(void* ptr, uint64_t size, const char* function, int line);
 
 			uint64_t    size;
@@ -72,13 +74,13 @@ namespace memory {
 		private:
 			static stat_type& get_stat_impl();
 		};
-
 	}
 }
 
-namespace memory {
-	namespace heap {
-
+namespace memory
+{
+	namespace heap
+	{
 		template<typename HeapType, typename StatType, typename TagType>
 		void* DecoratorStat<HeapType, StatType, TagType>::alloc(size_t size, const char* function, int line)
 		{
@@ -115,7 +117,6 @@ namespace memory {
 			static stat_type stat;
 			return stat;
 		}
-
 	}
 }
 
