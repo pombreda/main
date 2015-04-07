@@ -6,7 +6,8 @@
 #include <basis/sys/memory.hpp>
 #include <basis/tst.hpp>
 
-namespace {
+namespace
+{
 	void setup_logger()
 	{
 		TraceFunc();
@@ -45,11 +46,11 @@ int main(int argc, char* argv[])
 //
 //	test_crypt();
 //
-//	test_crashes();
+	test_crashes();
 //
 //	tst::_list();
 //
-	test_lock();
+//	test_lock();
 //
 //	test_math();
 //

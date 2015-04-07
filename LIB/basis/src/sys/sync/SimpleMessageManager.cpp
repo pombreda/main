@@ -33,6 +33,9 @@ namespace sync
 		private simstd::vector<Mapping>
 	{
 	public:
+		~SimpleMessageManager();
+		SimpleMessageManager();
+
 		void register_observer(const Observable* subject, Observer* observer) override;
 
 		void unregister_observer(const Observable* subject, const Observer* observer) override;
@@ -47,8 +50,20 @@ namespace sync
 		mutable CriticalSection cs;
 	};
 
+	SimpleMessageManager::~SimpleMessageManager()
+	{
+		LogTraceObjLn();
+	}
+
+	SimpleMessageManager::SimpleMessageManager()
+	{
+		LogTraceObjLn();
+	}
+
 	void SimpleMessageManager::register_observer(const Observable* subject, Observer* observer)
 	{
+		CRT_ASSERT(subject);
+		CRT_ASSERT(observer);
 		LogTrace2(L"(%p, %p)\n", subject, observer);
 		auto guard(simstd::auto_lock(cs));
 		emplace(simstd::upper_bound(begin(), end(), subject, MappingLess()), subject, observer);
@@ -56,6 +71,8 @@ namespace sync
 
 	void SimpleMessageManager::unregister_observer(const Observable* subject, const Observer* observer)
 	{
+		CRT_ASSERT(subject);
+		CRT_ASSERT(observer);
 		LogTrace2(L"(%p, %p)\n", subject, observer);
 		auto guard(simstd::auto_lock(cs));
 		auto range = simstd::equal_range(begin(), end(), subject, MappingLess());
@@ -64,6 +81,7 @@ namespace sync
 
 	void SimpleMessageManager::unregister_observable(const Observable* subject)
 	{
+		CRT_ASSERT(subject);
 		LogTrace2(L"(%p)\n", subject);
 		auto guard(simstd::auto_lock(cs));
 		auto range = simstd::equal_range(begin(), end(), subject, MappingLess());
@@ -72,6 +90,7 @@ namespace sync
 
 	void SimpleMessageManager::unregister_observer(const Observer* observer)
 	{
+		CRT_ASSERT(observer);
 		LogTrace2(L"(%p)\n", observer);
 		auto guard(simstd::auto_lock(cs));
 		erase(remove(begin(), end(), observer), end());
@@ -79,6 +98,8 @@ namespace sync
 
 	void SimpleMessageManager::notify(const Observable* subject, const Message& event) const
 	{
+		CRT_ASSERT(subject);
+		CRT_ASSERT(event);
 		LogTrace2(L"(%p, 0x%IX(%Iu, %Iu, %Iu))\n", subject, event->get_type(), event->get_a(), event->get_b(), event->get_c());
 		auto guard(simstd::auto_lock(cs));
 		auto range = simstd::equal_range(begin(), end(), subject, MappingLess());

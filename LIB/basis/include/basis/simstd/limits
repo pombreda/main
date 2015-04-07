@@ -49,8 +49,8 @@
 
 #define LIMITS_GET_MAX_DIGITS10(T) (2 + (T) * 643L / 2136)
 
-namespace simstd {
-
+namespace simstd
+{
 	enum float_round_style
 	{
 		round_indeterminate = -1,
@@ -67,7 +67,8 @@ namespace simstd {
 		denorm_present = 1
 	};
 
-	namespace pvt {
+	namespace pvt
+	{
 		struct numeric_limits_base
 		{
 			static constexpr bool is_specialized = false;
@@ -97,7 +98,8 @@ namespace simstd {
 	}
 
 	template<typename Type>
-	struct numeric_limits: public pvt::numeric_limits_base
+	struct numeric_limits:
+		public pvt::numeric_limits_base
 	{
 		static constexpr Type min() noexcept
 		{

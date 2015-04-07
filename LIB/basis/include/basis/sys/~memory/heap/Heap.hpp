@@ -6,13 +6,13 @@
 #include <basis/sys/~memory/heap/Special.hpp>
 #include <basis/sys/~memory/heap/Stat.hpp>
 
-#if defined(MEMORY_TRACE) && MEMORY_TRACE == 2
+#if defined(TRACE_MEMORY) && TRACE_MEMORY == 2
 #   define HostAlloc(HostType, Size)        HostType::alloc(Size, __PRETTY_FUNCTION__, __LINE__)
 #   define HostRealloc(HostType, Ptr, Size) HostType::realloc(Ptr, Size, __PRETTY_FUNCTION__, __LINE__)
 #   define HostFree(HostType, Ptr)          HostType::free(Ptr, __PRETTY_FUNCTION__, __LINE__)
 #   define HostNew(Size)                    ::operator new(Size, simstd::nothrow, __PRETTY_FUNCTION__, __LINE__)
 #   define HostDelete(Ptr)                  ::operator delete(Ptr, simstd::nothrow, __PRETTY_FUNCTION__, __LINE__);
-#elif defined(MEMORY_TRACE) && MEMORY_TRACE == 1
+#elif defined(TRACE_MEMORY) && TRACE_MEMORY == 1
 #   define HostAlloc(HostType, Size) HostType::alloc(Size, __FUNCTION__, __LINE__)
 #   define HostRealloc(HostType, Ptr, Size) HostType::realloc(Ptr, Size, __FUNCTION__, __LINE__)
 #   define HostFree(HostType, Ptr) HostType::free(Ptr, __FUNCTION__, __LINE__)
@@ -36,14 +36,14 @@ namespace memory
 {
 	namespace heap
 	{
-		typedef DecoratorStat<Default, StatCount> DefaultStatCount;
+		using DefaultStatCount = DecoratorStat<Default, StatCount>;
 
-		typedef DecoratorStat<Default, StatLog> DefaultStatLogged;
+		using DefaultStatLogged = DecoratorStat<Default, StatLog>;
 
 #if !defined(MEMORY_LOGGING) || MEMORY_LOGGING == 0
-		typedef DefaultStatCount DefaultStat;
+		using DefaultStat = DefaultStatCount;
 #else
-		typedef DefaultStatLogged DefaultStat;
+		using DefaultStat = DefaultStatLogged;
 #endif
 	}
 }

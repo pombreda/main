@@ -1,21 +1,12 @@
-﻿/**
-	win_reg
-
-	@classes ()
-	@author © 2012 Andrew Grechkin
-	@link ()
- **/
-
-#ifndef WIN_REG_HPP
+﻿#ifndef WIN_REG_HPP
 #define WIN_REG_HPP
 
 #include <basis/configure.hpp>
 #include <basis/sys/memory.hpp>
-
 #include <basis/simstd/iosfwd>
 
-namespace Ext {
-
+namespace Ext
+{
 //	struct WinReg: private pattern::Uncopyable {
 //		~WinReg() {
 //			CloseKey();
@@ -96,9 +87,9 @@ namespace Ext {
 //		}
 //	};
 
-
-	///==================================================================================== Register
-	struct Register {
+	struct Register:
+		private pattern::Uncopyable
+	{
 		~Register();
 
 		Register(const wchar_t* path, HKEY hkey = HKEY_LOCAL_MACHINE, ACCESS_MASK acc = KEY_READ);
@@ -142,11 +133,7 @@ namespace Ext {
 	private:
 		HKEY m_hndl;
 		ACCESS_MASK m_access;
-
-		Register(const Register &);
-		Register & operator = (const Register &);
 	};
-
 }
 
 #endif

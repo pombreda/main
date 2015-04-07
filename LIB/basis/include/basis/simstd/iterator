@@ -5,8 +5,6 @@
 #include <basis/configure.hpp>
 #include <basis/simstd/utility>
 
-//#include <basis/simstd/~common/pvt_const_value_iterator.hpp>
-//#include <basis/simstd/~common/pvt_normal_iterator.hpp>
 #include <basis/simstd/~iterator/iterator_fwd.hpp>
 #include <basis/simstd/~iterator/back_insert_iterator.hpp>
 #include <basis/simstd/~iterator/reverse_iterator.hpp>

@@ -59,7 +59,7 @@ namespace Ext {
 
 		if (!name.empty()) {
 			try {
-				Sid usr(name);
+				Sid usr(name.c_str());
 				DWORD ownerSize = SECURITY_MAX_SID_SIZE;
 				m_owner = (PSID)::LocalAlloc(LPTR, ownerSize);
 				usr.copy_to(m_owner, ownerSize);
@@ -71,7 +71,7 @@ namespace Ext {
 			try {
 				DWORD groupSize = SECURITY_MAX_SID_SIZE;
 				m_group = (PSID)::LocalAlloc(LPTR, groupSize);
-				Sid grp(group);
+				Sid grp(group.c_str());
 				grp.copy_to(m_group, groupSize);
 			} catch (...) {
 			}

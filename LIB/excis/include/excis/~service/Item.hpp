@@ -1,9 +1,11 @@
 ﻿#ifndef EXCIS_SERVICE_ITEM_HPP_
 #define EXCIS_SERVICE_ITEM_HPP_
 
-namespace service {
-
-	class Item: pattern::Uncopyable {
+namespace service
+{
+	class Item:
+		pattern::Uncopyable
+	{
 		typedef Item this_type;
 
 	public:
@@ -58,7 +60,6 @@ namespace service {
 
 		friend class CreateRequest;
 	};
-
 }
 
 #endif

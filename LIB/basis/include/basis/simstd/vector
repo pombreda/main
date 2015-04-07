@@ -31,9 +31,9 @@ namespace simstd
 			using base_alloc_traits_type = allocator_traits<base_allocator_type>;
 			using pointer                = typename base_alloc_traits_type::pointer;
 
-			struct vector_base_impl: public base_allocator_type
+			struct vector_base_impl:
+				public base_allocator_type
 			{
-				vector_base_impl() = default;
 				vector_base_impl(const base_allocator_type& allocator) noexcept: base_allocator_type(allocator) {}
 				vector_base_impl(base_allocator_type&& allocator) noexcept: base_allocator_type(simstd::move(allocator)) {}
 
@@ -143,7 +143,8 @@ namespace simstd
 	}
 
 	template<typename Type, typename Allocator>
-	class vector: private pvt::vector_base<Type, Allocator>
+	class vector:
+		private pvt::vector_base<Type, Allocator>
 	{
 		using this_type         = vector;
 		using base_type         = pvt::vector_base<Type, Allocator>;

@@ -1,5 +1,5 @@
-﻿#ifndef LIBBASE_BIT_STR_HPP_
-#define LIBBASE_BIT_STR_HPP_
+﻿#ifndef BASIS_EXT_BITS_BIT_STR_HPP_
+#define BASIS_EXT_BITS_BIT_STR_HPP_
 
 #include <basis/ext/bits.hpp>
 #include <basis/sys/cstr.hpp>
@@ -7,10 +7,11 @@
 
 #include <basis/simstd/string>
 
-namespace bits {
-
+namespace bits
+{
 	template<typename Type>
-	struct BitMask {
+	struct BitMask
+	{
 		static Type from_str(const ustring& in, size_t lim = 0)
 		{
 			// count bits from 1
@@ -91,7 +92,6 @@ namespace bits {
 			return Result;
 		}
 	};
-
 }
 
 #endif

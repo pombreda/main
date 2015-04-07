@@ -92,7 +92,8 @@
 									<listOptionValue builtIn="false" value="_UNICODE"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="_DEBUG"/>
-									<listOptionValue builtIn="false" value="PRINT_TRACE=1"/>
+									<listOptionValue builtIn="false" value="TRACE_MEMORY=0"/>
+									<listOptionValue builtIn="false" value="TRACE_PRINT=0"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.other.other.1483145985" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" useByScannerDiscovery="false" value="-c -fmessage-length=0 -fno-exceptions -fno-rtti -fno-threadsafe-statics" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.536589519" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>

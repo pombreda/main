@@ -3,8 +3,8 @@
 
 #include <basis/configure.hpp>
 
-namespace math {
-
+namespace math
+{
 	template<typename Type>
 	Type abs(const Type& value)
 	{
@@ -22,19 +22,20 @@ namespace math {
 	struct fraction;
 
 	template<unsigned long N>
-	struct bin {
+	struct bin
+	{
 		enum {
 			value = (N % 10) + 2 * bin<N / 10>::value
 		};
 	};
 
 	template<>
-	struct bin<0> {
+	struct bin<0>
+	{
 		enum {
 			value = 0
 		};
 	};
-
 }
 
 #include <basis/~math/fixed.hpp>

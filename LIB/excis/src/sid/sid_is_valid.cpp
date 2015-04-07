@@ -1,14 +1,10 @@
 ﻿#include <excis/sid.hpp>
 #include <excis/exception.hpp>
 
-namespace Ext {
-
-	bool Sid::is_valid() const {
-		return this_type::is_valid(m_sid);
-	}
-
-	bool Sid::is_valid(value_type in) {
+namespace Ext
+{
+	bool Sid::is_valid(value_type in) noexcept
+	{
 		return in && ::IsValidSid(in);
 	}
-
 }

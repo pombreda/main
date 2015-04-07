@@ -1,5 +1,5 @@
-﻿#ifndef BASIS_EXTRA_PATTERN_
-#define BASIS_EXTRA_PATTERN_
+﻿#ifndef BASIS_EXT_PATTERN_
+#define BASIS_EXT_PATTERN_
 
 #include <basis/configure.hpp>
 #include <basis/ext/~pattern/Command.hpp>

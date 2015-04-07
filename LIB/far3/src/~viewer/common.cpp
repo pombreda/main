@@ -1,5 +1,4 @@
-﻿
-/**
+﻿/**
  © 2014 Andrew Grechkin
  Source code: <http://code.google.com/p/andrew-grechkin>
 
@@ -19,13 +18,13 @@
 
 #include <far3/viewer.hpp>
 
-namespace far3 {
-	namespace viewer {
-
-		ssize_t get_filename(PWSTR buf, ssize_t length)
+namespace far3
+{
+	namespace viewer
+	{
+		ssize_t get_filename(wchar_t* buf, ssize_t length)
 		{
-			return psi().ViewerControl(-1, VCTL_GETFILENAME, length, (void*)buf);
+			return psi().ViewerControl(-1, VCTL_GETFILENAME, length, buf);
 		}
-
 	}
 }

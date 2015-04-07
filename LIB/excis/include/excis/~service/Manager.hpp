@@ -1,8 +1,8 @@
 ﻿#ifndef EXCIS_SERVICE_MANAGER_HPP_
 #define EXCIS_SERVICE_MANAGER_HPP_
 
-namespace service {
-
+namespace service
+{
 	class Manager;
 	class Item;
 	class Enum;
@@ -53,12 +53,13 @@ namespace service {
 		CRITICAL = SERVICE_ERROR_CRITICAL,
 	};
 
-	class Manager: pattern::Uncopyable {
+	class Manager:
+		pattern::Uncopyable
+	{
 	public:
 		~Manager();
 
-		Manager(connection::Remote* conn = nullptr, ACCESS_MASK acc = SC_MANAGER_CONNECT);
-
+		Manager(const connection::Remote& conn, ACCESS_MASK acc = SC_MANAGER_CONNECT);
 		Manager(Manager&& other);
 
 		Manager& operator =(Manager&& other);
@@ -69,7 +70,7 @@ namespace service {
 
 		SC_HANDLE get_handle() const;
 
-		void reconnect(connection::Remote* conn = nullptr, ACCESS_MASK acc = SC_MANAGER_CONNECT);
+		void reconnect(const connection::Remote& conn, ACCESS_MASK acc = SC_MANAGER_CONNECT);
 
 		bool is_exist(const wchar_t* name) const;
 
@@ -77,7 +78,9 @@ namespace service {
 		SC_HANDLE m_hndl;
 	};
 
-	class CreateRequest: private pattern::Uncopyable {
+	class CreateRequest:
+		private pattern::Uncopyable
+	{
 	public:
 		CreateRequest(const ustring& name, const ustring& binaryPathName);
 		void set_type(Type n);
@@ -105,7 +108,9 @@ namespace service {
 		DWORD errorControl;
 	};
 
-	class ConfigRequest: private pattern::Uncopyable {
+	class ConfigRequest:
+		private pattern::Uncopyable
+	{
 	public:
 		ConfigRequest();
 		void set_type(Type n, Type o);
@@ -134,11 +139,14 @@ namespace service {
 		DWORD errorControl;
 	};
 
-	struct Status: public SERVICE_STATUS_PROCESS {
+	struct Status:
+		public SERVICE_STATUS_PROCESS
+	{
 	};
 
 	///====================================================================================== Info
-	struct Info {
+	struct Info
+	{
 		ustring name;
 		ustring displayName;
 		ustring binaryPathName;
@@ -151,6 +159,7 @@ namespace service {
 		cstr::mstring dependencies;
 		SERVICE_STATUS_PROCESS status;
 
+		~Info();
 		Info(SC_HANDLE scm, const ENUM_SERVICE_STATUS_PROCESSW& st);
 		Info(const wchar_t* _name, const Item& svc);
 
@@ -173,7 +182,6 @@ namespace service {
 			return startType == Start::DISABLED;
 		}
 	};
-
 }
 
 #endif

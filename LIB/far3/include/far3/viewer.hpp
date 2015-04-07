@@ -20,6 +20,6 @@
 #define _FAR3_VIEWER_HPP_
 
 #include <far3/plugin.hpp>
-#include <far3/~viewer/common.hpp>
+#include <far3/~viewer/viewer_common.hpp>
 
 #endif

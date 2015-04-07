@@ -1,13 +1,10 @@
-﻿#ifndef LIBBASE_BITS_HPP_
-#define LIBBASE_BITS_HPP_
+﻿#ifndef BASIS_EXT_BITS_BITS_HPP_
+#define BASIS_EXT_BITS_BITS_HPP_
 
-#include <basis/ext/bits.hpp>
-#include <basis/simstd/algorithm>
-
-namespace bits {
-
-	namespace Flags {
-
+namespace bits
+{
+	namespace Flags
+	{
 		template<typename Type1, typename Type2>
 		bool check(Type1 in, Type2 flag)
 		{
@@ -37,12 +34,10 @@ namespace bits {
 		{
 			return (sw) ? set(in, flag) : unset(in, flag);
 		}
-
 	}
 
-	///=============================================================================================
-	namespace Bits {
-
+	namespace Bits
+	{
 		template<typename Type>
 		size_t SIZE_IN_BITS()
 		{
@@ -98,7 +93,6 @@ namespace bits {
 		}
 
 	}
-
 }
 
 #endif

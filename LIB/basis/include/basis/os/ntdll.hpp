@@ -3,8 +3,8 @@
 
 #include <basis/sys/linkage.hpp>
 
-namespace os {
-
+namespace os
+{
 	enum THREADINFOCLASS {
 		ThreadBasicInformation,
 		ThreadTimes,
@@ -43,7 +43,9 @@ namespace os {
 		MaxThreadInfoClass
 	};
 
-	struct ntdll_dll: private linkage::DynamicLibrary {
+	struct ntdll_dll:
+		private linkage::DynamicLibrary
+	{
 		typedef LONG (WINAPI *FNtSetInformationThread)(HANDLE, THREADINFOCLASS, PVOID, ULONG);
 		typedef LONG (WINAPI *FNtQueryInformationThread)(HANDLE, THREADINFOCLASS, PVOID, ULONG, PULONG);
 
@@ -55,7 +57,6 @@ namespace os {
 	private:
 		ntdll_dll();
 	};
-
 }
 
 #endif

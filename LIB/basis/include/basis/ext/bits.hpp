@@ -1,5 +1,5 @@
-﻿#ifndef BASIS_EXTRA_BITS_
-#define BASIS_EXTRA_BITS_
+﻿#ifndef BASIS_EXT_BITS_
+#define BASIS_EXT_BITS_
 
 #include <basis/configure.hpp>
 #include <basis/ext/~bits/bits.hpp>

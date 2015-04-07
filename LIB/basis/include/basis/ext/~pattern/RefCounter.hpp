@@ -1,8 +1,8 @@
-﻿#ifndef BASIS_EXTRA_PATTERN_REFCOUNTER_HPP_
-#define BASIS_EXTRA_PATTERN_REFCOUNTER_HPP_
+﻿#ifndef BASIS_EXT_PATTERN_REFCOUNTER_HPP_
+#define BASIS_EXT_PATTERN_REFCOUNTER_HPP_
 
-namespace pattern {
-
+namespace pattern
+{
 	struct RefCounter
 	{
 		virtual ~RefCounter();
@@ -22,9 +22,8 @@ namespace pattern {
 
 		virtual void deallocate() const = 0;
 
-		RefCounter(const RefCounter & rhs);                 // forbidden
-
-		RefCounter & operator =(const RefCounter & rhs);    // forbidden
+		RefCounter(const RefCounter&) = delete;
+		RefCounter& operator =(const RefCounter&) = delete;
 
 	private:
 		size_t m_refcnt;
@@ -49,7 +48,6 @@ namespace pattern {
 	{
 		return m_refcnt;
 	}
-
 }
 
 #endif

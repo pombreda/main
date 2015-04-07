@@ -1,8 +1,8 @@
 ﻿#include <basis/sys/win64.hpp>
 #include <basis/os/kernel32.hpp>
 
-namespace win64 {
-
+namespace win64
+{
 	bool is_WOW64()
 	{
 		if (os::kernel32_dll::inst().IsWow64Process) {
@@ -14,7 +14,7 @@ namespace win64 {
 		return false;
 	}
 
-	bool disable_WOW64(PVOID & oldValue)
+	bool disable_WOW64(void*& oldValue)
 	{
 		if (os::kernel32_dll::inst().Wow64DisableWow64FsRedirection) {
 			return os::kernel32_dll::inst().Wow64DisableWow64FsRedirection(&oldValue) != 0;
@@ -22,12 +22,11 @@ namespace win64 {
 		return false;
 	}
 
-	bool enable_WOW64(PVOID & oldValue)
+	bool enable_WOW64(void*& oldValue)
 	{
 		if (os::kernel32_dll::inst().Wow64RevertWow64FsRedirection) {
 			return os::kernel32_dll::inst().Wow64RevertWow64FsRedirection(&oldValue) != 0;
 		}
 		return false;
 	}
-
 }

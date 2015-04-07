@@ -20,10 +20,12 @@
 #define _FAR3_DIALOG_HPP_
 
 #include <basis/configure.hpp>
-
+#include <basis/ext/pattern.hpp>
+#include <basis/simstd/iosfwd>
 #include <basis/simstd/memory>
 
 #include <far3/plugin.hpp>
+#include <far3/message.hpp>
 #include <far3/~dialog/ItemBinding.hpp>
 #include <far3/~dialog/Item.hpp>
 #include <far3/~dialog/Facade.hpp>

@@ -7,55 +7,49 @@
 #include <basis/simstd/iosfwd>
 #include <basis/simstd/vector>
 
-namespace traceback {
-
+namespace traceback
+{
 	void init(const wchar_t* path = nullptr);
 
 	void print();
 
 	struct Frame_i
 	{
-		virtual ~Frame_i();
+		virtual ~Frame_i() = default;
 
-		virtual void * address() const = 0;
+		virtual void* address() const = 0;
 
 		virtual const ustring& module() const = 0;
-
 		virtual const ustring& file() const = 0;
-
 		virtual const ustring& function() const = 0;
 
 		virtual size_t line() const = 0;
-
 		virtual size_t offset() const = 0;
 
 		virtual ustring to_str() const = 0;
 	};
 
-	Frame_i * read_frame_data(void * address);
+	using Frame = simstd::unique_ptr<Frame_i>;
 
-	struct LazyFrame: public Frame_i, private pattern::Uncopyable
+	Frame read_frame_data(void* address);
+
+	struct LazyFrame:
+		public Frame_i,
+		private pattern::Uncopyable
 	{
-		~LazyFrame();
+		LazyFrame(void* address);
+		LazyFrame(LazyFrame&& other);
+		LazyFrame& operator =(LazyFrame&& other);
 
-		LazyFrame(void * address);
+		void swap(LazyFrame& other);
 
-		LazyFrame(LazyFrame && other);
-
-		LazyFrame & operator = (LazyFrame && right);
-
-		void swap(LazyFrame & other);
-
-		void * address() const override;
+		void* address() const override;
 
 		const ustring& module() const override;
-
 		const ustring& file() const override;
-
 		const ustring& function() const override;
 
 		size_t line() const override;
-
 		size_t offset() const override;
 
 		ustring to_str() const override;
@@ -63,15 +57,16 @@ namespace traceback {
 	private:
 		void init_data() const;
 
-		void * m_address;
-		mutable Frame_i * m_data;
+		void* m_address;
+		mutable Frame frame;
 	};
 
-	struct Enum: private simstd::vector<LazyFrame> {
-		typedef simstd::vector<LazyFrame> base_type;
+	struct Enum:
+		private simstd::vector<LazyFrame>
+	{
+		using base_type = simstd::vector<LazyFrame>;
 
 		Enum(size_t depth = get_max_depth());
-
 		Enum(PCONTEXT context, void* address = nullptr, size_t depth = get_max_depth());
 
 		static size_t get_max_depth();
@@ -80,9 +75,8 @@ namespace traceback {
 		using base_type::end;
 		using base_type::empty;
 		using base_type::size;
-		using base_type::operator[];
+		using base_type::operator [];
 	};
-
 }
 
 #endif

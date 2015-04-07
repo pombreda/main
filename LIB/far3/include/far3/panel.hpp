@@ -24,6 +24,6 @@
 #include <basis/simstd/memory>
 
 #include <far3/plugin.hpp>
-#include <far3/~panel/Facade.hpp>
+#include <far3/~panel/panel_Facade.hpp>
 
 #endif

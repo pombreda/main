@@ -1,11 +1,11 @@
-﻿
-#ifndef BASIS_NUMERIC_HPP_
+﻿#ifndef BASIS_NUMERIC_HPP_
 #define BASIS_NUMERIC_HPP_
 
 #include <basis/simstd/~functional/functional.hpp>
 #include <basis/simstd/~iterator/iterator_fwd.hpp>
 
-namespace simstd {
+namespace simstd
+{
 	template<typename ForwardIterator, typename T>
 	void iota(ForwardIterator first, ForwardIterator last, T value)
 	{
@@ -110,7 +110,6 @@ namespace simstd {
 	{
 		return simstd::partial_sum(first, last, d_first, simstd::plus<typename simstd::iterator_traits<InputIt>::value_type>());
 	}
-
 }
 
 #endif

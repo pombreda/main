@@ -1,12 +1,11 @@
-﻿#ifndef LIBBASE_BIT_HPP_
-#define LIBBASE_BIT_HPP_
+﻿#ifndef BASIS_EXT_BITS_FLAGS_HPP_
+#define BASIS_EXT_BITS_FLAGS_HPP_
 
-#include <stdint.h>
-
-namespace Base {
-
+namespace Base
+{
 	template<typename EnumType>
-	class BitFlags {
+	class BitFlags
+	{
 		typedef BitFlags this_type;
 
 	public:

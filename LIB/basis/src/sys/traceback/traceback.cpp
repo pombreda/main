@@ -9,14 +9,17 @@
 
 #include "Bfd.hpp"
 
-namespace traceback {
-
+namespace traceback
+{
 	LogRegisterLocal(L"traceback");
 
-	struct Frame: public Frame_i, private pattern::Uncopyable {
-		~Frame();
+	struct FrameImpl:
+		public Frame_i,
+		private pattern::Uncopyable
+	{
+		~FrameImpl();
 
-		Frame(void* address);
+		FrameImpl(void* address);
 
 		void* address() const override;
 
@@ -50,12 +53,12 @@ namespace traceback {
 		size_t  m_offset;
 	};
 
-	Frame::~Frame()
+	FrameImpl::~FrameImpl()
 	{
 		TraceFunc();
 	}
 
-	Frame::Frame(void* address)
+	FrameImpl::FrameImpl(void* address)
 		: m_address()
 		, m_module_base()
 		, m_line()
@@ -91,42 +94,42 @@ namespace traceback {
 		TraceFunc();
 	}
 
-	void * Frame::address() const
+	void * FrameImpl::address() const
 	{
 		return m_address;
 	}
 
-	const ustring& Frame::module() const
+	const ustring& FrameImpl::module() const
 	{
 		return m_module;
 	}
 
-	const ustring& Frame::file() const
+	const ustring& FrameImpl::file() const
 	{
 		return m_file;
 	}
 
-	const ustring& Frame::function() const
+	const ustring& FrameImpl::function() const
 	{
 		return m_function;
 	}
 
-	size_t Frame::line() const
+	size_t FrameImpl::line() const
 	{
 		return m_line;
 	}
 
-	size_t Frame::offset() const
+	size_t FrameImpl::offset() const
 	{
 		return m_offset;
 	}
 
-	ustring Frame::to_str() const
+	ustring FrameImpl::to_str() const
 	{
 		return ustring();
 	}
 
-	bool Frame::LoadFromPDB(void* address)
+	bool FrameImpl::LoadFromPDB(void* address)
 	{
 		TraceFunc();
 		LogTraceLn();
@@ -168,7 +171,7 @@ namespace traceback {
 		return ret;
 	}
 
-	bool Frame::LoadFromBfd(void* address)
+	bool FrameImpl::LoadFromBfd(void* address)
 	{
 		TraceFunc();
 		LogTraceLn();
@@ -198,7 +201,7 @@ namespace traceback {
 		return ret;
 	}
 
-	bool Frame::LoadFromMap(void * address)
+	bool FrameImpl::LoadFromMap(void* address)
 	{
 		UNUSED(address);
 		TraceFunc();
@@ -206,9 +209,8 @@ namespace traceback {
 		return false;
 	}
 
-	Frame_i * read_frame_data(void * address)
+	Frame read_frame_data(void* address)
 	{
-		return new Frame(address);
+		return simstd::make_unique<FrameImpl>(address);
 	}
-
 }

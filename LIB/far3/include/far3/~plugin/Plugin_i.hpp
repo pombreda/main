@@ -16,50 +16,47 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
-#ifndef _FAR3_PLUGIN_I_HPP_
-#define _FAR3_PLUGIN_I_HPP_
+#ifndef _FAR3_PLUGIN_PLUGIN_I_HPP_
+#define _FAR3_PLUGIN_PLUGIN_I_HPP_
 
-#include <far3/plugin.hpp>
-
-#include <basis/ext/pattern.hpp>
-
-namespace far3 {
-
-	class Plugin_i: public pattern::Destroyable {
+namespace far3
+{
+	class Plugin_i:
+		public pattern::Destroyable
+	{
 	public:
 		virtual ~Plugin_i() = default;
 
-		Plugin_i(const PluginStartupInfo * info);
+		Plugin_i(const PluginStartupInfo* info);
 
 	public:
-		void GetPluginInfoW(PluginInfo * info);
+		void GetPluginInfoW(PluginInfo* info);
 
-		PanelController_i * OpenW(const OpenInfo * info);
+		PanelController_i* OpenW(const OpenInfo* info);
 
-		void ExitFARW(const ExitInfo * info);
+		void ExitFARW(const ExitInfo* info);
 
-		const PluginStartupInfo & psi() const
+		const PluginStartupInfo& psi() const
 		{
 			return m_psi;
 		}
 
-		const FarStandardFunctions & fsf() const
+		const FarStandardFunctions& fsf() const
 		{
 			return m_fsf;
 		}
 
 	private:
-		virtual void GetPluginInfo(PluginInfo * pi) = 0;
+		virtual void GetPluginInfo(PluginInfo* pi) = 0;
 
-		virtual PanelController_i * Open(const OpenInfo * info);
+		virtual PanelController_i* Open(const OpenInfo* info);
 
-		virtual void ExitFAR(const ExitInfo * info);
+		virtual void ExitFAR(const ExitInfo* info);
 
 	private:
 		PluginStartupInfo    m_psi;
 		FarStandardFunctions m_fsf;
 	};
-
 }
 
 #endif

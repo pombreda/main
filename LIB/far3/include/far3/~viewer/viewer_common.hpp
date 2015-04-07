@@ -19,16 +19,12 @@
 #ifndef _FAR3_VIEWER_COMMON_HPP_
 #define _FAR3_VIEWER_COMMON_HPP_
 
-#include <far3/viewer.hpp>
-
-namespace far3 {
-
-	namespace viewer {
-
-		ssize_t get_filename(PWSTR buf, ssize_t length);
-
+namespace far3
+{
+	namespace viewer
+	{
+		ssize_t get_filename(wchar_t* buf, ssize_t length);
 	}
-
 }
 
 #endif

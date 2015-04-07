@@ -1,8 +1,8 @@
 #ifndef BASIS_MATH_IMPL_FRACTION_HPP_
 #define BASIS_MATH_IMPL_FRACTION_HPP_
 
-namespace math {
-
+namespace math
+{
 	template<typename FixedType>
 	fraction::fraction(const FixedType& fixed):
 		numerator(),
@@ -23,7 +23,6 @@ namespace math {
 
 		numerator *= math::sign(fixed);
 	}
-
 }
 
 #endif

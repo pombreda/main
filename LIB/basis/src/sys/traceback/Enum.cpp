@@ -7,31 +7,24 @@
 #include <basis/simstd/algorithm>
 #include <basis/simstd/string>
 
-namespace traceback {
-
+namespace traceback
+{
 	LogRegisterLocal(L"traceback");
 
 	Enum::Enum(size_t depth)
 	{
-		TraceFunc();
 		LogTrace(L"depth: %Iu\n", depth);
-
 		{
-			void** tempFramesArray = static_cast<void**>(HostAlloc(memory::heap::DefaultStat, sizeof(void**) * get_max_depth()));
+			auto tempFramesArray = static_cast<void**>(HostAlloc(memory::heap::DefaultStat, sizeof(void**) * get_max_depth()));
 			WORD sz = ::RtlCaptureStackBackTrace(1, simstd::min(depth, get_max_depth()), tempFramesArray, nullptr);
-			for (WORD i = 0; i < sz; ++i) {
-				emplace_back(tempFramesArray[i]);
-//				LogDebug(L"frame[%d]: %p\n", (int)i, tempFramesArray[i]);
-			}
+			assign(tempFramesArray, tempFramesArray + sz);
 			HostFree(memory::heap::DefaultStat, tempFramesArray);
 		}
 		LogDebug(L"captured frames: %Iu\n", size());
-		TraceFunc();
 	}
 
 	Enum::Enum(PCONTEXT context, void* address, size_t depth)
 	{
-		TraceFunc();
 		LogTrace(L"context: %p address: %p depth: %Iu\n", context, address, depth);
 
 		/* � ��� � Release-������������ ���������� ��������� ���� /Oy- (�� �������� ��������� �� ������), ����� ����� ������.
@@ -88,12 +81,10 @@ namespace traceback {
 		}
 
 		LogDebug(L"captured frames: %Iu\n", size());
-		TraceFunc();
 	}
 
 	size_t Enum::get_max_depth()
 	{
 		return 61;
 	}
-
 }

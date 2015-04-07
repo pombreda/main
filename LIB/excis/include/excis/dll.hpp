@@ -3,13 +3,13 @@
 
 #include <basis/configure.hpp>
 #include <basis/sys/linkage.hpp>
-
 #include <basis/simstd/iosfwd>
 
-namespace Ext {
-
-	///============================================================================== DinamicLibrary
-	class DynamicLibrary: private linkage::DynamicLibrary {
+namespace Ext
+{
+	class DynamicLibrary:
+		private linkage::DynamicLibrary
+	{
 		typedef linkage::DynamicLibrary base_type;
 		typedef DynamicLibrary this_type;
 
@@ -41,7 +41,6 @@ namespace Ext {
 			base_type::swap(rhs);
 		}
 	};
-
 }
 
 #endif

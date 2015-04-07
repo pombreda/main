@@ -3,13 +3,15 @@
 
 #include <basis/simstd/string>
 
-namespace Ext {
-
-	ustring Sid::get_full_name() const {
+namespace Ext
+{
+	ustring Sid::get_full_name() const
+	{
 		return this_type::get_full_name(m_sid);
 	}
 
-	ustring Sid::get_full_name(value_type sid, PCWSTR srv) {
+	ustring Sid::get_full_name(value_type sid, PCWSTR srv)
+	{
 		ustring nam, dom;
 		get_name_dom(sid, nam, dom, srv);
 		if (!dom.empty() && !nam.empty()) {
@@ -20,5 +22,4 @@ namespace Ext {
 		}
 		return nam;
 	}
-
 }

@@ -19,11 +19,10 @@
 #ifndef _FAR3_MESSAGE_COMMON_HPP_
 #define _FAR3_MESSAGE_COMMON_HPP_
 
-#include <far3/message.hpp>
-
-namespace far3 {
-	namespace message {
-
+namespace far3
+{
+	namespace message
+	{
 		enum {
 			Empty        = -1,
 			MenuTitle    = 0,
@@ -34,7 +33,6 @@ namespace far3 {
 		};
 
 		const wchar_t* get(ssize_t msgId);
-
 	}
 }
 

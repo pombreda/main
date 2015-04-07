@@ -3,16 +3,18 @@
 
 #include <basis/sys/linkage.hpp>
 
-namespace os {
-
-	struct shlwapi_dll: private linkage::DynamicLibrary {
-		typedef HRESULT (WINAPI *FPathMatchSpecExW)(const wchar_t *, const wchar_t *, DWORD);
-		typedef WINBOOL (WINAPI *FPathCanonicalizeW)(wchar_t *, const wchar_t *);
-		typedef WINBOOL (WINAPI *FPathCompactPathExW)(wchar_t *, const wchar_t *, UINT, DWORD);
-		typedef WINBOOL (WINAPI *FPathIsDirectoryEmptyW)(const wchar_t *);
-		typedef WINBOOL (WINAPI *FPathUnExpandEnvStringsW)(const wchar_t *, wchar_t *, UINT);
-		typedef WINBOOL (WINAPI *FPathIsRelativeW)(const wchar_t *);
-		typedef HRESULT (WINAPI *FParseURLW)(const wchar_t *, void *);
+namespace os
+{
+	struct shlwapi_dll:
+		private linkage::DynamicLibrary
+	{
+		typedef HRESULT (WINAPI *FPathMatchSpecExW)(const wchar_t*, const wchar_t*, DWORD);
+		typedef WINBOOL (WINAPI *FPathCanonicalizeW)(wchar_t*, const wchar_t*);
+		typedef WINBOOL (WINAPI *FPathCompactPathExW)(wchar_t*, const wchar_t*, UINT, DWORD);
+		typedef WINBOOL (WINAPI *FPathIsDirectoryEmptyW)(const wchar_t*);
+		typedef WINBOOL (WINAPI *FPathUnExpandEnvStringsW)(const wchar_t*, wchar_t*, UINT);
+		typedef WINBOOL (WINAPI *FPathIsRelativeW)(const wchar_t*);
+		typedef HRESULT (WINAPI *FParseURLW)(const wchar_t*, void*);
 
 		DEFINE_FUNC(PathMatchSpecExW);
 		DEFINE_FUNC(PathCanonicalizeW);
@@ -22,12 +24,11 @@ namespace os {
 		DEFINE_FUNC(PathIsRelativeW);
 		DEFINE_FUNC(ParseURLW);
 
-		static shlwapi_dll & inst();
+		static shlwapi_dll& inst();
 
 	private:
 		shlwapi_dll();
 	};
-
 }
 
 #endif

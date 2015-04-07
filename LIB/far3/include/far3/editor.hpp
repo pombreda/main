@@ -20,6 +20,6 @@
 #define _FAR3_EDITOR_HPP_
 
 #include <far3/plugin.hpp>
-#include <far3/~editor/common.hpp>
+#include <far3/~editor/editor_common.hpp>
 
 #endif

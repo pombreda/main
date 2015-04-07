@@ -1,20 +1,18 @@
 #include <excis/service.hpp>
 #include <excis/exception.hpp>
-
 #include <basis/sys/logger.hpp>
 
-namespace service {
-
-	namespace {
-		SC_HANDLE service_manager_open(connection::Remote* conn, ACCESS_MASK acc)
+namespace service
+{
+	namespace
+	{
+		SC_HANDLE service_manager_open(const connection::Remote& conn, ACCESS_MASK acc)
 		{
-			LogTrace(L"(%p, 0x%X)\n", conn, acc);
 			return CheckHandleErr(::OpenSCManagerW(conn->get_host().c_str(), nullptr, acc));
 		}
 
 		void service_manager_close(SC_HANDLE scm)
 		{
-			LogTrace(L"(%p)\n", scm);
 			if (scm)
 				::CloseServiceHandle(scm);
 		}
@@ -22,15 +20,15 @@ namespace service {
 
 	Manager::~Manager()
 	{
-		LogTraceObj(L"begin\n");
+		LogTraceObjLn();
 		service_manager_close(m_hndl);
-		LogTraceObj(L"end\n");
 	}
 
-	Manager::Manager(connection::Remote* conn, ACCESS_MASK acc) :
-		m_hndl(service_manager_open(conn, acc))
+	Manager::Manager(const connection::Remote& conn, ACCESS_MASK acc) :
+		m_hndl()
 	{
-		LogTraceObj(L"begin\n");
+		LogTraceObj(L"begin ('%s', 0x%X)\n", conn->get_host().c_str(), acc);
+		m_hndl = service_manager_open(conn, acc);
 		LogTraceObj(L"end\n");
 	}
 
@@ -64,9 +62,9 @@ namespace service {
 		return m_hndl;
 	}
 
-	void Manager::reconnect(connection::Remote* conn, ACCESS_MASK acc)
+	void Manager::reconnect(const connection::Remote& conn, ACCESS_MASK acc)
 	{
-		LogTrace(L"(%p, %X)\n", conn, acc);
+		LogTraceObj(L"('%s', 0x%X)\n", conn->get_host().c_str(), acc);
 		SC_HANDLE l_hndl = service_manager_open(conn, acc);
 
 		using simstd::swap;
@@ -83,5 +81,4 @@ namespace service {
 			::CloseServiceHandle(hndl);
 		return hndl;
 	}
-
 }

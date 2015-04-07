@@ -52,7 +52,7 @@
 									<listOptionValue builtIn="false" value="NDEBUG"/>
 									<listOptionValue builtIn="false" value="ENABLE_LOGGER"/>
 									<listOptionValue builtIn="false" value="MEMORY_LOGGING=2"/>
-									<listOptionValue builtIn="false" value="PRINT_TRACE=2"/>
+									<listOptionValue builtIn="false" value="TRACE_PRINT=2"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.427395775" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/basis/include}&quot;"/>
@@ -116,7 +116,7 @@
 									<listOptionValue builtIn="false" value="_UNICODE"/>
 									<listOptionValue builtIn="false" value="DEBUG"/>
 									<listOptionValue builtIn="false" value="_DEBUG"/>
-									<listOptionValue builtIn="false" value="PRINT_TRACE=2"/>
+									<listOptionValue builtIn="false" value="TRACE_PRINT=2"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.include.paths.2098713567" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/basis/include}&quot;"/>

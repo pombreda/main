@@ -1,10 +1,12 @@
 #include <basis/configure.hpp>
 #include <basis/simstd/chrono>
 
-namespace simstd {
-	namespace chrono {
-
-		namespace {
+namespace simstd
+{
+	namespace chrono
+	{
+		namespace
+		{
 			LARGE_INTEGER get_frequency()
 			{
 				LARGE_INTEGER ret;
@@ -22,6 +24,5 @@ namespace simstd {
 
 			return time_point(duration((perfomanceNow.QuadPart * std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::seconds(1))) / perfomanceFrequency.QuadPart));
 		}
-
-	}    // namespace chrono
-}    // namespace simstd
+	}
+}

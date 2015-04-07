@@ -19,14 +19,12 @@
 #ifndef _FAR3_DIALOG_ITEMBINDING_HPP_
 #define _FAR3_DIALOG_ITEMBINDING_HPP_
 
-#include <far3/dialog.hpp>
-
-#include <basis/ext/pattern.hpp>
-
-namespace far3 {
-	namespace dialog {
-
-		class ItemBinding {
+namespace far3
+{
+	namespace dialog
+	{
+		class ItemBinding
+		{
 		public:
 			virtual ~ItemBinding() = default;
 
@@ -54,7 +52,6 @@ namespace far3 {
 			ssize_t m_index;
 			ssize_t m_min_width;
 		};
-
 	}
 }
 

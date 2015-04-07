@@ -1,13 +1,13 @@
 ﻿#ifndef EXCIS_CRYPT_PROVIDER_HPP_
 #define EXCIS_CRYPT_PROVIDER_HPP_
 
-#include <excis/crypt.hpp>
-
 #include <wincrypt.h>
 
-namespace crypt {
-
-	class Provider: private pattern::Uncopyable {
+namespace crypt
+{
+	class Provider:
+		private pattern::Uncopyable
+	{
 	public:
 		~Provider();
 

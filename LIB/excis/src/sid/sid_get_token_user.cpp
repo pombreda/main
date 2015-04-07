@@ -3,9 +3,10 @@
 #include <basis/sys/memory.hpp>
 #include <basis/simstd/string>
 
-namespace Ext {
-
-	ustring get_token_user(HANDLE hToken) {
+namespace Ext
+{
+	ustring get_token_user(HANDLE hToken)
+	{
 		DWORD size = 0;
 		if (!::GetTokenInformation(hToken, TokenUser, nullptr, 0, &size) && size) {
 			memory::auto_buf<PTOKEN_USER> buf(size);
@@ -14,5 +15,4 @@ namespace Ext {
 		}
 		return ustring();
 	}
-
 }
