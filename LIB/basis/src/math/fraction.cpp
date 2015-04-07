@@ -6,6 +6,7 @@ math::fraction::fraction(ssize_t numerator, ssize_t denominator):
 	numerator(numerator),
 	denominator(denominator)
 {
+	CRT_ASSERT(denominator != 0);
 }
 
 void math::fraction::reduce()

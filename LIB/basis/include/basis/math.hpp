@@ -8,16 +8,22 @@ namespace math
 	template<typename Type>
 	Type abs(const Type& value)
 	{
-		return value < Type(0) ? -value : value;
+		return value < Type() ? -value : value;
 	}
 
 	template<typename Type>
 	ssize_t sign(const Type& value)
 	{
-		return value < Type(0) ? -1 : 1;
+		return value < Type() ? -1 : 1;
 	}
 
-	ssize_t nod(ssize_t left, ssize_t right);
+	template<typename Type1, typename Type2>
+	ssize_t sign(const Type1& a, const Type2& b)
+	{
+		return (a < Type1() && Type2() < b) || (Type1() < a && b < Type2()) ? -1 : 1;
+	}
+
+	ssize_t nod(ssize_t a, ssize_t b);
 
 	struct fraction;
 

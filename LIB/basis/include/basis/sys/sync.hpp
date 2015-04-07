@@ -14,5 +14,6 @@
 #include <basis/sys/~sync/Queue.hpp>
 #include <basis/sys/~sync/Observer.hpp>
 #include <basis/sys/~sync/Delivery.hpp>
+#include <basis/sys/~sync/Scheduler.hpp>
 
 #endif

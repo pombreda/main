@@ -18,11 +18,12 @@ namespace math
 	template<int FractalBits>
 	fixed<FractalBits>::fixed(int numerator, int denominator)
 	{
-		value_type sign = (numerator < 0 && 0 < denominator) || (0 < numerator && denominator < 0) ? -1 : 1;
-		value_type l_num = numerator < 0 ? -numerator : numerator;
-		value_type l_den = denominator < 0 ? -denominator : denominator;
+		CRT_ASSERT(denominator != 0);
+		auto sign = math::sign(numerator, denominator);
+		numerator = math::abs(numerator);
+		denominator = math::abs(denominator);
 
-		value = ((l_num / l_den) << FRACTAL_BITS) | ((l_num % l_den) * BASE_NUMBER / l_den);
+		value = ((numerator / denominator) << FRACTAL_BITS) | ((numerator % denominator) * BASE_NUMBER / denominator);
 		value *= sign;
 	}
 
@@ -56,12 +57,14 @@ namespace math
 	typename fixed<FractalBits>::this_type& fixed<FractalBits>::operator =(int other)
 	{
 		this_type(other).swap(*this);
+		return *this;
 	}
 
 	template<int FractalBits>
 	typename fixed<FractalBits>::this_type& fixed<FractalBits>::operator =(floating_point_type other)
 	{
 		this_type(other).swap(*this);
+		return *this;
 	}
 
 	template<int FractalBits>
@@ -149,7 +152,7 @@ namespace math
 	typename fixed<FractalBits>::this_type fixed<FractalBits>::abs() const
 	{
 		this_type ret;
-		ret.value = value < 0 ? -value : value;
+		ret.value = value < value_type() ? -value : value;
 		return ret;
 	}
 

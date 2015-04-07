@@ -6,9 +6,9 @@ namespace math
 	template<int FractalBits>
 	struct fixed
 	{
-		typedef fixed<FractalBits> this_type;
-		typedef ssize_t value_type;
-		typedef double floating_point_type;
+		using this_type = fixed<FractalBits>;
+		using value_type = ssize_t;
+		using floating_point_type = double;
 
 		value_type value;
 
