@@ -10,16 +10,8 @@
 
 namespace tst
 {
-	typedef int (*aPrintFunc)(const char*, ...);
-	typedef int (*wPrintFunc)(const wchar_t*, ...);
-}
-
-namespace tst
-{
 	ssize_t _algorithm();
 	ssize_t _list();
-	ssize_t a_string(aPrintFunc printFunc);
-	ssize_t w_string(wPrintFunc printFunc);
 	ssize_t _shared_ptr();
 	ssize_t _string();
 	ssize_t _unique_ptr();

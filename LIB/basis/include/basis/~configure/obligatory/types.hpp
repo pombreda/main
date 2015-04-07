@@ -18,8 +18,8 @@ public:
 	atomic_int() noexcept : value() {}
 	atomic_int(value_type value) noexcept : value(value) {}
 
-	atomic_int& operator ++() noexcept {InterlockedAdd(&value, +1); return *this;}
-	atomic_int& operator --() noexcept {InterlockedAdd(&value, -1); return *this;}
+	atomic_int& operator ++() noexcept {InterlockedExchangeAdd(&value, +1); return *this;}
+	atomic_int& operator --() noexcept {InterlockedExchangeAdd(&value, -1); return *this;}
 	atomic_int operator ++(int) noexcept {value_type ret = InterlockedExchangeAdd(&value, +1); return atomic_int(ret);}
 	atomic_int operator --(int) noexcept {value_type ret = InterlockedExchangeAdd(&value, -1); return atomic_int(ret);}
 	operator ssize_t() const {return value;}
