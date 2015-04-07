@@ -15,7 +15,7 @@ struct Routine: public thread::Routine
 		LogTraceLn();
 	}
 
-	size_t run(void *) override
+	ssize_t run(void *) override
 	{
 		LogDebug(L"Start routine\n");
 		::Sleep(3000);

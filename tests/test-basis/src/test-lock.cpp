@@ -10,7 +10,7 @@ sync::CriticalSection* m1;
 sync::CriticalSection* m2;
 
 struct LockMutexThead1: public thread::Routine {
-	size_t run(void * data) override
+	ssize_t run(void * data) override
 	{
 		UNUSED(data);
 
@@ -31,7 +31,7 @@ struct LockMutexThead1: public thread::Routine {
 };
 
 struct LockMutexThead2: public thread::Routine {
-	size_t run(void * data) override
+	ssize_t run(void * data) override
 	{
 		UNUSED(data);
 

@@ -8,7 +8,7 @@ namespace sync
 		using SubscribtionId = ssize_t;
 		using filter_type = bool (*)(const Message& message);
 
-		SubscribtionId subscribe(const Queue& queue, MessageI::param_type type_mask = MessageI::MASK_ALL_TYPES, MessageI::param_type code_mask = MessageI::MASK_ALL_CODES, filter_type filter = nullptr);
+		SubscribtionId subscribe(const Queue& queue, MessageI::param_type type, MessageI::param_type mask = MessageI::MASK_ALL_TYPES, filter_type filter = nullptr);
 
 		void unsubscribe(SubscribtionId id);
 
@@ -19,10 +19,10 @@ namespace sync
 		class Subscriber
 		{
 		public:
-			Subscriber(MessageI::param_type type_mask = MessageI::MASK_ALL_TYPES, MessageI::param_type code_mask = MessageI::MASK_ALL_CODES, filter_type filter = nullptr) :
+			Subscriber(MessageI::param_type type, MessageI::param_type mask = MessageI::MASK_ALL_TYPES, filter_type filter = nullptr) :
 				queue(create_queue())
 			{
-				subscribe(queue, type_mask, code_mask, filter);
+				subscribe(queue, type, mask, filter);
 			}
 
 			~Subscriber()

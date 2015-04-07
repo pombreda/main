@@ -12,6 +12,7 @@ namespace tst
 {
 	ssize_t _algorithm();
 	ssize_t _list();
+	ssize_t _Scheduler();
 	ssize_t _shared_ptr();
 	ssize_t _string();
 	ssize_t _unique_ptr();

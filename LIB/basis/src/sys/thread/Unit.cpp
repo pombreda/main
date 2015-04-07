@@ -1,4 +1,5 @@
 #include <basis/sys/thread.hpp>
+#include <basis/sys/logger.hpp>
 #include <basis/sys/totext.hpp>
 #include <basis/simstd/algorithm>
 #include <basis/simstd/string>
@@ -9,16 +10,19 @@ namespace thread {
 
 	Unit::~Unit() noexcept
 	{
+		LogTraceObjLn();
 		if (m_handle) {
 			LogTrace(L"id: %u, exitcode: %Iu\n", m_id, get_exitcode());
 			::CloseHandle(m_handle);
 		}
 	}
 
-	Unit::Unit(Routine * routine, bool suspended, size_t stack_size) :
+	Unit::Unit(Routine* routine, bool suspended, size_t stack_size) :
 		m_routine(routine),
-		m_handle(::CreateThread(nullptr, stack_size, Routine::run_thread, routine, suspended ? CREATE_SUSPENDED : 0, &m_id))
+		m_handle()
 	{
+		LogTraceObj(L"(%p, %u, %Iu)\n", routine, suspended, stack_size);
+		m_handle = ::CreateThread(nullptr, stack_size, Routine::run_thread, routine, suspended ? CREATE_SUSPENDED : 0, &m_id);
 		LogDebugIf(is_valid(), L"id: %u\n", m_id);
 		LogFatalIf(!is_valid(), L"can't create thread (%p, %Iu) -> %s\n", routine, stack_size, totext::api_error().c_str());
 	}

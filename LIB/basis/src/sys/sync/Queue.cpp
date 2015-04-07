@@ -32,7 +32,7 @@ namespace sync
 
 	void QueueImpl::put_message(const Message& message)
 	{
-		LogTrace(L"MessageI(0x%IX(%Iu, %Iu, %Iu))\n", message->get_type(), message->get_a(), message->get_b(), message->get_c());
+		LogTraceObj(L"Message(0x%IX(%Iu, %Iu, %Iu))\n", message->get_type(), message->get_a(), message->get_b(), message->get_c());
 		{
 			simstd::lock_guard<CriticalSection> guard(cs);
 			emplace_back(message->clone());
@@ -42,7 +42,7 @@ namespace sync
 
 	WaitResult_t QueueImpl::get_message(Message& message, size_t timeout_msec)
 	{
-		LogTrace(L"(wait: %Id)\n", timeout_msec);
+		LogTraceObj(L"(%Id)\n", timeout_msec);
 		auto waitResult = Semaphore::try_lock_ex(timeout_msec);
 		if (waitResult == WaitResult_t::SUCCESS) {
 			simstd::lock_guard<CriticalSection> guard(cs);
@@ -50,8 +50,8 @@ namespace sync
 //			pop_front();
 			erase(begin());
 		}
-		LogAttenIf(waitResult != WaitResult_t::SUCCESS, L"ret: '%s'\n", totext::c_str(waitResult));
-		LogDebugIf(waitResult == WaitResult_t::SUCCESS, L"ret: '%s' MessageI(0x%IX(%Iu, %Iu, %Iu))\n", totext::c_str(waitResult), message->get_type(), message->get_a(), message->get_b(), message->get_c());
+		LogAttenIf(waitResult != WaitResult_t::SUCCESS, L"-> '%s'\n", totext::c_str(waitResult));
+		LogDebugIf(waitResult == WaitResult_t::SUCCESS, L"-> '%s' Message(0x%IX(%Iu, %Iu, %Iu))\n", totext::c_str(waitResult), message->get_type(), message->get_a(), message->get_b(), message->get_c());
 		return waitResult;
 	}
 

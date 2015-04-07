@@ -11,9 +11,9 @@ namespace sync
 	using Mapping = simstd::pair<const Observable*, Observer*>;
 
 	inline bool operator ==(const Mapping& left, const Observer* right)
-			{
+	{
 		return left.second == right;
-			}
+	}
 
 	struct MappingLess
 	{
@@ -76,7 +76,7 @@ namespace sync
 		LogTrace2(L"(%p, %p)\n", subject, observer);
 		auto guard(simstd::auto_lock(cs));
 		auto range = simstd::equal_range(begin(), end(), subject, MappingLess());
-		erase(remove(range.first, range.second, observer), range.second);
+		erase(simstd::remove(range.first, range.second, observer), range.second);
 	}
 
 	void SimpleMessageManager::unregister_observable(const Observable* subject)

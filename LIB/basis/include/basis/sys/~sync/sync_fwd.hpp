@@ -20,6 +20,8 @@ namespace sync
 	};
 
 	inline void sleep(size_t timeout_ms) noexcept {::Sleep(timeout_ms);}
+
+	inline int64_t now() noexcept {return ::GetTickCount64();}
 }
 
 namespace totext

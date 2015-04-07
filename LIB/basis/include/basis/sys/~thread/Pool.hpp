@@ -1,15 +1,14 @@
 #ifndef BASIS_SYS_THREAD_POOL_HPP_
 #define BASIS_SYS_THREAD_POOL_HPP_
 
-#include <basis/sys/thread.hpp>
-#include <basis/sys/sync.hpp>
-#include <basis/ext/pattern.hpp>
-
 #include <basis/simstd/vector>
 
-namespace thread {
-
-	struct Pool: private pattern::Uncopyable, private simstd::vector<Unit> {
+namespace thread
+{
+	struct Pool:
+		private pattern::Uncopyable,
+		private simstd::vector<Unit>
+	{
 		typedef simstd::vector<Unit> base_type;
 		using base_type::back;
 		using base_type::begin;
@@ -47,7 +46,6 @@ namespace thread {
 	private:
 		simstd::vector<Unit::handle_type> m_handles;
 	};
-
 }
 
 #endif

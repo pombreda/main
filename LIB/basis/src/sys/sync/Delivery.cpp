@@ -10,10 +10,10 @@ namespace sync
 {
 	struct DeliveryMapping
 	{
-		DeliveryMapping(const Queue& queue, MessageI::param_type type_mask, MessageI::param_type code_mask, delivery::filter_type filter):
+		DeliveryMapping(const Queue& queue, MessageI::param_type type, MessageI::param_type mask, delivery::filter_type filter):
 			queue(queue),
-			type_mask(type_mask),
-			code_mask(code_mask),
+			type(type),
+			mask(mask),
 			filter(filter)
 		{
 		}
@@ -36,7 +36,7 @@ namespace sync
 	private:
 		bool check_mask(const Message& message) const
 		{
-			return (type_mask & message->get_type()) && (code_mask & message->get_a());
+			return (type & mask) && (message->get_type() & mask);
 		}
 
 		bool check_filter(const Message& message) const
@@ -45,14 +45,14 @@ namespace sync
 		}
 
 		Queue queue;
-		MessageI::param_type type_mask;
-		MessageI::param_type code_mask;
+		MessageI::param_type type;
+		MessageI::param_type mask;
 		delivery::filter_type filter;
 	};
 
 	using dm_t = simstd::pair<delivery::SubscribtionId, DeliveryMapping>;
 
-	struct DeliveryImpl: private simstd::vector<dm_t>, private CriticalSection
+	struct DeliveryImpl: private CriticalSection, private simstd::vector<dm_t>
 	{
 		static DeliveryImpl& inst();
 

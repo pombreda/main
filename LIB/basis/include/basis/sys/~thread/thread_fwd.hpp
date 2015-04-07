@@ -1,10 +1,12 @@
-#ifndef BASIS_SYS_THREAD_BASE_HPP_
-#define BASIS_SYS_THREAD_BASE_HPP_
+#ifndef BASIS_SYS_THREAD_THREAD_FWD_HPP_
+#define BASIS_SYS_THREAD_THREAD_FWD_HPP_
 
-#include <basis/sys/thread.hpp>
+//namespace thread {
+//	LogDeclare();
+//}
 
-namespace thread {
-
+namespace thread
+{
 	enum class Priority: ssize_t {
 		IDLE          = THREAD_PRIORITY_IDLE,
 		LOWEST        = THREAD_PRIORITY_LOWEST,
@@ -22,7 +24,13 @@ namespace thread {
 		HIGH,
 		CRITICAL,
 	};
+}
 
+namespace totext
+{
+	const wchar_t* c_str(thread::Priority prio);
+
+	const wchar_t* c_str(thread::IoPriority prio);
 }
 
 #endif

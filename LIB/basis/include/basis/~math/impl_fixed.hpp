@@ -23,7 +23,7 @@ namespace math
 		numerator = math::abs(numerator);
 		denominator = math::abs(denominator);
 
-		value = ((numerator / denominator) << FRACTAL_BITS) | ((numerator % denominator) * BASE_NUMBER / denominator);
+		value = (value_type(numerator / denominator) << FRACTAL_BITS) | ((numerator % denominator) * BASE_NUMBER / denominator);
 		value *= sign;
 	}
 

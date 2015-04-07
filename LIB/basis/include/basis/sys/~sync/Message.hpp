@@ -16,11 +16,18 @@ namespace sync
 	public:
 		using param_type = size_t;
 
-		static const param_type MASK_ALL_TYPES = ~static_cast<param_type>(0);
-		static const param_type MASK_ALL_CODES = ~static_cast<param_type>(0);
+		static const param_type MASK_ALL_TYPES = ~static_cast<param_type>(0xFF);
+		static const param_type MASK_TYPE = static_cast<param_type>(0xFF);
 
 		enum Type {
-			SYSTEM = 0x01,
+			SYSTEM    = 0x01,
+			SCHEDULER = 0x02,
+		};
+
+		enum Code {
+			SYSTEM_EXIT      = 0x01,
+			SCHEDULER_EXIT   = 0x01,
+			SCHEDULER_UPDATE = 0x02,
 		};
 
 		virtual ~MessageI() = default;

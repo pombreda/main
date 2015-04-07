@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 //
 //	test_crypt();
 //
-	test_crashes();
+//	test_crashes();
 //
 //	tst::_list();
 //
@@ -55,6 +55,8 @@ int main(int argc, char* argv[])
 //	test_math();
 //
 //	test_memory();
+//
+	tst::_Scheduler();
 //
 //	tst::_shared_ptr();
 //

@@ -1,4 +1,5 @@
 #include <basis/sys/thread.hpp>
+#include <basis/sys/logger.hpp>
 #include <basis/sys/totext.hpp>
 #include <basis/simstd/string>
 

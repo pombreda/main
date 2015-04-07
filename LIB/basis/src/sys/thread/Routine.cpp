@@ -1,40 +1,41 @@
 #include <basis/sys/thread.hpp>
+#include <basis/sys/logger.hpp>
 
-namespace thread {
-
+namespace thread
+{
 	DWORD WINAPI Routine::run_thread(void* routine)
 	{
-		LogTrace(L"%p\n", routine);
+		LogTrace(L"(%p)\n", routine);
 		Routine * l_routine = reinterpret_cast<Routine*>(routine);
 		return l_routine->run(l_routine->get_parameter());
 	}
 
 	VOID WINAPI Routine::alert_thread(ULONG_PTR routine)
 	{
-		LogTrace(L"%p\n", routine);
+		LogTrace(L"(%p)\n", (void*)routine);
 		reinterpret_cast<Routine*>(routine)->alert(nullptr);
 	}
 
 	Routine::Routine()
 	{
-		LogTraceLn();
+		LogTraceObjLn();
 	}
 
 	Routine::~Routine()
 	{
-		LogTraceLn();
+		LogTraceObjLn();
 	}
 
 	void Routine::alert(void* data)
 	{
 		UNUSED(data);
-		LogTrace(L"data: %p\n", data);
+		LogTraceObj(L"(%p)\n", data);
 	}
 
-	size_t Routine::run(void* data)
+	ssize_t Routine::run(void* data)
 	{
 		UNUSED(data);
-		LogTrace(L"data: %p\n", data);
+		LogTraceObj(L"(%p)\n", data);
 		return 0;
 	}
 
@@ -46,6 +47,6 @@ namespace thread {
 	void Routine::put_message(const sync::Message& message)
 	{
 		UNUSED(message);
-		LogTrace(L"0x%IX(%Iu, %Iu, %Iu)\n", message->get_type(), message->get_a(), message->get_b(), message->get_c());
+		LogTraceObj(L"0x%IX(%Iu, %Iu, %Iu)\n", message->get_type(), message->get_a(), message->get_b(), message->get_c());
 	}
 }
