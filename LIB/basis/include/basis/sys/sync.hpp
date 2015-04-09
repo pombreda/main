@@ -6,6 +6,7 @@
 #include <basis/simstd/memory>
 
 #include <basis/sys/~sync/sync_fwd.hpp>
+#include <basis/sys/~sync/sync_functions.hpp>
 #include <basis/sys/~sync/CriticalSection.hpp>
 #include <basis/sys/~sync/Mutex.hpp>
 #include <basis/sys/~sync/Semaphore.hpp>

@@ -3,8 +3,8 @@
 #include <basis/sys/totext.hpp>
 #include <basis/simstd/string>
 
-namespace thread {
-
+namespace thread
+{
 	Pool::Pool()
 	{
 		LogTraceLn();
@@ -15,7 +15,7 @@ namespace thread {
 		LogTraceLn();
 	}
 
-	sync::WaitResult_t Pool::wait_all(size_t timeout) const
+	sync::WaitResult_t Pool::wait_all(int64_t timeout) const
 	{
 		LogTrace(L"timeout: %Id\n", timeout);
 		sync::WaitResult_t ret = (sync::WaitResult_t)::WaitForMultipleObjectsEx(m_handles.size(), &m_handles[0], TRUE, timeout, TRUE);
@@ -24,7 +24,7 @@ namespace thread {
 		return ret;
 	}
 
-	sync::WaitResult_t Pool::wait_any(size_t & index, size_t timeout) const
+	sync::WaitResult_t Pool::wait_any(size_t& index, int64_t timeout) const
 	{
 		LogTrace(L"index: %Iu, timeout: %Id\n", index, timeout);
 		DWORD result = ::WaitForMultipleObjectsEx(m_handles.size(), &m_handles[0], FALSE, timeout, TRUE);
@@ -42,5 +42,4 @@ namespace thread {
 		LogTrace(L"wait: %Id, ret: '%s', index: %Iu\n", timeout, totext::c_str(ret), index);
 		return ret;
 	}
-
 }

@@ -1,7 +1,7 @@
 #include <basis/sys/sync.hpp>
 
-namespace totext {
-
+namespace totext
+{
 	const wchar_t* c_str(sync::WaitResult_t waitResult)
 	{
 		switch (waitResult) {
@@ -18,5 +18,4 @@ namespace totext {
 		}
 		return L"unknown";
 	}
-
 }

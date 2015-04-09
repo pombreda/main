@@ -36,14 +36,14 @@ namespace memory
 {
 	namespace heap
 	{
-		using DefaultStatCount = DecoratorStat<Default, StatCount>;
-
-		using DefaultStatLogged = DecoratorStat<Default, StatLog>;
-
-#if !defined(MEMORY_LOGGING) || MEMORY_LOGGING == 0
-		using DefaultStat = DefaultStatCount;
+#ifdef NDEBUG
+		using DefaultStat = DecoratorStat<Default, StatNone>;
 #else
-		using DefaultStat = DefaultStatLogged;
+#   if !defined(MEMORY_LOGGING) || MEMORY_LOGGING == 0
+		using DefaultStat = DecoratorStat<Default, StatCount>;
+#   else
+		using DefaultStat = DecoratorStat<Default, StatLog>;
+#   endif
 #endif
 	}
 }

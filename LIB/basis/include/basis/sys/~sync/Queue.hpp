@@ -3,21 +3,26 @@
 
 namespace sync
 {
-	using Queue = simstd::shared_ptr<QueueI>;
+	using Queue = simstd::shared_ptr<queue::Interface>;
 
 	Queue create_queue(const wchar_t* name = EMPTY_STR);
 
-	class QueueI
+	namespace queue
 	{
-	public:
-		virtual ~QueueI() = default;
+		class Interface
+		{
+		public:
+			virtual ~Interface() = default;
 
-		virtual void put_message(const Message& message) = 0;
+			virtual const wchar_t* get_name() const noexcept = 0;
 
-		virtual WaitResult_t get_message(Message& message, size_t timeout_ms = WAIT_FOREVER) = 0;
+			virtual void put_message(const Message& message) = 0;
 
-		virtual bool empty() const noexcept = 0;
-	};
+			virtual WaitResult_t get_message(Message& message, int64_t timeout_ms = TIMEOUT_INFINITE) = 0;
+
+			virtual bool empty() const noexcept = 0;
+		};
+	}
 }
 
 #endif

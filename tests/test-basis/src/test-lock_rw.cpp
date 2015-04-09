@@ -22,7 +22,7 @@
 //	{
 //		LogDebug(L"Start routine\n");
 //		::Sleep(3000);
-//		sync::MessageI message;
+//		sync::message message;
 //		m_queue->get_message(message, 5000);
 //		LogDebug(L"Exit routine\n");
 //		return m_num;

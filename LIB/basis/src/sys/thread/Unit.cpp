@@ -12,7 +12,7 @@ namespace thread {
 	{
 		LogTraceObjLn();
 		if (m_handle) {
-			LogTrace(L"id: %u, exitcode: %Iu\n", m_id, get_exitcode());
+			LogTrace(L"[%u] -> exitcode: %Iu\n", m_id, get_exitcode());
 			::CloseHandle(m_handle);
 		}
 	}
@@ -23,11 +23,11 @@ namespace thread {
 	{
 		LogTraceObj(L"(%p, %u, %Iu)\n", routine, suspended, stack_size);
 		m_handle = ::CreateThread(nullptr, stack_size, Routine::run_thread, routine, suspended ? CREATE_SUSPENDED : 0, &m_id);
-		LogDebugIf(is_valid(), L"id: %u\n", m_id);
-		LogFatalIf(!is_valid(), L"can't create thread (%p, %Iu) -> %s\n", routine, stack_size, totext::api_error().c_str());
+		LogDebugIf(is_valid(), L"[%u]\n", m_id);
+		LogFatalIf(!is_valid(), L"can't create thread (%p, %u, %Iu) -> %s\n", routine, suspended, stack_size, totext::api_error().c_str());
 	}
 
-	Unit::Unit(Unit && right) :
+	Unit::Unit(Unit&& right) :
 		m_routine(nullptr),
 		m_handle(nullptr),
 		m_id()
@@ -35,14 +35,14 @@ namespace thread {
 		swap(right);
 	}
 
-	Unit & Unit::operator =(Unit && right)
+	Unit & Unit::operator =(Unit&& right)
 	{
 		if (this != &right)
 			Unit(simstd::move(right)).swap(*this);
 		return *this;
 	}
 
-	void Unit::swap(Unit & right) noexcept
+	void Unit::swap(Unit& right) noexcept
 	{
 		using simstd::swap;
 		swap(m_handle, right.m_handle);
@@ -58,16 +58,16 @@ namespace thread {
 	bool Unit::alert()
 	{
 		bool ret = ::QueueUserAPC(Routine::alert_thread, m_handle, (ULONG_PTR )m_routine);
-		LogDebugIf(ret, L"id: %u\n", m_id);
-		LogErrorIf(!ret, L"-> %s\n", totext::api_error().c_str());
+		LogDebugIf(ret, L"[%u]\n", m_id);
+		LogErrorIf(!ret, L"[%u]-> %s\n", m_id, totext::api_error().c_str());
 		return ret;
 	}
 
 	bool Unit::set_priority(Priority prio)
 	{
 		bool ret = ::SetThreadPriority(m_handle, (int)prio);
-		LogDebugIf(ret, L"id: %u, prio: '%s'\n", m_id, totext::c_str(prio));
-		LogErrorIf(!ret, L"id: %u, prio: '%s' -> %s\n", m_id, totext::c_str(prio), totext::api_error().c_str());
+		LogDebugIf(ret, L"[%u] ('%s')\n", m_id, totext::c_str(prio));
+		LogErrorIf(!ret, L"[%u] ('%s') -> %s\n", m_id, totext::c_str(prio), totext::api_error().c_str());
 		return ret;
 	}
 
@@ -75,12 +75,12 @@ namespace thread {
 	{
 		DWORD ret;
 		WINBOOL good = ::GetExitCodeThread(m_handle, &ret);
-		LogDebugIf(good, L"id: %u -> %u\n", m_id, ret);
-		LogErrorIf(!good, L"id: %u -> %s\n", m_id, totext::api_error().c_str());
+		LogDebugIf(good, L"[%u] -> %u\n", m_id, ret);
+		LogErrorIf(!good, L"[%u] -> %s\n", m_id, totext::api_error().c_str());
 		return ret;
 	}
 
-	Unit::id_type Unit::get_id() const
+	Id Unit::get_id() const
 	{
 		return m_id;
 	}
@@ -98,30 +98,29 @@ namespace thread {
 	Priority Unit::get_priority() const
 	{
 		Priority prio = (Priority)::GetThreadPriority(m_handle);
-		LogTrace(L"id: %u -> '%s'\n", m_id, totext::c_str(prio));
+		LogTrace(L"[%u] -> '%s'\n", m_id, totext::c_str(prio));
 		return prio;
 	}
 
 	bool Unit::suspend() const
 	{
 		bool ret = ::SuspendThread(m_handle) != (DWORD)-1;
-		LogDebugIf(ret, L"id: %u\n", m_id);
-		LogErrorIf(!ret, L"id: %u -> %s\n", m_id, totext::api_error().c_str());
+		LogDebugIf(ret, L"[%u]\n", m_id);
+		LogErrorIf(!ret, L"[%u] -> %s\n", m_id, totext::api_error().c_str());
 		return ret;
 	}
 
 	bool Unit::resume() const
 	{
 		bool ret = ::ResumeThread(m_handle) != (DWORD)-1;
-		LogDebugIf(ret, L"id: %u\n", m_id);
-		LogErrorIf(!ret, L"id: %u -> %s\n", m_id, totext::api_error().c_str());
+		LogDebugIf(ret, L"[%u]\n", m_id);
+		LogErrorIf(!ret, L"[%u] -> %s\n", m_id, totext::api_error().c_str());
 		return ret;
 	}
 
-	sync::WaitResult_t Unit::wait(size_t timeout) const
+	sync::WaitResult_t Unit::wait(int64_t timeout) const
 	{
-		LogTrace(L"id: %u, timeout: %Id\n", m_id, timeout);
+		LogTrace(L"[%u] (%Id)\n", m_id, timeout);
 		return (sync::WaitResult_t)::WaitForSingleObjectEx(m_handle, timeout, true);
 	}
-
 }

@@ -24,6 +24,10 @@ namespace thread
 		HIGH,
 		CRITICAL,
 	};
+
+	using Id = DWORD;
+
+	Id get_id();
 }
 
 namespace totext

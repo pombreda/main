@@ -22,7 +22,7 @@ namespace sync
 		virtual bool handle_event(const Message& message) = 0;
 	};
 
-	class Scheduler: private CriticalSection
+	class Scheduler
 	{
 	public:
 		~Scheduler();
@@ -37,7 +37,7 @@ namespace sync
 
 		Queue get_queue() const;
 
-		void register_interest(EventHandler* callback, MessageI::param_type type, MessageI::param_type mask, bool is_broadcast_event = false);
+		void register_interest(EventHandler* callback, message::param_type type, message::param_type mask, bool is_broadcast_event = false);
 
 		void unregister_interest(EventHandler* callback);
 
@@ -46,22 +46,13 @@ namespace sync
 	private:
 		Scheduler();
 
-		ssize_t run(void* data);
-
-		void fire_tasks();
-
+		struct SchedulerImplStruct;
 		class TasksQueueImpl;
-		class InterQueueImpl;
 		class ThreadImpl;
-		using TasksQueue = simstd::unique_ptr<TasksQueueImpl>;
-		using InterQueue = simstd::unique_ptr<InterQueueImpl>;
-		using Thread = simstd::unique_ptr<ThreadImpl>;
-		using EventQueue = Queue;
+		using SchedulerImpl = simstd::unique_ptr<SchedulerImplStruct>;
 
-		EventQueue event_queue;
-		TasksQueue tasks_queue;
-		InterQueue inter_queue;
-		Thread thread;
+		SchedulerImpl impl;
+		bool destroying = false;
 	};
 }
 

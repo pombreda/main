@@ -1,5 +1,6 @@
 #include <basis/sys/sync.hpp>
 #include <basis/sys/logger.hpp>
+#include <basis/sys/thread.hpp>
 
 #include <basis/simstd/algorithm>
 #include <basis/simstd/vector>
@@ -10,7 +11,7 @@ namespace sync
 {
 	struct DeliveryMapping
 	{
-		DeliveryMapping(const Queue& queue, MessageI::param_type type, MessageI::param_type mask, delivery::filter_type filter):
+		DeliveryMapping(const Queue& queue, message::param_type type, message::param_type mask, delivery::filter_type filter):
 			queue(queue),
 			type(type),
 			mask(mask),
@@ -45,29 +46,40 @@ namespace sync
 		}
 
 		Queue queue;
-		MessageI::param_type type;
-		MessageI::param_type mask;
+		message::param_type type;
+		message::param_type mask;
 		delivery::filter_type filter;
 	};
 
 	using dm_t = simstd::pair<delivery::SubscribtionId, DeliveryMapping>;
 
-	struct DeliveryImpl: private CriticalSection, private simstd::vector<dm_t>
+	struct DeliveryImpl: public thread::Routine, private CriticalSection
 	{
 		static DeliveryImpl& inst();
 
-		delivery::SubscribtionId subscribe(const Queue& queue, MessageI::param_type type_mask, MessageI::param_type code_mask, delivery::filter_type filter);
+		~DeliveryImpl();
 
-		void unsubscribe(delivery::SubscribtionId id);
-		void unsubscribe(const Queue& queue);
+		DeliveryImpl();
+
+		delivery::SubscribtionId subscribe(const Queue& queue, message::param_type type, message::param_type mask, delivery::filter_type filter);
+
+		bool unsubscribe(delivery::SubscribtionId id);
+		bool unsubscribe(const Queue& queue);
 
 		void send_round(const Message& message) const;
 
+		ssize_t run(void* data) override;
+
 	private:
+		DeliveryImpl(const DeliveryImpl&) = delete;
+		DeliveryImpl& operator =(const DeliveryImpl&) = delete;
+
 		delivery::SubscribtionId _get_next_id() noexcept {return ++id_generator;}
 
-		mutable CriticalSection cs;
 		delivery::SubscribtionId id_generator = 0;
+		simstd::vector<dm_t> subscriptions;
+		Queue queue;
+		thread::Unit thread;
 	};
 
 	DeliveryImpl& DeliveryImpl::inst()
@@ -76,40 +88,78 @@ namespace sync
 		return instance;
 	}
 
-	delivery::SubscribtionId DeliveryImpl::subscribe(const Queue& queue, MessageI::param_type type_mask, MessageI::param_type code_mask, delivery::filter_type filter)
+	DeliveryImpl::~DeliveryImpl()
+	{
+		LogTraceObj(L"begin");
+		queue->put_message(create_message(message::SYSTEM, message::SYSTEM_THREAD_STOP));
+		thread.wait();
+		LogTraceObj(L"end");
+	}
+
+	DeliveryImpl::DeliveryImpl() :
+		queue(create_queue(L"sync::Delivery queue")),
+		thread(this, true)
+	{
+		LogTraceObjLn();
+		thread.resume();
+	}
+
+	delivery::SubscribtionId DeliveryImpl::subscribe(const Queue& queue, message::param_type type, message::param_type mask, delivery::filter_type filter)
 	{
 		simstd::lock_guard<CriticalSection> guard(*this);
 		auto id = _get_next_id();
-		emplace_back(id, DeliveryMapping(queue, type_mask, code_mask, filter));
+		subscriptions.emplace_back(id, DeliveryMapping(queue, type, mask, filter));
+		LogTraceObj(L"('%s', 0x%IX, 0x%IX) -> %Id", queue->get_name(), type, mask, id);
 		return id;
 	}
 
-	void DeliveryImpl::unsubscribe(delivery::SubscribtionId id)
+	bool DeliveryImpl::unsubscribe(delivery::SubscribtionId id)
 	{
-		simstd::lock_guard<CriticalSection> guard(cs);
-		auto it = simstd::find_if(begin(), end(), [&](dm_t const& item) {return item.first == id;});
-		if (it != end())
-			erase(it);
+		bool ret = false;
+		simstd::lock_guard<CriticalSection> guard(*this);
+		auto it = simstd::find_if(subscriptions.begin(), subscriptions.end(), [&](const dm_t& item) {return item.first == id;});
+		if (it != subscriptions.end()) {
+			subscriptions.erase(it);
+			ret = true;
+		}
+		LogTraceObj(L"(%Id) -> %d", queue->get_name(), id, ret);
+		return ret;
 	}
 
-	void DeliveryImpl::unsubscribe(const Queue& queue)
+	bool DeliveryImpl::unsubscribe(const Queue& queue)
 	{
-		simstd::lock_guard<CriticalSection> guard(cs);
-		for (auto it = rbegin(); it != rend(); ++it) {
-			if (it->second == queue)
-				erase(it.base());
-		}
+		simstd::lock_guard<CriticalSection> guard(*this);
+		auto old_size = subscriptions.size();
+		subscriptions.erase(simstd::remove_if(subscriptions.begin(), subscriptions.end(),  [&](const dm_t& item) {return item.second == queue;}), subscriptions.end());
+		bool ret = old_size != subscriptions.size();
+		LogTraceObj(L"('%s') -> %d", queue->get_name(), queue->get_name(), ret);
+		return ret;
 	}
 
 	void DeliveryImpl::send_round(const Message& message) const
 	{
-		simstd::lock_guard<CriticalSection> guard(cs);
-//		simstd::for_each(begin(), end(), [&](dm_t const& item) {
-//			item.second(message);
-//		});
-		for (const dm_t& item : *this) {
-			item.second(message);
+		queue->put_message(message);
+	}
+
+	ssize_t DeliveryImpl::run(void* /*data*/)
+	{
+		while (true) {
+			Message msg;
+			auto waitResult = queue->get_message(msg);
+			if (waitResult == WaitResult_t::SUCCESS) {
+				if (msg->get_type() == message::SYSTEM && msg->get_a() == message::SYSTEM_THREAD_STOP)
+					break;
+				simstd::lock_guard<CriticalSection> guard(*this);
+				LogTraceObj(L"[size: %Iu]\n", subscriptions.size());
+				for (const dm_t& item : subscriptions) {
+					LogTraceObjLn();
+					item.second(msg);
+				}
+			} else {
+				break;
+			}
 		}
+		return 0;
 	}
 }
 
@@ -119,10 +169,10 @@ namespace sync
 
 	namespace delivery
 	{
-		SubscribtionId subscribe(const Queue& queue, MessageI::param_type type_mask, MessageI::param_type code_mask, filter_type filter)
+		SubscribtionId subscribe(const Queue& queue, message::param_type type, message::param_type mask, filter_type filter)
 		{
 			LogTraceLn();
-			return DeliveryImpl::inst().subscribe(queue, type_mask, code_mask, filter);
+			return DeliveryImpl::inst().subscribe(queue, type, mask, filter);
 		}
 
 		void unsubscribe(SubscribtionId id)

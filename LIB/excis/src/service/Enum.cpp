@@ -257,7 +257,7 @@ namespace service
 		set_changed(true);
 		if (!m_batch_started) {
 			LogTraceLn();
-			notify_observers(sync::create_message(sync::MessageI::SYSTEM));
+			notify_observers(sync::create_message(sync::message::SYSTEM));
 		}
 	}
 
@@ -265,7 +265,7 @@ namespace service
 	{
 		LogTraceLn();
 		m_batch_started = false;
-		notify_observers(sync::create_message(sync::MessageI::SYSTEM));
+		notify_observers(sync::create_message(sync::message::SYSTEM));
 	}
 
 	void Enum::set_wait_state(bool new_state)

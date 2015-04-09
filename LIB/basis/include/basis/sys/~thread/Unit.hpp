@@ -6,7 +6,6 @@ namespace thread
 	struct Unit: private pattern::Uncopyable
 	{
 		using handle_type = HANDLE;
-		using id_type = DWORD;
 
 	public:
 		~Unit() noexcept;
@@ -29,7 +28,7 @@ namespace thread
 
 		size_t get_exitcode() const;
 
-		id_type get_id() const;
+		Id get_id() const;
 
 		handle_type get_handle() const;
 
@@ -41,12 +40,12 @@ namespace thread
 		bool suspend() const;
 		bool resume() const;
 
-		sync::WaitResult_t wait(size_t timeout = sync::WAIT_FOREVER) const;
+		sync::WaitResult_t wait(int64_t timeout = sync::TIMEOUT_INFINITE) const;
 
 	private:
 		Routine* m_routine;
 		handle_type m_handle;
-		id_type m_id;
+		Id m_id;
 	};
 }
 
