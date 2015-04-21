@@ -1,31 +1,34 @@
 ﻿/**
-	ontop: Always on top
-	FAR3 plugin
-	Switch between "always on top" state on/off
+ ontop: Always on top
+ FAR3 plugin
+ Switch between "always on top" state on/off
 
-	© 2013 Andrew Grechkin
+ © 2013 Andrew Grechkin
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **/
 
 #ifndef _GLOBALINFO_HPP_
 #define _GLOBALINFO_HPP_
 
-#include <libfar3/globalinfo_i.hpp>
-#include <libbase/std.hpp>
+#include <far3/plugin.hpp>
+#include <basis/ext/pattern.hpp>
 
-struct FarGlobalInfo: public Far::GlobalInfo_i, private Base::Uncopyable {
+struct FarGlobalInfo:
+    public far3::GlobalInfo_i,
+    private pattern::Uncopyable
+{
 	~FarGlobalInfo();
 
 	FarGlobalInfo();
@@ -34,7 +37,7 @@ struct FarGlobalInfo: public Far::GlobalInfo_i, private Base::Uncopyable {
 
 	PCWSTR get_description() const override;
 
-	const GUID * get_guid() const override;
+	const GUID* get_guid() const override;
 
 	PCWSTR get_title() const override;
 
@@ -42,7 +45,7 @@ struct FarGlobalInfo: public Far::GlobalInfo_i, private Base::Uncopyable {
 
 	VersionInfo get_min_version() const override;
 
-	Far::Plugin_i * CreatePlugin(const PluginStartupInfo * Info) const override;
+	far3::Plugin_i* CreatePlugin(const PluginStartupInfo* Info) const override;
 
 	void load_settings();
 
@@ -51,6 +54,6 @@ struct FarGlobalInfo: public Far::GlobalInfo_i, private Base::Uncopyable {
 	WCHAR prefix[32];
 };
 
-FarGlobalInfo * get_global_info();
+FarGlobalInfo* get_global_info();
 
 #endif

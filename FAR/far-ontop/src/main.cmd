@@ -1,2 +1,6 @@
-windres.exe -J rc -O coff -F pe-x86-64 -i main.rc -o ../Release-x64/src/main.res
-windres.exe -J rc -O coff -F pe-i386 -i main.rc -o ../Release-x32/src/main.res
+mkdir "../x64-Release"
+mkdir "../x64-Release/src"
+mkdir "../x32-Release"
+mkdir "../x32-Release/src"
+D:\compilers\mingw64\bin\windres.exe -J rc -O coff -F pe-x86-64 -i main.rc -o "../x64-Release/src/main.res"
+D:\compilers\mingw64\bin\windres.exe -J rc -O coff -F pe-i386   -i main.rc -o "../x32-Release/src/main.res"

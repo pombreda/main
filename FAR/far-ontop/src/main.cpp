@@ -1,43 +1,37 @@
 ﻿/**
-	ontop: Always on top
-	FAR3 plugin
-	Switch between "always on top" state on/off
+ ontop: Always on top
+ FAR3 plugin
+ Switch between "always on top" state on/off
 
-	© 2013 Andrew Grechkin
+ © 2013 Andrew Grechkin
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **/
 
 #include <globalinfo.hpp>
 #include <farplugin.hpp>
 
-#include <libfar3/helper.hpp>
-#include <libfar3/plugin_i.hpp>
-#include <liblog/logger.hpp>
+#include <far3/plugin.hpp>
+#include <basis/sys/logger.hpp>
 
-namespace {
+namespace
+{
 	void setup_logger()
 	{
-		using namespace Logger;
-		set_default_level(Level::Trace);
-		set_default_prefix(Prefix::Medium | Prefix::Place);
-		set_default_target(get_TargetToFile(L"D:/projects/~test/ontop.log"));
-
-//		set_module_enabled(false, get_module(L"threads"));
+		LogSetOptions(L"logger:///default?level=w;prefix=f;target=fo(far-ontop.log)");
 	}
 }
-
 
 ///========================================================================================== Export
 /// GlobalInfo
@@ -46,7 +40,7 @@ void WINAPI GetGlobalInfoW(GlobalInfo * Info)
 	setup_logger();
 
 	LogTrace();
-	Far::helper_t::inst().init(new FarGlobalInfo);
+	far3::helper_t::inst().init(new FarGlobalInfo);
 	get_global_info()->GetGlobalInfoW(Info);
 }
 
@@ -67,19 +61,19 @@ intptr_t WINAPI ConfigureW(const ConfigureInfo * Info)
 void WINAPI GetPluginInfoW(PluginInfo * Info)
 {
 	LogTrace();
-	Far::helper_t::inst().get_plugin()->GetPluginInfoW(Info);
+	far3::helper_t::inst().get_plugin()->GetPluginInfoW(Info);
 }
 
 HANDLE WINAPI OpenW(const OpenInfo * Info)
 {
 	LogTrace();
-	return Far::helper_t::inst().get_plugin()->OpenW(Info);
+	return far3::helper_t::inst().get_plugin()->OpenW(Info);
 }
 
 void WINAPI ExitFARW(const ExitInfo *Info)
 {
 	LogTrace();
-	Far::helper_t::inst().get_plugin()->ExitFARW(Info);
+	far3::helper_t::inst().get_plugin()->ExitFARW(Info);
 }
 
 /// Panel
@@ -87,7 +81,8 @@ void WINAPI ExitFARW(const ExitInfo *Info)
 #ifndef DEBUG
 
 ///=================================================================================================
-namespace {
+namespace
+{
 
 	typedef void (*FAtExit)(void);
 
@@ -109,8 +104,7 @@ namespace {
 		else
 			++atexit_index;
 
-		for (int64_t i = atexit_index; i < MAX_ATEXITLIST_ENTRIES; ++i)
-		{
+		for (int64_t i = atexit_index; i < MAX_ATEXITLIST_ENTRIES; ++i) {
 			LogDebug(L"[%I64d] ptr: %p\n", i, pf_atexitlist[i]);
 			(*pf_atexitlist[i])();
 		}
@@ -118,9 +112,10 @@ namespace {
 
 }
 
-extern "C" {
-
-	BOOL WINAPI	DllMainCRTStartup(HANDLE, DWORD dwReason, PVOID) {
+extern "C"
+{
+	BOOL WINAPI DllMainCRTStartup(HANDLE, DWORD dwReason, PVOID)
+	{
 		switch (dwReason) {
 			case DLL_PROCESS_ATTACH:
 				init_atexit();
@@ -137,8 +132,7 @@ extern "C" {
 	{
 		LogTrace();
 		int64_t ind = ::InterlockedExchangeAdd64(&atexit_index, -1);
-		if (ind >= 0)
-		{
+		if (ind >= 0) {
 			LogDebug(L"[%I64d] ptr: %p\n", ind, pf);
 			pf_atexitlist[ind] = pf;
 			return 0;
@@ -150,7 +144,6 @@ extern "C" {
 	{
 //		::abort_message("pure virtual method called");
 	}
-
 }
 
 #endif

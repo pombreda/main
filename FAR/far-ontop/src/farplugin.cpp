@@ -1,52 +1,52 @@
 ﻿/**
-	ontop: Always on top
-	FAR3 plugin
-	Switch between "always on top" state on/off
+ ontop: Always on top
+ FAR3 plugin
+ Switch between "always on top" state on/off
 
-	© 2013 Andrew Grechkin
+ © 2013 Andrew Grechkin
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-**/
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **/
 
 #include <farplugin.hpp>
-
-#include <libfar3/helper.hpp>
-
-#include <liblog/logger.hpp>
-
 #include <globalinfo.hpp>
 #include <guid.hpp>
 #include <lang.hpp>
+#include <far3/message.hpp>
+#include <basis/sys/logger.hpp>
 
-///======================================================================================= FarPlugin
-struct FarPlugin: public Far::Plugin_i {
-	FarPlugin(const PluginStartupInfo * Info);
+struct FarPlugin:
+	public far3::Plugin_i
+{
+	FarPlugin(const PluginStartupInfo* Info);
 
-	~FarPlugin() override;
+	void destroy() const override;
 
-	void GetPluginInfo(PluginInfo * Info) override;
+	void GetPluginInfo(PluginInfo* Info) override;
 
-	Far::PanelController_i * Open(const OpenInfo * Info) override;
+	far3::PanelController_i* Open(const OpenInfo* Info) override;
 
 private:
+	~FarPlugin() override;
+
 	mutable WCHAR menu_item[64];
 	HWND m_hwnd;
 	bool m_state;
 };
 
-FarPlugin::FarPlugin(const PluginStartupInfo * Info):
-	Far::Plugin_i(Info),
+FarPlugin::FarPlugin(const PluginStartupInfo* Info) :
+	far3::Plugin_i(Info),
 	m_hwnd(::GetForegroundWindow()),
 	m_state(false)
 {
@@ -58,25 +58,30 @@ FarPlugin::~FarPlugin()
 	LogTrace();
 }
 
-void FarPlugin::GetPluginInfo(PluginInfo * Info)
+void FarPlugin::destroy() const
+{
+	delete this;
+}
+
+void FarPlugin::GetPluginInfo(PluginInfo* Info)
 {
 	LogTrace();
 	Info->Flags = PF_EDITOR | PF_VIEWER | PF_DIALOG;
 
-	static GUID PluginMenuGuids[] = {MenuGuid,};
-	static PCWSTR PluginMenuStrings[] = {menu_item,};
+	static GUID PluginMenuGuids[] = {MenuGuid, };
+	static PCWSTR PluginMenuStrings[] = {menu_item, };
 
-	::wcsncpy(menu_item, Far::get_msg(Far::MenuTitle), Base::lengthof(menu_item));
-	::wcsncat(menu_item, Far::get_msg(m_state ? MsgOff : MsgOn), Base::lengthof(menu_item));
+	::wcsncpy(menu_item, far3::message::get(far3::message::MenuTitle), lengthof(menu_item));
+	::wcsncat(menu_item, far3::message::get(m_state ? MsgOff : MsgOn), lengthof(menu_item));
 
 	Info->PluginMenu.Guids = PluginMenuGuids;
 	Info->PluginMenu.Strings = PluginMenuStrings;
-	Info->PluginMenu.Count = Base::lengthof(PluginMenuStrings);
+	Info->PluginMenu.Count = lengthof(PluginMenuStrings);
 
 	Info->CommandPrefix = get_global_info()->prefix;
 }
 
-Far::PanelController_i * FarPlugin::Open(const OpenInfo * /*Info*/)
+far3::PanelController_i* FarPlugin::Open(const OpenInfo* /*Info*/)
 {
 	LogTrace();
 
@@ -88,13 +93,7 @@ Far::PanelController_i * FarPlugin::Open(const OpenInfo * /*Info*/)
 	return nullptr;
 }
 
-///=================================================================================================
-Far::Plugin_i * create_FarPlugin(const PluginStartupInfo * psi)
+far3::Plugin_i* create_FarPlugin(const PluginStartupInfo* psi)
 {
 	return new FarPlugin(psi);
-}
-
-void destroy(Far::Plugin_i * plugin)
-{
-	delete plugin;
 }
