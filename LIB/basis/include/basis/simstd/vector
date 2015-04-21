@@ -318,7 +318,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	vector<Type, Allocator>::~vector()
 	{
-		TraceObj();
+		TraceObjLn();
 	}
 
 	template<typename Type, typename Allocator>
@@ -331,14 +331,14 @@ namespace simstd
 	vector<Type, Allocator>::vector(const allocator_type& allocator)
 		: base_type(allocator)
 	{
-		TraceObj();
+		TraceObjLn();
 	}
 
 	template<typename Type, typename Allocator>
 	vector<Type, Allocator>::vector(size_type count, const value_type& value, const allocator_type& allocator)
 		: base_type(count, allocator)
 	{
-		TraceObj();
+		TraceObjLn();
 		impl.end = simstd::uninitialized_fill_n_a(impl.end, count, value, get_base_allocator());
 	}
 
@@ -346,7 +346,7 @@ namespace simstd
 	vector<Type, Allocator>::vector(size_type count, const allocator_type& allocator)
 		: base_type(count, allocator)
 	{
-		TraceObj();
+		TraceObjLn();
 		impl.end = simstd::uninitialized_default_n_a(impl.end, count, get_base_allocator());
 	}
 
@@ -355,7 +355,7 @@ namespace simstd
 	vector<Type, Allocator>::vector(InputIterator first, InputIterator last, const allocator_type& allocator)
 		: base_type(allocator)
 	{
-		TraceObj();
+		TraceObjLn();
 		_insert_back(first, last, simstd::pvt::iterator_category(first));
 	}
 
@@ -369,7 +369,7 @@ namespace simstd
 	vector<Type, Allocator>::vector(const this_type& other, const allocator_type& allocator)
 		: base_type(other.size(), allocator)
 	{
-		TraceObj();
+		TraceObjLn();
 		impl.end = simstd::uninitialized_copy_a(other.impl.begin, other.impl.end, impl.end, get_base_allocator());
 	}
 
@@ -377,14 +377,14 @@ namespace simstd
 	vector<Type, Allocator>::vector(this_type&& other)
 		: base_type(simstd::move(other))
 	{
-		TraceObj();
+		TraceObjLn();
 	}
 
 	template<typename Type, typename Allocator>
 	vector<Type, Allocator>::vector(this_type&& other, const allocator_type& allocator)
 		: base_type(simstd::move(other), allocator)
 	{
-		TraceObj();
+		TraceObjLn();
 		if (other.get_allocator() != allocator) {
 			impl.end = simstd::uninitialized_copy_a(simstd::make_move_iterator(other.impl.begin), simstd::make_move_iterator(other.impl.end), impl.end, get_base_allocator());
 			other.clear();
@@ -395,7 +395,7 @@ namespace simstd
 	typename
 	vector<Type, Allocator>::this_type& vector<Type, Allocator>::operator =(const this_type& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		if (this != &other)
 			this_type(other).swap(*this);
 		return *this;
@@ -405,7 +405,7 @@ namespace simstd
 	typename
 	vector<Type, Allocator>::this_type& vector<Type, Allocator>::operator =(this_type&& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		if (this != &other)
 			this_type(simstd::move(other)).swap(*this);
 		return *this;
@@ -414,7 +414,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::assign(size_type n, const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		this_type(n, value).swap(*this);
 	}
 
@@ -422,7 +422,7 @@ namespace simstd
 	template<typename InputIterator>
 	void vector<Type, Allocator>::assign(InputIterator first, InputIterator last)
 	{
-		TraceObj();
+		TraceObjLn();
 		this_type(first, last).swap(*this);
 	}
 
@@ -602,7 +602,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::reserve(size_type new_capa)
 	{
-		TraceObj();
+		TraceObjLn();
 		_reserve(new_capa);
 	}
 
@@ -623,14 +623,14 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::shrink_to_fit()
 	{
-		TraceObj();
+		TraceObjLn();
 		this_type(*this).swap(*this);
 	}
 
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::clear()
 	{
-		TraceObj();
+		TraceObjLn();
 		base_type::destroy_till_end(impl.begin);
 	}
 
@@ -639,7 +639,7 @@ namespace simstd
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::insert(const_iterator cpos, InputIterator first, InputIterator last)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _insert(cpos, first, last, simstd::pvt::iterator_category(first));
 	}
 
@@ -647,7 +647,7 @@ namespace simstd
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::insert(const_iterator cpos, const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _emplace(cpos, value);
 	}
 
@@ -655,7 +655,7 @@ namespace simstd
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::insert(const_iterator cpos, size_type n, const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _insert(cpos, n, value);
 	}
 
@@ -663,7 +663,7 @@ namespace simstd
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::insert(const_iterator cpos, value_type&& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _emplace(cpos, simstd::move(value));
 	}
 
@@ -671,7 +671,7 @@ namespace simstd
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::erase(const_iterator cpos)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _erase(cpos, cpos + 1);
 	}
 
@@ -679,7 +679,7 @@ namespace simstd
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::erase(const_iterator cfirst, const_iterator clast)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _erase(cfirst, clast);
 	}
 
@@ -699,7 +699,7 @@ namespace simstd
 	typename
 	vector<Type, Allocator>::iterator vector<Type, Allocator>::emplace(const_iterator cpos, Args&&... args)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _emplace(cpos, simstd::forward<Args>(args)...);
 	}
 
@@ -732,14 +732,14 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::push_back(const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		_emplace_back(value);
 	}
 
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::push_back(value_type&& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		_emplace_back(simstd::move(value));
 	}
 
@@ -747,7 +747,7 @@ namespace simstd
 	template<typename... Args>
 	void vector<Type, Allocator>::emplace_back(Args&&... args)
 	{
-		TraceObj();
+		TraceObjLn();
 		_emplace_back(simstd::forward<Args>(args)...);
 	}
 
@@ -762,14 +762,14 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::pop_back()
 	{
-		TraceObj();
+		TraceObjLn();
 		_erase(cend() - 1, cend());
 	}
 
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::resize(size_type count)
 	{
-		TraceObj();
+		TraceObjLn();
 		if (size() < count) {
 			_reserve(count);
 			impl.end = simstd::uninitialized_default_n_a(impl.end, count - size(), get_base_allocator());
@@ -781,7 +781,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::resize(size_type count, const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		if (size() < count) {
 			_reserve(count);
 			impl.end = simstd::uninitialized_fill_n_a(impl.end, count - size(), value, get_base_allocator());
@@ -793,7 +793,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void vector<Type, Allocator>::swap(this_type& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		base_type::swap(other);
 	}
 

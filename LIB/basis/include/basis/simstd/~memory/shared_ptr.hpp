@@ -296,14 +296,14 @@ namespace simstd
 	template<typename Type, typename Allocator, typename... Args>
 	shared_ptr<Type> allocate_shared(const Allocator& allocator, Args&&... args)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		return shared_ptr<Type>(pvt::make_shared_tag(), allocator, forward<Args>(args)...);
 	}
 
 	template<typename Type, typename... Args>
 	shared_ptr<Type> make_shared(Args&&... args)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		return allocate_shared<Type>(allocator<remove_const_t<Type>>(), forward<Args>(args)...);
 	}
 }

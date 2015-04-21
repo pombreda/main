@@ -21,19 +21,19 @@ namespace simstd {
 		shared_ptr() throw() :
 			m_impl(0)
 		{
-			TraceFunc();
+			TraceFuncLn();
 		}
 
 		/*constexpr*/ shared_ptr(nullptr_t ptr) noexcept :
 			m_impl(new shared_ptr_impl_std(ptr))
 		{
-			TraceFunc();
+			TraceFuncLn();
 		}
 
 		explicit shared_ptr(element_type * ptr) :
 			m_impl(new shared_ptr_impl_std(ptr))
 		{
-			TraceFunc();
+			TraceFuncLn();
 			static_assert(sizeof(Type) > 0, "incomplete type");
 		}
 
@@ -41,14 +41,14 @@ namespace simstd {
 		shared_ptr(element_type * ptr, Deleter d) :
 			m_impl(new shared_ptr_impl_deleter<Deleter>(ptr, d))
 		{
-			TraceFunc();
+			TraceFuncLn();
 		}
 
 		template<typename Deleter>
 		shared_ptr(nullptr_t ptr, Deleter d) :
 			m_impl(new shared_ptr_impl_deleter<Deleter>(ptr, d))
 		{
-			TraceFunc();
+			TraceFuncLn();
 		}
 
 		shared_ptr(const this_type & other) :
@@ -78,7 +78,7 @@ namespace simstd {
 		template<typename newType>
 		operator shared_ptr<newType>()
 		{
-			TraceFunc();
+			TraceFuncLn();
 			return shared_ptr<newType>(m_impl); // TODO
 		}
 
@@ -149,7 +149,7 @@ namespace simstd {
 			shared_ptr_impl(element_type* ptr):
 				m_ptr(ptr)
 			{
-				TraceFunc();
+				TraceFuncLn();
 			}
 
 			element_type* get() const {return m_ptr;}
@@ -167,7 +167,7 @@ namespace simstd {
 			shared_ptr_impl_std(element_type * ptr) :
 				shared_ptr_impl(ptr)
 			{
-				TraceFunc();
+				TraceFuncLn();
 			}
 
 		private:
@@ -180,7 +180,7 @@ namespace simstd {
 				shared_ptr_impl(ptr),
 				m_deleter(d)
 			{
-				TraceFunc();
+				TraceFuncLn();
 			}
 
 		private:

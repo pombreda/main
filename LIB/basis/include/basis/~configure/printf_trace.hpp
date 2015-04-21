@@ -3,17 +3,15 @@
 
 #if defined(TRACE_PRINT) && TRACE_PRINT > 0
 #   include <basis/sys/console.hpp>
-#   define TraceFunc() console::printf("%s:%d\n", __PRETTY_FUNCTION__, __LINE__)
-#   define TraceObj1() console::printf("%s():%d {%p, %Iu}\n", __FUNCTION__, __LINE__, this, sizeof(*this))
-#   define TraceObj() console::printf("%s:%d {%p, %Iu}\n", __PRETTY_FUNCTION__, __LINE__, this, sizeof(*this))
-#   define TraceFormatFunc(format, ...) console::printf("%s:%d " format, __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
-#   define TraceFormatObj(format, ...) console::printf("%s:%d {%p, %Iu} " format, __PRETTY_FUNCTION__, __LINE__, this, sizeof(*this) , ##__VA_ARGS__)
+#   define TraceFuncLn() console::printf("%s:%d\n", __PRETTY_FUNCTION__, __LINE__)
+#   define TraceObjLn() console::printf("%s:%d {%p, %Iu}\n", __PRETTY_FUNCTION__, __LINE__, this, sizeof(*this))
+#   define TraceFunc(format, ...) console::printf("%s:%d " format, __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)
+#   define TraceObj(format, ...) console::printf("%s:%d {%p, %Iu} " format, __PRETTY_FUNCTION__, __LINE__, this, sizeof(*this) , ##__VA_ARGS__)
 #else
-#   define TraceFunc()
-#   define TraceObj1()
-#   define TraceObj()
-#   define TraceFormatFunc(format, ...)
-#   define TraceFormatObj(format, ...)
+#   define TraceFuncLn()
+#   define TraceObjLn()
+#   define TraceFunc(format, ...)
+#   define TraceObj(format, ...)
 #endif
 
 #endif

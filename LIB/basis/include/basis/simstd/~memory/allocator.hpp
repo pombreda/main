@@ -229,7 +229,7 @@ namespace simstd
 	template<class T, class... Args>
 	void allocator_traits<Allocator>::construct(Allocator& a, T* ptr, Args&&... args)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		a.construct(ptr, forward<Args>(args)...);
 	}
 
@@ -237,7 +237,7 @@ namespace simstd
 	template<class T>
 	void allocator_traits<Allocator>::destroy(Allocator& a, T* ptr)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		a.destroy(ptr);
 	}
 

@@ -7,12 +7,12 @@ namespace memory
 	{
 		void Default::init(size_t)
 		{
-			TraceFunc();
+			TraceFuncLn();
 		}
 
 		void Default::destroy()
 		{
-			TraceFunc();
+			TraceFuncLn();
 		}
 
 		size_t Default::size()
@@ -30,19 +30,19 @@ namespace memory
 
 		void* Default::alloc(size_t size, const char*, int)
 		{
-//			TraceFunc();
+//			TraceFuncLn();
 			return ::HeapAlloc(::GetProcessHeap(), 0, size);
 		}
 
 		void* Default::realloc(void* ptr, size_t size, const char*, int)
 		{
-//			TraceFunc();
+//			TraceFuncLn();
 			return ptr ? ::HeapReAlloc(::GetProcessHeap(), 0, ptr, size) : ::HeapAlloc(::GetProcessHeap(), 0, size);
 		}
 
 		void Default::free(const void* ptr, const char*, int)
 		{
-//			TraceFunc();
+//			TraceFuncLn();
 			::HeapFree(::GetProcessHeap(), 0, const_cast<void*>(ptr));
 		}
 

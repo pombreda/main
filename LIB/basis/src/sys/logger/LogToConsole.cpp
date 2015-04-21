@@ -61,12 +61,12 @@ namespace logger {
 
 		LogToConsole::~LogToConsole()
 		{
-			TraceFunc();
+			TraceFuncLn();
 		}
 
 		LogToConsole::LogToConsole()
 		{
-			TraceFunc();
+			TraceFuncLn();
 		}
 
 		void LogToConsole::out(const Module * lgr, Level lvl, const wchar_t* str, size_t size) const

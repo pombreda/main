@@ -67,21 +67,21 @@ namespace logger {
 
 	Logger::~Logger()
 	{
-		TraceFunc();
+		TraceFuncLn();
 //		auto lockScope(simstd::auto_lock(m_sync));
 		defaultModule->out(Level::Force, L"Logger is being destroyed. Modules: %Iu\n", m_modules.size());
 		while (!m_modules.empty()) {
 			m_modules.back()->destroy();
 			m_modules.pop_back();
 		}
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 	ModuleImpl* Logger::get_module(const wchar_t* name)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		auto lockScope(simstd::auto_lock(m_sync));
-		TraceFunc();
+		TraceFuncLn();
 		auto range = simstd::equal_range(m_modules.begin(), m_modules.end(), name, pModule_less());
 		if (range.first != range.second)
 			return *range.first;
@@ -90,9 +90,9 @@ namespace logger {
 
 	void Logger::free_module(ModuleImpl* module)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		auto lockScope(simstd::auto_lock(m_sync));
-		TraceFunc();
+		TraceFuncLn();
 		auto range = simstd::equal_range(m_modules.begin(), m_modules.end(), module, pModule_less());
 		simstd::for_each(range.first, range.second, [](ModuleImpl* found_module) {
 			found_module->destroy();
@@ -102,19 +102,19 @@ namespace logger {
 
 	Logger::Logger()
 	{
-		TraceFunc();
+		TraceFuncLn();
 		auto lockScope(simstd::auto_lock(m_sync));
-		TraceFunc();
+		TraceFuncLn();
 		if (!defaultTarget) {
-			TraceFunc();
+			TraceFuncLn();
 			defaultTarget = get_TargetToConsole();
 		}
 
-		TraceFunc();
+		TraceFuncLn();
 		defaultModule = register_module(defaultModuleName, defaultTarget, defaultLevel);
-		TraceFunc();
+		TraceFuncLn();
 		defaultModule->out(Level::Force, L"Logger has been created\n");
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 	ModuleImpl* Logger::register_module(const wchar_t* name, const Target_t& target, Level lvl)
@@ -128,7 +128,7 @@ namespace logger {
 			module = create_Module_impl(name, target, lvl);
 			m_modules.insert(range.second, module);
 		}
-		TraceFormatFunc("[%S, %Id] -> %p\n", name, (ssize_t)lvl, module);
+		TraceFunc("[%S, %Id] -> %p\n", name, (ssize_t)lvl, module);
 		return module;
 	}
 

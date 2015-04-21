@@ -84,14 +84,14 @@ namespace memory
 		template<typename HeapType, typename StatType, typename TagType>
 		void* DecoratorStat<HeapType, StatType, TagType>::alloc(size_t size, const char* function, int line)
 		{
-//			TraceFunc();
+//			TraceFuncLn();
 			return get_stat_impl().commit_alloc(HeapType::alloc(size, function, line), size, function, line);
 		}
 
 		template<typename HeapType, typename StatType, typename TagType>
 		void* DecoratorStat<HeapType, StatType, TagType>::realloc(void* ptr, size_t size, const char* function, int line)
 		{
-//			TraceFunc();
+//			TraceFuncLn();
 			get_stat_impl().commit_free(ptr, HeapType::size(ptr), function, line);
 			return get_stat_impl().commit_alloc(HeapType::realloc(ptr, size, function, line), size, function, line);
 		}
@@ -99,7 +99,7 @@ namespace memory
 		template<typename HeapType, typename StatType, typename TagType>
 		void DecoratorStat<HeapType, StatType, TagType>::free(const void* ptr, const char* function, int line)
 		{
-//			TraceFunc();
+//			TraceFuncLn();
 			get_stat_impl().commit_free(ptr, HeapType::size(ptr), function, line);
 			HeapType::free(ptr);
 		}
@@ -107,7 +107,7 @@ namespace memory
 		template<typename HeapType, typename StatType, typename TagType>
 		const typename DecoratorStat<HeapType, StatType, TagType>::stat_type& DecoratorStat<HeapType, StatType, TagType>::get_stat()
 		{
-//			TraceFunc();
+//			TraceFuncLn();
 			return get_stat_impl();
 		}
 

@@ -6,7 +6,7 @@
 
 #include <basis/simstd/algorithm>
 
-//#define TraceFunc(format, ...) //console::printf(L"%S " ## format ## L"/n", __PRETTY_FUNCTION__, ##__VA_ARGS__);
+//#define TraceFuncLn(format, ...) //console::printf(L"%S " ## format ## L"/n", __PRETTY_FUNCTION__, ##__VA_ARGS__);
 
 namespace logger {
 
@@ -43,7 +43,7 @@ namespace logger {
 //					console::printf(L"%S '%s' -> found2: '%s'\n", __PRETTY_FUNCTION__, str, found2);
 					cstr::copy(dest, found1, simstd::min(size, (size_t)(found2 - found1) + 1));
 //					console::printf(L"%S '%s' -> '%s'\n", __PRETTY_FUNCTION__, str.c_str(), ret.c_str());
-//					TraceFunc(L"'%s' -> '%s'", str.c_str(), ret.c_str());
+//					TraceFuncLn(L"'%s' -> '%s'", str.c_str(), ret.c_str());
 				}
 			}
 		}
@@ -273,10 +273,10 @@ namespace logger {
 
 	void set_options(const wchar_t* url)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		auto urlCopy = cstr::dup(url);
 
-		TraceFunc();
+		TraceFuncLn();
 		URL_COMPONENTSW info;
 		bool res = url::crack(urlCopy, &info);
 		if (res && cstr::compare_ci(L"logger", info.lpszScheme, info.dwSchemeLength) == 0) {
@@ -290,7 +290,7 @@ namespace logger {
 		}
 
 		HostFree(memory::heap::DefaultStat, urlCopy);
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 }

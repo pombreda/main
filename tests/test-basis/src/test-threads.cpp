@@ -55,16 +55,16 @@ void test_threads()
 
 	{
 		auto message = sync::create_message(1, 2, 3);
-		TraceFunc();
-		TraceFunc();
-		TraceFunc();
-		TraceFunc();
+		TraceFuncLn();
+		TraceFuncLn();
+		TraceFuncLn();
+		TraceFuncLn();
 		queue->put_message(message);
 //		queue->put_message(message);
-		TraceFunc();
-		TraceFunc();
-		TraceFunc();
-		TraceFunc();
+		TraceFuncLn();
+		TraceFuncLn();
+		TraceFuncLn();
+		TraceFuncLn();
 	}
 
 	threads[0].resume();

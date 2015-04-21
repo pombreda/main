@@ -13,20 +13,20 @@ namespace {
 
 	void prolog()
 	{
-		TraceFunc();
+		TraceFuncLn();
 		crt::init_atexit();
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 	int epilog(int errcode)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		crt::invoke_atexit();
 
-		TraceFunc();
+		TraceFuncLn();
 		crt::check_default_heap();
 
-		TraceFunc();
+		TraceFuncLn();
 
 		::ExitProcess(errcode);
 		return errcode;
@@ -48,7 +48,7 @@ extern "C" {
 
 	int mainCRTStartup()
 	{
-		TraceFunc();
+		TraceFuncLn();
 
 		prolog();
 //		linkage::CAPIHook apiHook1("kernel32.dll", "SetUnhandledExceptionFilter", (PROC)RedirectedSetUnhandledExceptionFilter);
@@ -60,13 +60,13 @@ extern "C" {
 
 		::LocalFree(argv);
 
-		TraceFunc();
+		TraceFuncLn();
 		return epilog(ret);
 	}
 
 	int	WinMainCRTStartup() // -mwindows
 	{
-		TraceFunc();
+		TraceFuncLn();
 
 		prolog();
 
@@ -77,7 +77,7 @@ extern "C" {
 
 		int ret = wWinMain(::GetModuleHandleW(nullptr), nullptr, ::GetCommandLineW(), startupInfo.dwFlags & STARTF_USESHOWWINDOW ? startupInfo.wShowWindow : SW_SHOWDEFAULT);
 
-		TraceFunc();
+		TraceFuncLn();
 		return epilog(ret);
 	}
 
@@ -98,13 +98,13 @@ extern "C" {
 
 	int atexit(crt::Function pf)
 	{
-		TraceFormatFunc("%s:%d func: %p\n", __PRETTY_FUNCTION__, __LINE__, pf);
+		TraceFunc("%s:%d func: %p\n", __PRETTY_FUNCTION__, __LINE__, pf);
 		return crt::atexit(pf);
 	}
 
 	void __cxa_pure_virtual(void)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		crt::cxa_pure_virtual();
 	}
 

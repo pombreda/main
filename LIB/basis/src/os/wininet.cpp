@@ -10,13 +10,13 @@ namespace os {
 
 	wininet_dll::~wininet_dll()
 	{
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 	wininet_dll::wininet_dll() :
 		DynamicLibrary(L"wininet.dll")
 	{
-		TraceFunc();
+		TraceFuncLn();
 		GET_DLL_FUNC(InternetCrackUrlW);
 	}
 

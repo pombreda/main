@@ -409,7 +409,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	list<Type, Allocator>::~list()
 	{
-		TraceObj();
+		TraceObjLn();
 		_clear();
 	}
 
@@ -417,21 +417,21 @@ namespace simstd
 	list<Type, Allocator>::list():
 		base_type(node_allocator_type())
 	{
-		TraceObj();
+		TraceObjLn();
 	}
 
 	template<typename Type, typename Allocator>
 	list<Type, Allocator>::list(const allocator_type& allocator):
 		base_type(node_allocator_type(allocator))
 	{
-		TraceObj();
+		TraceObjLn();
 	}
 
 	template<typename Type, typename Allocator>
 	list<Type, Allocator>::list(size_type count, const value_type& value, const allocator_type& allocator):
 		base_type(node_allocator_type(allocator))
 	{
-		TraceObj();
+		TraceObjLn();
 		for (; count; --count)
 			_emplace(cend(), value);
 	}
@@ -440,7 +440,7 @@ namespace simstd
 	list<Type, Allocator>::list(size_type count, const allocator_type& allocator):
 		base_type(node_allocator_type(allocator))
 	{
-		TraceObj();
+		TraceObjLn();
 		_default_append(count);
 	}
 
@@ -449,7 +449,7 @@ namespace simstd
 	list<Type, Allocator>::list(InputIterator first, InputIterator last, const allocator_type& allocator):
 		base_type(node_allocator_type(allocator))
 	{
-		TraceObj();
+		TraceObjLn();
 		_initialize(first, last);
 	}
 
@@ -457,7 +457,7 @@ namespace simstd
 	list<Type, Allocator>::list(const this_type& other):
 		base_type(other.get_node_allocator())
 	{
-		TraceObj();
+		TraceObjLn();
 		_initialize(other.cbegin(), other.cend());
 	}
 
@@ -465,7 +465,7 @@ namespace simstd
 	list<Type, Allocator>::list(const this_type& other, const allocator_type& allocator):
 		base_type(node_allocator_type(allocator))
 	{
-		TraceObj();
+		TraceObjLn();
 		_initialize(other.cbegin(), other.cend());
 	}
 
@@ -473,7 +473,7 @@ namespace simstd
 	list<Type, Allocator>::list(this_type&& other):
 		base_type(simstd::move(other))
 	{
-		TraceObj();
+		TraceObjLn();
 	}
 
 	template<typename Type, typename Allocator>
@@ -481,10 +481,10 @@ namespace simstd
 		base_type(node_allocator_type(allocator))
 	{
 		if (other.get_allocator() == allocator) {
-			TraceObj();
+			TraceObjLn();
 			swap(other);
 		} else {
-			TraceObj();
+			TraceObjLn();
 			_initialize(simstd::make_move_iterator(other.begin()), simstd::make_move_iterator(other.end()));
 		}
 		other.clear();
@@ -494,7 +494,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::this_type& list<Type, Allocator>::operator =(const this_type& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		this_type(other).swap(*this);
 		return *this;
 	}
@@ -503,7 +503,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::this_type& list<Type, Allocator>::operator =(this_type&& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		this_type(simstd::move(other)).swap(*this);
 		return *this;
 	}
@@ -512,14 +512,14 @@ namespace simstd
 	template<typename InputIterator>
 	void list<Type, Allocator>::assign(InputIterator first, InputIterator last)
 	{
-		TraceObj();
+		TraceObjLn();
 		this_type(first, last).swap(*this);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::assign(size_type n, const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		this_type(n, value).swap(*this);
 	}
 
@@ -667,7 +667,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::clear()
 	{
-		TraceObj();
+		TraceObjLn();
 		_clear();
 	}
 
@@ -676,7 +676,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator cpos, InputIterator first, InputIterator last)
 	{
-		TraceObj();
+		TraceObjLn();
 		this_type tmp(first, last, get_allocator());
 		_splice(cpos, simstd::move(tmp));
 	}
@@ -685,7 +685,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator cpos, const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _emplace(cpos, value);
 	}
 
@@ -693,7 +693,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator cpos, size_type n, const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		this_type tmp(n, value, get_allocator());
 		_splice(cpos, simstd::move(tmp));
 	}
@@ -702,7 +702,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::iterator list<Type, Allocator>::insert(const_iterator cpos, value_type&& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _emplace(cpos, simstd::move(value));
 	}
 
@@ -711,7 +711,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::iterator list<Type, Allocator>::emplace(const_iterator cpos, Args&&... args)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _emplace(cpos, simstd::forward<Args>(args)...);
 	}
 
@@ -719,7 +719,7 @@ namespace simstd
 	typename
 	list<Type, Allocator>::iterator list<Type, Allocator>::erase(const_iterator cpos)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _erase(cpos);
 	}
 
@@ -727,21 +727,21 @@ namespace simstd
 	typename
 	list<Type, Allocator>::iterator list<Type, Allocator>::erase(const_iterator first, const_iterator last)
 	{
-		TraceObj();
+		TraceObjLn();
 		return _erase(first, last);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::push_back(const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		_emplace(cend(), value);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::push_back(value_type&& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		_emplace(cend(), simstd::move(value));
 	}
 
@@ -749,28 +749,28 @@ namespace simstd
 	template<typename... Args>
 	void list<Type, Allocator>::emplace_back(Args&&... args)
 	{
-		TraceObj();
+		TraceObjLn();
 		_emplace(cend(), simstd::forward<Args>(args)...);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::pop_back()
 	{
-		TraceObj();
+		TraceObjLn();
 		_erase_back();
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::push_front(const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		_emplace(cbegin(), value);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::push_front(value_type&& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		_emplace(cbegin(), simstd::move(value));
 	}
 
@@ -778,14 +778,14 @@ namespace simstd
 	template<typename... Args>
 	void list<Type, Allocator>::emplace_front(Args&&... args)
 	{
-		TraceObj();
+		TraceObjLn();
 		_emplace(cbegin(), simstd::forward<Args>(args)...);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::pop_front()
 	{
-		TraceObj();
+		TraceObjLn();
 		_erase(cbegin());
 	}
 
@@ -822,21 +822,21 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::swap(this_type& other)
 	{
-//		TraceObj();
+//		TraceObjLn();
 		impl.list_end.swap(impl.list_end, other.impl.list_end);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::merge(this_type& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		_merge(simstd::move(other));
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::merge(this_type&& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		_merge(simstd::move(other));
 	}
 
@@ -844,7 +844,7 @@ namespace simstd
 	template<class Compare>
 	void list<Type, Allocator>::merge(this_type& other, Compare comp)
 	{
-		TraceObj();
+		TraceObjLn();
 		_merge(simstd::move(other), comp);
 	}
 
@@ -852,56 +852,56 @@ namespace simstd
 	template<class Compare>
 	void list<Type, Allocator>::merge(this_type&& other, Compare comp)
 	{
-		TraceObj();
+		TraceObjLn();
 		_merge(simstd::move(other), comp);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		_splice(cpos, simstd::move(other));
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		_splice(cpos, simstd::move(other));
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other, const_iterator it)
 	{
-		TraceObj();
+		TraceObjLn();
 		_splice(cpos, simstd::move(other), it);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other, const_iterator it)
 	{
-		TraceObj();
+		TraceObjLn();
 		_splice(cpos, simstd::move(other), it);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type& other, const_iterator first, const_iterator last)
 	{
-		TraceObj();
+		TraceObjLn();
 		_splice(cpos, simstd::move(other), first, last);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::splice(const_iterator cpos, this_type&& other, const_iterator first, const_iterator last)
 	{
-		TraceObj();
+		TraceObjLn();
 		_splice(cpos, simstd::move(other), first, last);
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::remove(const value_type& value)
 	{
-		TraceObj();
+		TraceObjLn();
 		auto first = cbegin();
 		auto last = cend();
 		auto postponed = last;
@@ -925,7 +925,7 @@ namespace simstd
 	template<class UnaryPredicate>
 	void list<Type, Allocator>::remove_if(UnaryPredicate predicate)
 	{
-		TraceObj();
+		TraceObjLn();
 		auto first = cbegin();
 		auto last = cend();
 
@@ -941,14 +941,14 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::reverse()
 	{
-		TraceObj();
+		TraceObjLn();
 		impl.list_end.reverse();
 	}
 
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::unique()
 	{
-		TraceObj();
+		TraceObjLn();
 		auto first = cbegin();
 		auto last = cend();
 
@@ -970,7 +970,7 @@ namespace simstd
 	template<class BinaryPredicate>
 	void list<Type, Allocator>::unique(BinaryPredicate predicate)
 	{
-		TraceObj();
+		TraceObjLn();
 		auto first = cbegin();
 		auto last = cend();
 
@@ -991,7 +991,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::sort()
 	{
-		TraceObj();
+		TraceObjLn();
 		if (size() > 1) {
 			list carry;
 			list pool[64];
@@ -1020,7 +1020,7 @@ namespace simstd
 	template<class Compare>
 	void list<Type, Allocator>::sort(Compare comp)
 	{
-		TraceObj();
+		TraceObjLn();
 		if (size() > 1) {
 			list carry;
 			list pool[64];
@@ -1172,7 +1172,7 @@ namespace simstd
 	template<typename Type, typename Allocator>
 	void list<Type, Allocator>::_splice(const_iterator cpos, this_type&& other)
 	{
-		TraceObj();
+		TraceObjLn();
 		_transfer(cpos, other.cbegin(), other.cend());
 	}
 

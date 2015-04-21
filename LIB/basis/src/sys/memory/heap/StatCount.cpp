@@ -10,12 +10,12 @@ memory::heap::AllocatedItem::AllocatedItem(void* ptr, uint64_t size, const char*
 	function(function),
 	line(line)
 {
-	TraceFunc();
+	TraceFuncLn();
 }
 
 memory::heap::StatCount::~StatCount()
 {
-	TraceFunc();
+	TraceFuncLn();
 }
 
 memory::heap::StatCount::StatCount():
@@ -24,12 +24,12 @@ memory::heap::StatCount::StatCount():
 	allocSize(),
 	freeSize()
 {
-	TraceFunc();
+	TraceFuncLn();
 }
 
 void* memory::heap::StatCount::commit_alloc(void* ptr, uint64_t size, const char* function, int line)
 {
-//	TraceFunc();
+//	TraceFuncLn();
 	UNUSED(function);
 	UNUSED(line);
 
@@ -43,7 +43,7 @@ void* memory::heap::StatCount::commit_alloc(void* ptr, uint64_t size, const char
 
 void memory::heap::StatCount::commit_free(const void* ptr, uint64_t size, const char* function, int line)
 {
-//	TraceFunc();
+//	TraceFuncLn();
 	UNUSED(function);
 	UNUSED(line);
 

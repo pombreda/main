@@ -20,64 +20,64 @@ namespace crt
 {
 	void invoke_crt_functions(const Function* pf, ptrdiff_t step)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		for (; *pf; pf += step) {
 			if (reinterpret_cast<intptr_t>(*pf) == static_cast<intptr_t>(-1)) {
 				continue;
 			} else {
-				TraceFormatFunc("%p->%p\n", pf, *pf);
+				TraceFunc("%p->%p\n", pf, *pf);
 				(*pf)();
 			}
 		}
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 	void invoke_ctors()
 	{
-		TraceFormatFunc("__CTOR_LIST__: %p\n", __CTOR_LIST__);
+		TraceFunc("__CTOR_LIST__: %p\n", __CTOR_LIST__);
 		invoke_crt_functions(__CTOR_LIST__, 1);
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 	void invoke_dtors()
 	{
-		TraceFormatFunc("__DTOR_LIST__: %p\n", __DTOR_LIST__);
+		TraceFunc("__DTOR_LIST__: %p\n", __DTOR_LIST__);
 		invoke_crt_functions(__DTOR_LIST__, 1);
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 	void init_atexit()
 	{
-		TraceFunc();
+		TraceFuncLn();
 		for (ssize_t i = 0; i < MAX_ATEXITLIST_ENTRIES; ++i)
 			atExitArray[i] = reinterpret_cast<Function>(-1);
 		atexit(reinterpret_cast<Function>(0));
 		atexit(&invoke_dtors);
 
 		invoke_ctors();
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 	void invoke_atexit()
 	{
-		TraceFunc();
+		TraceFuncLn();
 		invoke_crt_functions(&atExitArray[MAX_ATEXITLIST_ENTRIES - 1], -1);
-		TraceFunc();
+		TraceFuncLn();
 	}
 
 	int atexit(Function pf)
 	{
-		TraceFunc();
+		TraceFuncLn();
 		auto ind = InterlockedExchangeAdd(&atExitIndex, 1);
 
-		TraceFormatFunc("func: %p, index: %d\n", pf, (int)ind);
+		TraceFunc("func: %p, index: %d\n", pf, (int)ind);
 		if (ind < MAX_ATEXITLIST_ENTRIES)
 		{
 			atExitArray[ind] = pf;
-			TraceFunc();
+			TraceFuncLn();
 			return 0;
 		}
-		TraceFunc();
+		TraceFuncLn();
 		return -1;
 	}
 
