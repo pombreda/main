@@ -19,10 +19,15 @@ Thumbs.db
 *.cache
 *.ilk
 *.log
-[Bb]in
-[Dd]ebug*/
 *.lib
 *.sbr
+x32-Release/
+x64-Release/
+x32-Debug/
+x64-Debug/
+x64-Release-sections/
+[Bb]in
+[Dd]ebug*/
 obj/
 [Rr]elease*/
 _ReSharper*/
