@@ -24,6 +24,7 @@
 #include <guid.hpp>
 #include <lang.hpp>
 #include <far3/message.hpp>
+#include <basis/sys/cstr.hpp>
 #include <basis/sys/logger.hpp>
 
 struct FarPlugin:
@@ -50,29 +51,30 @@ FarPlugin::FarPlugin(const PluginStartupInfo* Info) :
 	m_hwnd(::GetForegroundWindow()),
 	m_state(false)
 {
-	LogTrace();
+	LogTraceObjLn();
 }
 
 FarPlugin::~FarPlugin()
 {
-	LogTrace();
+	LogTraceObjLn();
 }
 
 void FarPlugin::destroy() const
 {
+	LogTraceObjLn();
 	delete this;
 }
 
 void FarPlugin::GetPluginInfo(PluginInfo* Info)
 {
-	LogTrace();
+	LogTraceObjLn();
 	Info->Flags = PF_EDITOR | PF_VIEWER | PF_DIALOG;
 
 	static GUID PluginMenuGuids[] = {MenuGuid, };
 	static PCWSTR PluginMenuStrings[] = {menu_item, };
 
-	::wcsncpy(menu_item, far3::message::get(far3::message::MenuTitle), lengthof(menu_item));
-	::wcsncat(menu_item, far3::message::get(m_state ? MsgOff : MsgOn), lengthof(menu_item));
+	cstr::copy(menu_item, far3::message::get(far3::message::MenuTitle), lengthof(menu_item));
+	cstr::copy(menu_item, far3::message::get(m_state ? MsgOff : MsgOn), lengthof(menu_item));
 
 	Info->PluginMenu.Guids = PluginMenuGuids;
 	Info->PluginMenu.Strings = PluginMenuStrings;
@@ -83,7 +85,7 @@ void FarPlugin::GetPluginInfo(PluginInfo* Info)
 
 far3::PanelController_i* FarPlugin::Open(const OpenInfo* /*Info*/)
 {
-	LogTrace();
+	LogTraceObjLn();
 
 	if (!m_state)
 		m_state = ::SetWindowPos(m_hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
@@ -95,5 +97,6 @@ far3::PanelController_i* FarPlugin::Open(const OpenInfo* /*Info*/)
 
 far3::Plugin_i* create_FarPlugin(const PluginStartupInfo* psi)
 {
+	LogTraceLn();
 	return new FarPlugin(psi);
 }

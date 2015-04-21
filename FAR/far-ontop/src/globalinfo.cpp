@@ -31,13 +31,13 @@
 
 FarGlobalInfo::FarGlobalInfo()
 {
-	LogTrace();
-	cstr::copy(prefix, L"ontop");
+	LogTraceObjLn();
+	cstr::copy(prefix, L"ontop", lengthof(prefix));
 }
 
 FarGlobalInfo::~FarGlobalInfo()
 {
-	LogTrace();
+	LogTraceObjLn();
 }
 
 PCWSTR FarGlobalInfo::get_author() const
@@ -73,19 +73,19 @@ VersionInfo FarGlobalInfo::get_min_version() const
 
 far3::Plugin_i* FarGlobalInfo::CreatePlugin(const PluginStartupInfo* Info) const
 {
-	LogTrace();
+	LogTraceObjLn();
 	far3::Plugin_i* plugin = create_FarPlugin(Info);
 	return plugin;
 }
 
 void FarGlobalInfo::load_settings()
 {
-	LogTrace();
+	LogTraceObjLn();
 }
 
 void FarGlobalInfo::save_settings() const
 {
-	LogTrace();
+	LogTraceObjLn();
 }
 
 FarGlobalInfo* get_global_info()

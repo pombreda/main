@@ -1,27 +1,24 @@
-﻿
-#include <basis/sys/crt.hpp>
-//#include <basis/sys/console.hpp>
-//#include <basis/sys/memory.hpp>
-
-#include <atomic>
+﻿#include <basis/sys/crt.hpp>
 #include <stdio.h>
 
-extern "C" {
+extern "C"
+{
 	extern const crt::Function __CTOR_LIST__[1];
 	extern const crt::Function __DTOR_LIST__[1];
 }
 
-namespace {
+namespace
+{
 	const ssize_t MAX_ATEXITLIST_ENTRIES = 64;
 
-	std::atomic<ssize_t> atExitIndex(0);
+	LONG atExitIndex(0);
 
 	crt::Function atExitArray[MAX_ATEXITLIST_ENTRIES];
 }
 
-namespace crt {
-
-	void invoke_crt_functions(const Function * pf, ptrdiff_t step)
+namespace crt
+{
+	void invoke_crt_functions(const Function* pf, ptrdiff_t step)
 	{
 		TraceFunc();
 		for (; *pf; pf += step) {
@@ -71,7 +68,7 @@ namespace crt {
 	int atexit(Function pf)
 	{
 		TraceFunc();
-		ssize_t ind = atExitIndex++;
+		auto ind = InterlockedExchangeAdd(&atExitIndex, 1);
 
 		TraceFormatFunc("func: %p, index: %d\n", pf, (int)ind);
 		if (ind < MAX_ATEXITLIST_ENTRIES)
@@ -89,5 +86,4 @@ namespace crt {
 		printf("%s():%d pure virtual function called\n", __FUNCTION__, __LINE__);
 //		::abort_message("pure virtual method called");
 	}
-
 }

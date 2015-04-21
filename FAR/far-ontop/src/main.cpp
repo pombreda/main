@@ -23,6 +23,7 @@
 #include <farplugin.hpp>
 
 #include <far3/plugin.hpp>
+#include <basis/sys/crt.hpp>
 #include <basis/sys/logger.hpp>
 
 namespace
@@ -39,40 +40,40 @@ void WINAPI GetGlobalInfoW(GlobalInfo * Info)
 {
 	setup_logger();
 
-	LogTrace();
+	LogTraceLn();
 	far3::helper_t::inst().init(new FarGlobalInfo);
 	get_global_info()->GetGlobalInfoW(Info);
 }
 
 void WINAPI SetStartupInfoW(const PluginStartupInfo * Info)
 {
-	LogTrace();
+	LogTraceLn();
 	get_global_info()->SetStartupInfoW(Info);
 	get_global_info()->load_settings();
 }
 
 intptr_t WINAPI ConfigureW(const ConfigureInfo * Info)
 {
-	LogTrace();
+	LogTraceLn();
 	return get_global_info()->ConfigureW(Info);
 }
 
 /// Plugin
 void WINAPI GetPluginInfoW(PluginInfo * Info)
 {
-	LogTrace();
+	LogTraceLn();
 	far3::helper_t::inst().get_plugin()->GetPluginInfoW(Info);
 }
 
 HANDLE WINAPI OpenW(const OpenInfo * Info)
 {
-	LogTrace();
+	LogTraceLn();
 	return far3::helper_t::inst().get_plugin()->OpenW(Info);
 }
 
 void WINAPI ExitFARW(const ExitInfo *Info)
 {
-	LogTrace();
+	LogTraceLn();
 	far3::helper_t::inst().get_plugin()->ExitFARW(Info);
 }
 
@@ -81,68 +82,31 @@ void WINAPI ExitFARW(const ExitInfo *Info)
 #ifndef DEBUG
 
 ///=================================================================================================
-namespace
-{
-
-	typedef void (*FAtExit)(void);
-
-	const int64_t MAX_ATEXITLIST_ENTRIES = 8;
-
-	int64_t atexit_index = MAX_ATEXITLIST_ENTRIES - 1;
-	FAtExit pf_atexitlist[MAX_ATEXITLIST_ENTRIES];
-
-	void init_atexit()
-	{
-	}
-
-	void invoke_atexit()
-	{
-		LogTrace();
-
-		if (atexit_index < 0)
-			atexit_index = 0;
-		else
-			++atexit_index;
-
-		for (int64_t i = atexit_index; i < MAX_ATEXITLIST_ENTRIES; ++i) {
-			LogDebug(L"[%I64d] ptr: %p\n", i, pf_atexitlist[i]);
-			(*pf_atexitlist[i])();
-		}
-	}
-
-}
-
 extern "C"
 {
 	BOOL WINAPI DllMainCRTStartup(HANDLE, DWORD dwReason, PVOID)
 	{
 		switch (dwReason) {
 			case DLL_PROCESS_ATTACH:
-				init_atexit();
+				crt::init_atexit();
 				break;
 
 			case DLL_PROCESS_DETACH:
-				invoke_atexit();
+				crt::invoke_atexit();
 				break;
 		}
 		return true;
 	}
 
-	int atexit(FAtExit pf)
+	int atexit(crt::Function pf)
 	{
-		LogTrace();
-		int64_t ind = ::InterlockedExchangeAdd64(&atexit_index, -1);
-		if (ind >= 0) {
-			LogDebug(L"[%I64d] ptr: %p\n", ind, pf);
-			pf_atexitlist[ind] = pf;
-			return 0;
-		}
-		return -1;
+		return crt::atexit(pf);
+		return 0;
 	}
 
 	void __cxa_pure_virtual(void)
 	{
-//		::abort_message("pure virtual method called");
+		crt::cxa_pure_virtual();
 	}
 }
 
