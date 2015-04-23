@@ -91,7 +91,7 @@ namespace sync
 	DeliveryImpl::~DeliveryImpl()
 	{
 		LogTraceObj(L"begin");
-		queue->put_message(create_message(message::SYSTEM, message::SYSTEM_THREAD_STOP));
+		queue->put_message(message::create(message::SYSTEM, message::SYSTEM_THREAD_STOP));
 		thread.wait();
 		LogTraceObj(L"end");
 	}

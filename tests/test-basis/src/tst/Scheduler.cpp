@@ -41,7 +41,7 @@ public:
 	{
 		while (true) {
 			using namespace sync;
-			delivery::send_round(create_message(message::APPLICATION, message::APPLICATION_TIMER, now()));
+			delivery::send_round(message::create(message::APPLICATION, message::APPLICATION_TIMER, now()));
 			sleep(100);
 		}
 		return 0;
@@ -107,9 +107,9 @@ ssize_t tst::_Scheduler()
 //	scheduler.arrange_task(myTask2, 150);
 	scheduler.register_interest(&myHandler, sync::message::APPLICATION, sync::message::MASK_TYPE);
 
-	scheduler.put_message(sync::create_message(sync::message::SYSTEM, 1));
-	scheduler.put_message(sync::create_message(sync::message::SYSTEM, 2));
-	scheduler.put_message(sync::create_message(sync::message::SYSTEM, 3));
+	scheduler.put_message(sync::message::create(sync::message::SYSTEM, 1));
+	scheduler.put_message(sync::message::create(sync::message::SYSTEM, 2));
+	scheduler.put_message(sync::message::create(sync::message::SYSTEM, 3));
 	sync::sleep(5000);
 
 	return 0;

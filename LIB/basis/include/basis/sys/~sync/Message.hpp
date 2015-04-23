@@ -6,21 +6,21 @@ namespace sync
 	using Message = simstd::unique_ptr<message::SimpleMessage>;
 
 	template<typename MessageType, typename... Args>
-	Message create_message(Args&&... args)
+	Message create_custom_message(Args&&... args)
 	{
 		return simstd::make_unique<MessageType>(simstd::forward<Args>(args)...);
 	}
 
-	inline Message create_message(const message::param_type& type,
-		const message::param_type& a = message::param_type(),
-		const message::param_type& b = message::param_type(),
-		const message::param_type& c = message::param_type())
-	{
-		return create_message<message::SimpleMessage>(type, a, b, c);
-	}
-
 	namespace message
 	{
+		inline Message create(const param_type& type,
+			const param_type& a = param_type(),
+			const param_type& b = param_type(),
+			const param_type& c = param_type())
+		{
+			return create_custom_message<SimpleMessage>(type, a, b, c);
+		}
+
 		class SimpleMessage
 		{
 		public:
@@ -28,7 +28,7 @@ namespace sync
 
 			virtual Message clone() const
 			{
-				return create_message<SimpleMessage>(type, a, b, c);
+				return create_custom_message<SimpleMessage>(type, a, b, c);
 			}
 
 			param_type get_type() const noexcept {return type;}

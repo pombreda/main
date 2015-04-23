@@ -54,7 +54,7 @@ void test_threads()
 	threads[1].set_priority(thread::Priority::ABOVE_NORMAL);
 
 	{
-		auto message = sync::create_message(1, 2, 3);
+		auto message = sync::message::create(1, 2, 3);
 		TraceFuncLn();
 		TraceFuncLn();
 		TraceFuncLn();

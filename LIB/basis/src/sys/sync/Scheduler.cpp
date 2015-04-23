@@ -306,7 +306,7 @@ namespace sync
 	{
 		LogTraceObjLn();
 		destroying = true;
-		impl->messg_queue->put_message(create_message(message::SYSTEM, message::SYSTEM_SCHEDULER_STOP));
+		impl->messg_queue->put_message(message::create(message::SYSTEM, message::SYSTEM_SCHEDULER_STOP));
 		impl->thread.wait();
 	}
 
@@ -334,7 +334,7 @@ namespace sync
 
 		if (impl->tasks_queue.add_task(task, activateTime)) {
 			LogDebug(L"task is first in queue, updating wait time\n");
-			impl->messg_queue->put_message(create_message(message::SYSTEM, message::SYSTEM_SCHEDULER_UPDATE));
+			impl->messg_queue->put_message(message::create(message::SYSTEM, message::SYSTEM_SCHEDULER_UPDATE));
 		}
 		return true;
 	}
