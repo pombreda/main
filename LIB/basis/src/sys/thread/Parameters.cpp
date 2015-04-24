@@ -1,7 +1,7 @@
 #include <basis/sys/thread.hpp>
 #include <basis/sys/logger.hpp>
 #include <basis/sys/totext.hpp>
-#include <basis/simstd/string>
+#include "UnitImpl.hpp"
 
 namespace thread
 {
@@ -38,21 +38,27 @@ namespace thread
 	{
 	}
 
-	Unit::Unit(Routine* routine, void* data, bool suspended, size_t stack_size) :
+	UnitImpl::UnitImpl(const wchar_t* name, Routine* routine, void* data, bool suspended, size_t stack_size) :
 		m_routine(routine),
-		m_handle()
+		m_handle(),
+		name(name)
 	{
-		LogTraceObj(L"(%p, %p, %u, %Iu)\n", routine, data, suspended, stack_size);
-		m_handle = ::CreateThread(nullptr, stack_size, Parameters::run_thread_with_param, new Parameters(m_routine, data), suspended ? CREATE_SUSPENDED : 0, &m_id);
+		LogTraceObj(L"('%s', %p, %p, %u, %Iu)\n", name, routine, data, suspended, stack_size);
+		m_handle = static_cast<handle_type>(::CreateThread(nullptr, stack_size, Parameters::run_thread_with_param, new Parameters(m_routine, data), suspended ? CREATE_SUSPENDED : 0, &m_id));
 		LogDebugIf(is_valid(), L"id: %u\n", m_id);
 		LogFatalIf(!is_valid(), L"can't create thread (%p, %Iu) -> %s\n", routine, stack_size, totext::api_error().c_str());
 	}
 
-	bool Unit::alert(void* data)
+	bool UnitImpl::alert(void* data)
 	{
 		bool ret = ::QueueUserAPC(Parameters::alert_thread_with_param, m_handle, reinterpret_cast<ULONG_PTR>(new Parameters(m_routine, data)));
 		LogDebugIf(ret, L"id: %u\n", m_id);
 		LogErrorIf(!ret, L"-> %s\n", totext::api_error().c_str());
 		return ret;
+	}
+
+	Unit create(const wchar_t* name, Routine* routine, void* data, bool suspended, size_t stack_size)
+	{
+		return simstd::make_unique<UnitImpl>(name, routine, data, suspended, stack_size);
 	}
 }

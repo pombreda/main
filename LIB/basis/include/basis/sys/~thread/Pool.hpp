@@ -24,8 +24,8 @@ namespace thread
 		template<class... Args>
 		void create_thread(Args&&... args)
 		{
-			base_type::emplace_back(args...);
-			m_handles.push_back(base_type::back().get_handle());
+			base_type::emplace_back(thread::create(args...));
+			m_handles.push_back(base_type::back()->get_handle());
 		}
 
 //		void push_back(Thread thread)
@@ -44,7 +44,7 @@ namespace thread
 		sync::WaitResult_t wait_any(size_t& index, int64_t timeout = sync::TIMEOUT_INFINITE) const;
 
 	private:
-		simstd::vector<Unit::handle_type> m_handles;
+		simstd::vector<HANDLE> m_handles;
 	};
 }
 

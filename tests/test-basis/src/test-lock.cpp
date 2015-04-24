@@ -60,14 +60,14 @@ void test_lock()
 	LockMutexThead2 routine2;
 
 	thread::Pool threads;
-	threads.create_thread(&routine1);
-	threads.create_thread(&routine1);
-	threads.create_thread(&routine1);
-	threads.create_thread(&routine1);
-	threads.create_thread(&routine2);
-	threads.create_thread(&routine2);
-	threads.create_thread(&routine2);
-	threads.create_thread(&routine2);
+	threads.create_thread(L"Thread1", &routine1);
+	threads.create_thread(L"Thread2", &routine1);
+	threads.create_thread(L"Thread3", &routine1);
+	threads.create_thread(L"Thread4", &routine1);
+	threads.create_thread(L"Thread5", &routine2);
+	threads.create_thread(L"Thread6", &routine2);
+	threads.create_thread(L"Thread7", &routine2);
+	threads.create_thread(L"Thread8", &routine2);
 
 	threads.wait_all();
 

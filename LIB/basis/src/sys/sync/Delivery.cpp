@@ -9,6 +9,11 @@
 
 namespace sync
 {
+	namespace
+	{
+		const wchar_t* const DEBUG_NAME = L"sync::Delivery";
+	}
+
 	struct DeliveryMapping
 	{
 		DeliveryMapping(const Queue& queue, message::param_type type, message::param_type mask, delivery::filter_type filter):
@@ -92,16 +97,16 @@ namespace sync
 	{
 		LogTraceObj(L"begin");
 		queue->put_message(message::create(message::SYSTEM, message::SYSTEM_THREAD_STOP));
-		thread.wait();
+		thread->wait();
 		LogTraceObj(L"end");
 	}
 
 	DeliveryImpl::DeliveryImpl() :
-		queue(create_queue(L"sync::Delivery queue")),
-		thread(this, true)
+		queue(create_queue(DEBUG_NAME)),
+		thread(thread::create(DEBUG_NAME, this, true))
 	{
 		LogTraceObjLn();
-		thread.resume();
+		thread->resume();
 	}
 
 	delivery::SubscribtionId DeliveryImpl::subscribe(const Queue& queue, message::param_type type, message::param_type mask, delivery::filter_type filter)

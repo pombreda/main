@@ -39,19 +39,19 @@ void test_threads()
 	Routine routine1(queue, 100);
 	Routine routine2(queue, 200);
 	thread::Pool threads;
-	threads.create_thread(&routine1, true);
-	threads.create_thread(&routine2, true);
+	threads.create_thread(L"Thread1", &routine1, true);
+	threads.create_thread(L"Thread2", &routine2, true);
 
 //	Sleep(5000);
-	threads[0].set_io_priority(thread::IoPriority::VERY_LOW);
-	threads[0].set_io_priority(thread::IoPriority::NORMAL);
-	threads[1].set_io_priority(thread::IoPriority::LOW);
-	threads[1].set_io_priority(thread::IoPriority::HIGH);
-	threads[1].set_io_priority(thread::IoPriority::CRITICAL);
+	threads[0]->set_io_priority(thread::IoPriority::VERY_LOW);
+	threads[0]->set_io_priority(thread::IoPriority::NORMAL);
+	threads[1]->set_io_priority(thread::IoPriority::LOW);
+	threads[1]->set_io_priority(thread::IoPriority::HIGH);
+	threads[1]->set_io_priority(thread::IoPriority::CRITICAL);
 
 //	Sleep(5000);
-	threads[0].set_priority(thread::Priority::TIME_CRITICAL);
-	threads[1].set_priority(thread::Priority::ABOVE_NORMAL);
+	threads[0]->set_priority(thread::Priority::TIME_CRITICAL);
+	threads[1]->set_priority(thread::Priority::ABOVE_NORMAL);
 
 	{
 		auto message = sync::message::create(1, 2, 3);
@@ -67,8 +67,8 @@ void test_threads()
 		TraceFuncLn();
 	}
 
-	threads[0].resume();
-	threads[1].resume();
+	threads[0]->resume();
+	threads[1]->resume();
 
 	sync::WaitResult_t ret = sync::WaitResult_t::FAILED;
 	do {
@@ -76,7 +76,7 @@ void test_threads()
 	} while (ret != sync::WaitResult_t::FAILED && ret != sync::WaitResult_t::SUCCESS);
 
 	if (ret == sync::WaitResult_t::SUCCESS) {
-		LogInfo(L"threads[0] exited: %d\n", threads[0].get_exitcode());
-		LogInfo(L"threads[1] exited: %d\n", threads[1].get_exitcode());
+		LogInfo(L"threads[0] exited: %d\n", threads[0]->get_exitcode());
+		LogInfo(L"threads[1] exited: %d\n", threads[1]->get_exitcode());
 	}
 }

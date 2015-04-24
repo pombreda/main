@@ -95,8 +95,8 @@ ssize_t tst::_Scheduler()
 	LogAtten(L"\n");
 
 	sync::Scheduler scheduler(L"tst::_Scheduler");
-	thread::Unit th1(new Th(&scheduler));
-	thread::Unit th2(new MyTimer);
+//	thread::Unit th1(new Th(&scheduler));
+	auto th2 = thread::create(L"MyTimer", new MyTimer);
 
 //	auto myTask1 = new MyTask(&scheduler, L"MyTask1");
 //	auto myTask2 = new MyTask(&scheduler, L"MyTask2");
@@ -107,9 +107,9 @@ ssize_t tst::_Scheduler()
 //	scheduler.arrange_task(myTask2, 150);
 	scheduler.register_interest(&myHandler, sync::message::APPLICATION, sync::message::MASK_TYPE);
 
-	scheduler.put_message(sync::message::create(sync::message::SYSTEM, 1));
-	scheduler.put_message(sync::message::create(sync::message::SYSTEM, 2));
-	scheduler.put_message(sync::message::create(sync::message::SYSTEM, 3));
+	scheduler.put_message(sync::message::create(sync::message::APPLICATION, 1));
+	scheduler.put_message(sync::message::create(sync::message::APPLICATION, 2));
+	scheduler.put_message(sync::message::create(sync::message::APPLICATION, 3));
 	sync::sleep(5000);
 
 	return 0;

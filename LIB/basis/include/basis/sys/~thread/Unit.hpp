@@ -3,50 +3,46 @@
 
 namespace thread
 {
-	struct Unit: private pattern::Uncopyable
+	class UnitIface
 	{
-		using handle_type = HANDLE;
+		struct native_impl_type;
 
 	public:
-		~Unit() noexcept;
+		using handle_type = native_impl_type*;
 
-		Unit(Routine* routine, bool suspended = false, size_t stack_size = 0);
-		Unit(Routine* routine, void* data, bool suspended = false, size_t stack_size = 0);
-		Unit(Unit&& right);
+		virtual ~UnitIface() = default;
 
-		Unit& operator =(Unit&& right);
+		virtual bool is_valid() const noexcept = 0;
 
-		void swap(Unit& right) noexcept;
+		virtual bool alert() noexcept = 0;
+		virtual bool alert(void* data) noexcept = 0;
 
-		bool is_valid() const;
+		virtual bool set_priority(Priority prio) noexcept = 0;
+		virtual bool set_io_priority(IoPriority prio) noexcept = 0;
 
-		bool alert();
-		bool alert(void* data);
+		virtual size_t get_exitcode() const noexcept = 0;
 
-		bool set_priority(Priority prio);
-		bool set_io_priority(IoPriority prio);
+		virtual Id get_id() const noexcept = 0;
 
-		size_t get_exitcode() const;
+		virtual handle_type get_handle() const noexcept = 0;
 
-		Id get_id() const;
+		virtual Priority get_priority() const noexcept = 0;
+		virtual IoPriority get_io_priority() const noexcept = 0;
 
-		handle_type get_handle() const;
+		virtual Routine* get_routine() const noexcept = 0;
 
-		Priority get_priority() const;
-		IoPriority get_io_priority() const;
+		virtual const wchar_t* get_name() const noexcept = 0;
 
-		Routine* get_routine() const;
+		virtual bool suspend() const noexcept = 0;
+		virtual bool resume() const noexcept = 0;
 
-		bool suspend() const;
-		bool resume() const;
-
-		sync::WaitResult_t wait(int64_t timeout = sync::TIMEOUT_INFINITE) const;
-
-	private:
-		Routine* m_routine;
-		handle_type m_handle;
-		Id m_id;
+		virtual sync::WaitResult_t wait(int64_t timeout = sync::TIMEOUT_INFINITE) const noexcept = 0;
 	};
+
+	using Unit = simstd::unique_ptr<UnitIface>;
+
+	Unit create(const wchar_t* name, Routine* routine, bool suspended = false, size_t stack_size = 0);
+	Unit create(const wchar_t* name, Routine* routine, void* data, bool suspended = false, size_t stack_size = 0);
 }
 
 #endif

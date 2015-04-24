@@ -114,14 +114,20 @@ namespace sync
 		simstd::vector<InterestMapping> interests;
 	};
 
-	class Scheduler::ThreadImpl: private thread::Routine, public thread::Unit
+	class Scheduler::ThreadImpl: private thread::Routine
 	{
 	public:
 		ThreadImpl(SchedulerImplStruct* impl, ssize_t stackSize);
 		ssize_t run(void* data) override;
 
+		thread::Id get_id() const noexcept {return unit->get_id();}
+
+		void wait() {unit->wait();}
+		void resume() {unit->resume();}
+
 	private:
 		SchedulerImplStruct* impl;
+		thread::Unit unit;
 	};
 
 	struct Scheduler::SchedulerImplStruct
@@ -215,8 +221,8 @@ namespace sync
 
 	///=================================================================================================================
 	Scheduler::ThreadImpl::ThreadImpl(SchedulerImplStruct* impl, ssize_t stackSize):
-		Unit(this, true, stackSize),
-		impl(impl)
+		impl(impl),
+		unit(thread::create(L"Scheduler", this, true, stackSize))
 	{
 		LogTraceObjLn();
 	}

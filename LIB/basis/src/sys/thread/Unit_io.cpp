@@ -2,11 +2,11 @@
 #include <basis/sys/logger.hpp>
 #include <basis/sys/totext.hpp>
 #include <basis/os/ntdll.hpp>
-#include <basis/simstd/string>
+#include "UnitImpl.hpp"
 
-namespace thread {
-
-	bool Unit::set_io_priority(IoPriority prio)
+namespace thread
+{
+	bool UnitImpl::set_io_priority(IoPriority prio)
 	{
 		ULONG p = (ULONG)prio;
 		NTSTATUS ret = os::ntdll_dll::inst().NtSetInformationThread(m_handle, os::ThreadIoPriority, &p, sizeof(p));
@@ -15,7 +15,7 @@ namespace thread {
 		return ret;
 	}
 
-	IoPriority Unit::get_io_priority() const
+	IoPriority UnitImpl::get_io_priority() const
 	{
 		ULONG prio = 0;
 		NTSTATUS ret = os::ntdll_dll::inst().NtQueryInformationThread(m_handle, os::ThreadIoPriority, &prio, sizeof(prio), nullptr);
@@ -23,5 +23,4 @@ namespace thread {
 		LogErrorIf( ret, L"id: %u -> '%s'\n", m_id, totext::nt_status(ret).c_str());
 		return (IoPriority)prio;
 	}
-
 }
